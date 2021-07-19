@@ -3,10 +3,6 @@ trigger:
 - main
 - master
 
-pr:
-- main
-- master
-
 resources:
 - repo: self
 
@@ -21,8 +17,19 @@ stages:
   - job: Build
     displayName: Build
     pool:
+      #name: Default
       vmImage: $(vmImageName)
     steps:
+#      - task: NodeTool@0
+#        displayName: Use Node 12.x
+#        inputs:
+#          versionSpec: 12.x
+#          checkLatest: true
+#      - task: UseDotNet@2
+#        displayName: Use .Net 5.0.202
+#        inputs:
+#          packageType: 'sdk'
+#          version: '5.0.202'
       - task: DotNetCoreCLI@2
         displayName: dotnet restore
         inputs:
@@ -46,7 +53,7 @@ stages:
         inputs:
           reports: '$(Build.SourcesDirectory)/**/*.cobertura.xml'
           targetdir: '$(Build.SourcesDirectory)/CoverageResults'
-          assemblyfilters: '+ClassifiedAds.Application;+ClassifiedAds.Domain'
+          assemblyfilters: '+RookieOnlineAssetManagement;+RookieOnlineAssetManagement.Services'
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Code Coverage'
         inputs:
