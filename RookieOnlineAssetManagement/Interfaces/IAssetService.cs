@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Interfaces
 {
-    public interface IUser
+    public interface IAssetService
     {
 
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Interfaces
 {
-    public interface IAsset
+    public interface IReturnRequestService
     {
 
     }
