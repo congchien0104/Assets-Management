@@ -40,6 +40,7 @@ function App() {
             <Route exact path='/' component={() => <Home />} />
             <Route exact path='/assets' component={() => <Assets />} />
             <Route exact path='/users' component={() => <Users />} />
+            <Route path='*' component={() => <div>404 Not Found!</div>}/>
           </Switch>
         </div>
       </div>
