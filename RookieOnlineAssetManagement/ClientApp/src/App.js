@@ -3,10 +3,13 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./components/Header";
 import SideBar from "./components/Sidebar";
-import { Switch, Route } from 'react-router-dom';
-import Home from './pages/Home/Home';
-import Assets from './pages/ManageAssets/Assets';
-import Users from './pages/ManageUsers/Users';
+import { Switch, Route } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Assets from "./pages/ManageAssets/Assets";
+import Users from "./pages/ManageUsers/Users";
+import Asignments from "./pages/ManageAssignments";
+import RequestForReturning from "./pages/RequestForReturning";
+import Reports from "./pages/Reports";
 
 axios.interceptors.request.use((config) => {
   return config;
@@ -32,15 +35,22 @@ function App() {
     <div className="container-fluid" style={{ padding: 0 }}>
       <Header />
       <div className="row">
-        <div class="col-sm-2" style={{ padding: '0 30px' }}>
+        <div className="col-sm-2" style={{ padding: "0 30px" }}>
           <SideBar />
         </div>
-        <div class="col-sm-10">
+        <div className="col-sm-10">
           <Switch>
-            <Route exact path='/' component={() => <Home />} />
-            <Route exact path='/assets' component={() => <Assets />} />
-            <Route exact path='/users' component={() => <Users />} />
-            <Route path='*' component={() => <div>404 Not Found!</div>}/>
+            <Route exact path="/" component={() => <Home />} />
+            <Route exact path="/assets" component={() => <Assets />} />
+            <Route exact path="/users" component={() => <Users />} />
+            <Route exact path="/assignments" component={() => <Asignments />} />
+            <Route
+              exact
+              path="/request-for-returning"
+              component={() => <RequestForReturning />}
+            />
+            <Route exact path="/report" component={() => <Reports />} />
+            <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>
         </div>
       </div>
