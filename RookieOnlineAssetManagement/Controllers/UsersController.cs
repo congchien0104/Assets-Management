@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RookieOnlineAssetManagement.Data;
-using RookieOnlineAssetManagement.Models;
+using RookieOnlineAssetManagement.Models.Users;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
