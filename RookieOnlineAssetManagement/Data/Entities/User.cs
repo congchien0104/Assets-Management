@@ -5,8 +5,9 @@ using System.Collections.Generic;
 
 namespace RookieOnlineAssetManagement.Data.Entities
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<int>
     {
+        public string Code { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DoB { get; set; }

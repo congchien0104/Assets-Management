@@ -13,9 +13,9 @@ namespace RookieOnlineAssetManagement.Data.Entities
         public DateTime AssignedDate { get; set; }
         public AssignmentState State { get; set; }
         public string Note { get; set; }
-        public string AssetId { get; set; }
-        public string AssignedBy { get; set; }
-        public string AssignedTo { get; set; }
+        public int AssetId { get; set; }
+        public int AssignedBy { get; set; }
+        public int AssignedTo { get; set; }
         public Asset Asset { get; set; }
         public User AssignByUser { get; set; }
         public User AssignToUser { get; set; }

@@ -15,8 +15,10 @@ namespace RookieOnlineAssetManagement.Data.Configurations
             builder.ToTable("Assignments");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
-            builder.HasOne(x => x.AssignByUser).WithMany(x => x.AssignmentsBys).HasForeignKey(x => x.AssignedBy);
-            builder.HasOne(x => x.AssignToUser).WithMany(x => x.AssignmentsTos).HasForeignKey(x => x.AssignedTo);
+            builder.HasOne(x => x.AssignByUser).WithMany(x => x.AssignmentsBys).HasForeignKey(x => x.AssignedBy)
+                    .OnDelete(DeleteBehavior.Restrict); ;
+            builder.HasOne(x => x.AssignToUser).WithMany(x => x.AssignmentsTos).HasForeignKey(x => x.AssignedTo)
+                    .OnDelete(DeleteBehavior.Restrict); ;
             builder.HasOne(x => x.Asset).WithMany(x => x.Assignments).HasForeignKey(x => x.AssetId);
         }
     }

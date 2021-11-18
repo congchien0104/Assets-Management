@@ -7,8 +7,8 @@ namespace RookieOnlineAssetManagement.Data.Enums
 {
     public enum UserType
     {
-        Staff,
-        Admin
+        Staff = 1,
+        Admin = 2
 
     }
 }

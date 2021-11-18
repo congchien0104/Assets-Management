@@ -11,8 +11,8 @@ namespace RookieOnlineAssetManagement.Data.Entities
         public int Id { get; set; }
         public DateTime ReturnedDate { get; set; }
         public ReturnRequestState State { get; set; }
-        public string RequestedBy { get; set; }
-        public string AcceptedBy { get; set; }
+        public int RequestedBy { get; set; }
+        public int AcceptedBy { get; set; }
         public int AssignmentId { get; set; }
         public  User RequestedUser { get; set; }
         public  User AcceptedUser { get; set; }

@@ -15,8 +15,10 @@ namespace RookieOnlineAssetManagement.Data.Configurations
             builder.ToTable("ReturnRequests");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
-            builder.HasOne(x => x.RequestedUser).WithMany(x => x.ReturnsRequests).HasForeignKey(x => x.RequestedBy);
-            builder.HasOne(x => x.AcceptedUser).WithMany(x => x.ReturnsAccepts).HasForeignKey(x => x.AcceptedBy);
+            builder.HasOne(x => x.RequestedUser).WithMany(x => x.ReturnsRequests).HasForeignKey(x => x.RequestedBy)
+                     .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.AcceptedUser).WithMany(x => x.ReturnsAccepts).HasForeignKey(x => x.AcceptedBy)
+                     .OnDelete(DeleteBehavior.Restrict); 
             builder.HasOne(x => x.Assignment).WithMany(x => x.ReturnRequests).HasForeignKey(x => x.AssignmentId);
         }
     }

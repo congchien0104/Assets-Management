@@ -7,5 +7,6 @@ namespace RookieOnlineAssetManagement.Shared
 {
     public class CodeHelper
     {
+        const string UserPrefix = "Staff";
     }
 }
