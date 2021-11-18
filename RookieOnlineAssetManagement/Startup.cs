@@ -6,7 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RookieOnlineAssetManagement.Data;
-using RookieOnlineAssetManagement.Entities;
+using RookieOnlineAssetManagement.Data.Entities;
+using RookieOnlineAssetManagement.Interfaces;
+using RookieOnlineAssetManagement.Services;
 using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement
@@ -58,6 +60,8 @@ namespace RookieOnlineAssetManagement
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            // Add DI
+            services.AddTransient<IAssetService, AssetService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
