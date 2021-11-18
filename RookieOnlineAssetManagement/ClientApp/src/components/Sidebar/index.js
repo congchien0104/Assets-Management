@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../assets/img/Logo.png";
+import { Link } from 'react-router-dom';
 
 function index(props) {
   return (
@@ -9,66 +10,17 @@ function index(props) {
         <span className="text-danger">Online Asset Management</span>
       </h6>
       <div className="list-group" id="list-tab" role="tablist">
-        <a
-          className="list-group-item list-group-item-action"
-          id="list-home-list"
-          data-toggle="list"
-          href="#list-home"
-          role="tab"
-          aria-controls="home"
-        >
-          Home
-        </a>
-        <a
-          className="list-group-item list-group-item-action"
-          id="list-profile-list"
-          data-toggle="list"
-          href="#list-profile"
-          role="tab"
-          aria-controls="profile"
-        >
-          Manage User
-        </a>
-        <a
-          className="list-group-item list-group-item-action active"
-          id="list-messages-list"
-          data-toggle="list"
-          href="#list-messages"
-          role="tab"
-          aria-controls="messages"
-        >
-          Manage Assets
-        </a>
-        <a
-          className="list-group-item list-group-item-action"
-          id="list-settings-list"
-          data-toggle="list"
-          href="#list-settings"
-          role="tab"
-          aria-controls="settings"
-        >
-          Manage Assignment
-        </a>
-        <a
-          className="list-group-item list-group-item-action"
-          id="list-messages-list"
-          data-toggle="list"
-          href="#list-messages"
-          role="tab"
-          aria-controls="messages"
-        >
-          Request for Returning
-        </a>
-        <a
-          className="list-group-item list-group-item-action"
-          id="list-settings-list"
-          data-toggle="list"
-          href="#list-settings"
-          role="tab"
-          aria-controls="settings"
-        >
-          Report
-        </a>
+        <Link to='/' className="list-group-item list-group-item-action">Home</Link>
+
+        <Link to='/users' className="list-group-item list-group-item-action">Manage Users</Link>
+
+        <Link to='/assets' className="list-group-item list-group-item-action">Manage Assets</Link>
+
+        <Link to='/assignments' className="list-group-item list-group-item-action">Manage Assignments</Link>
+
+        <Link to='/request-for-returning' className="list-group-item list-group-item-action">Request for Returning</Link>
+
+        <Link to='/report' className="list-group-item list-group-item-action">Report</Link>
       </div>
     </div>
   );

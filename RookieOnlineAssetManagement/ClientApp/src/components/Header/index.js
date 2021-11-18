@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 function index(props) {
   return (
     <nav class="navbar navbar-dark bg-danger">
-      <a class="navbar-brand" href="/">
+      <Link to="/" class="navbar-brand" style={{ paddingLeft: '15px' }}>
         Home
-      </a>
+      </Link>
     </nav>
   );
 }
