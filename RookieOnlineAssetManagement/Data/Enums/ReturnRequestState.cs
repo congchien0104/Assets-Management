@@ -10,6 +10,5 @@ namespace RookieOnlineAssetManagement.Data.Enums
         WaitingForReturning,
         Completed,
         Declined
-
     }
 }
