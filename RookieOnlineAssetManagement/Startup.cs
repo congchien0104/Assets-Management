@@ -91,7 +91,7 @@ namespace RookieOnlineAssetManagement
                     });
 
             });
-            // In production, the React files will be served from this directory
+            // In assetion, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
@@ -119,7 +119,7 @@ namespace RookieOnlineAssetManagement
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // The default HSTS value is 30 days. You may want to change this for assetion scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseSwagger();

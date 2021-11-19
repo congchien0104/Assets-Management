@@ -103,16 +103,20 @@ namespace RookieOnlineAssetManagement.Services
             return detailedAsset;
         }
 
-        public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilter filter)
+        public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest filter)
         {
+            // Standardize
+            List<string> categories = filter.CategoriesFilter.Split(',').ToList();
+            List<int> states = filter.StatesFilter.Split(',').Select(Int32.Parse).ToList();
+
             // Filter
             IQueryable<Asset> query = _context.Assets.AsQueryable()
                 .WhereIf(filter.KeyWord != null, x => x.Name.Contains(filter.KeyWord) || x.Code.Contains(filter.KeyWord));
-            foreach (var category in filter.CategoriesFilter)
+            foreach (var category in categories)
             {
                 query.Where(x => x.Category.Name.Contains(category));
             }
-            foreach (var state in filter.StatesFilter)
+            foreach (var state in states)
             {
                 query.Where(x => x.State == (AssetState)state);
             }

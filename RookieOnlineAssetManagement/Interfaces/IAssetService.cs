@@ -13,8 +13,9 @@ namespace RookieOnlineAssetManagement.Interfaces
         public Task<bool> Delete(int assetId);
         public Task<AssetVM> GetDetailedAsset(int assetId);
         public Task<bool> Update(AssetUpdateRequest request);
-        public Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilter request);
+        public Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request);
         public List<string> GetAllCategories();
         public List<string> GetAllAssetStates();
+
     }
 }

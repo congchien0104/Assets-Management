@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Models.Assets
 {
-    public class AssetPagingFilter 
+    public class AssetPagingFilterRequest 
     {
         public string KeyWord { get; set; }
-        public List<int> StatesFilter { get; set; }
-        public List<string> CategoriesFilter { get; set; }
+        public string StatesFilter { get; set; }
+        public string CategoriesFilter { get; set; }
         public string SortBy { get; set; }
         public bool IsAscending { get; set; }
         public string IsSortByUpdatedDate { get; set; }
