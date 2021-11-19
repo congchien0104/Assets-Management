@@ -103,45 +103,38 @@ namespace RookieOnlineAssetManagement.Services
             return detailedAsset;
         }
 
-        public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest filter)
+        public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request)
         {
             // Standardize
-            List<string> categories = filter.CategoriesFilter.Split(',').ToList();
-            List<int> states = filter.StatesFilter.Split(',').Select(Int32.Parse).ToList();
-
+            List<string> categories = request.CategoriesFilter.Split(',').ToList();
+            List<int> states = request.StatesFilter.Split(',').Select(Int32.Parse).ToList();
             // Filter
-            IQueryable<Asset> query = _context.Assets.AsQueryable()
-                .WhereIf(filter.KeyWord != null, x => x.Name.Contains(filter.KeyWord) || x.Code.Contains(filter.KeyWord));
-            foreach (var category in categories)
-            {
-                query.Where(x => x.Category.Name.Contains(category));
-            }
-            foreach (var state in states)
-            {
-                query.Where(x => x.State == (AssetState)state);
-            }
+            IQueryable<Asset> query = _context.Assets.AsQueryable();
+            query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
+            .WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.Category.Name))
+            .WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             // Sort
-            switch (filter.SortBy)
+            switch (request.SortBy)
             {
-                case "assetCode":
-                    query = filter.IsAscending ? query.OrderBy(u => u.Code) : query.OrderByDescending(u => u.Code);
+                case "assetcode":
+                    query = request.IsAscending ? query.OrderBy(u => u.Code) : query.OrderByDescending(u => u.Code);
                     break;
-                case "assetName":
-                    query = filter.IsAscending ? query.OrderBy(u => u.Name) : query.OrderByDescending(u => u.Name);
+                case "assetname":
+                    query = request.IsAscending ? query.OrderBy(u => u.Name) : query.OrderByDescending(u => u.Name);
                     break;
                 case "category":
-                    query = filter.IsAscending ? query.OrderBy(u => u.Category.Name) : query.OrderByDescending(u => u.Category.Name);
+                    query = request.IsAscending ? query.OrderBy(u => u.Category.Name) : query.OrderByDescending(u => u.Category.Name);
 
                     break;
                 case "state":
-                    query = filter.IsAscending ? query.OrderBy(u => u.State) : query.OrderByDescending(u => u.State);
+                    query = request.IsAscending ? query.OrderBy(u => u.State) : query.OrderByDescending(u => u.State);
 
                     break;
                 default:
                     break;
             }
             // Paging and Projection
-            var data = await query.Paged(filter.PageIndex, filter.PageSize).Select(a => new AssetVM()
+            var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()
             {
                 Code = a.Code,
                 Name = a.Name,
@@ -151,8 +144,8 @@ namespace RookieOnlineAssetManagement.Services
             var pagedResult = new PagedResultBase<AssetVM>()
             {
                 TotalRecords = data.Count,
-                PageSize = filter.PageSize,
-                PageIndex = filter.PageIndex,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex,
                 Items = data
             };
             return pagedResult;
