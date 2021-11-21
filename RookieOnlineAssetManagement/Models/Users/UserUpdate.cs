@@ -1,22 +1,19 @@
 ﻿using RookieOnlineAssetManagement.Data.Enums;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Models.Users
 {
-    public class UserModel
+    public class UserUpdate
     {
-        [Required]
+        public int Id { get; set; }
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
-        [Required]
         public DateTime DoB { get; set; }
-        [Required]
         public DateTime JoinedDate { get; set; }
-        [Required]
         public bool Gender { get; set; }
-        [Required]
         public UserType Type { get; set; }
     }
 }

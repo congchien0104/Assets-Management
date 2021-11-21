@@ -13,6 +13,8 @@ import Users from "./pages/ManageUsers/Users";
 import Asignments from "./pages/ManageAssignments";
 import RequestForReturning from "./pages/RequestForReturning";
 import Reports from "./pages/Reports";
+import AddUser from "./pages/ManageUsers/AddUser";
+import User from "./pages/ManageUsers/User";
 import { Modal, Button } from 'react-bootstrap';
 
 axios.interceptors.request.use((config) => {
@@ -146,6 +148,8 @@ function App() {
               component={() => <RequestForReturning />}
             />
             <Route exact path="/report" component={() => <Reports />} />
+            <Route exact path="/users/add" component={() => <AddUser />} />
+            <Route exact path="/users/:id" component={() => <User />} />
             <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>
         </div>

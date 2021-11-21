@@ -58,10 +58,10 @@ namespace RookieOnlineAssetManagement
             services.AddRazorPages();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            //services.AddSpaStaticFiles(configuration =>
+            //{
+            //    configuration.RootPath = "ClientApp/build";
+            //});
             // Add DI
             services.AddTransient<IAssetService, AssetService>();
             services.AddTransient<IAssignmentService, AssignmentService>();
@@ -91,7 +91,7 @@ namespace RookieOnlineAssetManagement
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            //app.UseSpaStaticFiles();
 
             app.UseRouting();
 
