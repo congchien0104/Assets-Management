@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../assets/img/Logo.png";
 import { Link } from "react-router-dom";
 
 function Index(props) {
-  const menus = [
+  const initialMenus = [
     {
       id: 1,
       name: "Home",
@@ -36,12 +36,20 @@ function Index(props) {
     },
   ];
 
+  const [menus, setMenus] = useState(initialMenus)
   const [state, setState] = useState(1);
-  console.log(state);
+
+  useEffect(() => {
+    if(props.type != null && props.type != 2) {
+      setMenus(menus.slice(0, 1))
+    }
+
+  }, [props])
+
   return (
     <div>
       <img src={logo} alt="..." className="img-thumbnail" />
-      <h6>
+      <h6 style={{ padding: '10px' }}>
         <span className="text-danger">Online Asset Management</span>
       </h6>
       <div className="list-group" id="list-tab" role="tablist">

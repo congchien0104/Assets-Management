@@ -39,3 +39,7 @@
 a.active {
   background-color: red !important;
 }
+
+.dropdown-toggle::after {
+  display: none !important;
+}
