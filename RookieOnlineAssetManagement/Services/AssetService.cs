@@ -12,6 +12,7 @@ using System.Text;
 using RookieOnlineAssetManagement.ExtensionMethods;
 using RookieOnlineAssetManagement.Shared;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace RookieOnlineAssetManagement.Services
 {
@@ -25,34 +26,33 @@ namespace RookieOnlineAssetManagement.Services
         }
         public async Task<int> Create(AssetCreateRequest request)
         {
+            var checkCategory = await _context.Categories.FindAsync(request.CategoryId);
+            if (checkCategory == null)
+            {
+                string newCode = GenerateCategoryCode(request.CategoryName);
+                var checkCodeExist = _context.Categories.FirstOrDefault(x => x.Code == newCode);
+                if (checkCodeExist != null)
+                    throw new Exception("Category code is already existed");
+                var category = await _context.Categories.FindAsync(request.CategoryId);
+                var newCategory = new Category()
+                {
+                    Name = CapitalizeEachWord(request.CategoryName),
+                    Code = newCode,
+                    CreatedDate = DateTime.Now
+                };
+                _context.Categories.Add(newCategory);
+                await _context.SaveChangesAsync();
+                request.CategoryId = newCategory.Id;
+            }
             var asset = new Asset()
             {
                 Name = request.Name,
                 Specification = request.Specification,
                 State = request.IsAvailable == true ? AssetState.Available : AssetState.NotAvailable,
-                Location = request.Location,
                 InstalledDate = request.InstalledDate,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+                CategoryId =request.CategoryId
             };
-            var category = await _context.Categories.FindAsync(request.Category.Id);
-            if (category == null)
-            {
-                var newCategory = new Category()
-                {
-                    Name = request.Category.Name,
-                    Code = GenerateCategoryCode(request.Category.Name),
-                    CreatedDate = DateTime.Now
-                };
-                _context.Categories.Add(newCategory);
-                if (await _context.SaveChangesAsync() > 0)
-                {
-                    asset.CategoryId = newCategory.Id;
-                }
-            }
-            else
-            {
-                asset.CategoryId = request.Category.Id;
-            }
             asset.Code = GenerateAssetCode(asset.CategoryId);
             _context.Assets.Add(asset);
             await _context.SaveChangesAsync();
@@ -61,44 +61,53 @@ namespace RookieOnlineAssetManagement.Services
 
         public async Task<bool> Delete(int assetId)
         {
-            var asset = await _context.Assets.FindAsync(assetId);
+            var asset = await _context.Assets.Include(a => a.Assignments).FirstOrDefaultAsync(a => a.Id == assetId);
             if (asset == null)
                 throw new Exception($"Cannot find a asset with id {assetId}");
             if (asset.Assignments.Count > 0)
-                //throw new Exception($"Cannot delete the asset because it belongs to one or more historical assignments.");
-                return false;
+                throw new Exception($"Cannot delete the asset because it belongs to one or more historical assignments.");
             _context.Assets.Remove(asset);
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<AssetVM> GetDetailedAsset(int assetId)
         {
-            var asset = await _context.Assets.FindAsync(assetId);
+            var asset = await _context.Assets.Include(a => a.Assignments).FirstOrDefaultAsync(a => a.Id == assetId);
             if (asset == null)
                 throw new Exception($"Cannot find a asset with id {assetId}");
             var histories = new List<AssignmentHistory>();
-            foreach (var assignment in asset.Assignments)
-            {
-                histories.Add(new AssignmentHistory()
+            if (asset.Assignments.Count > 0)
+                foreach (var assignment in asset.Assignments)
                 {
-                    AssignedDate = assignment.AssignedDate,
-                    AssignedBy = _context.Users.Find(assignment.AssignedBy).UserName,
-                    AssignedTo = _context.Users.Find(assignment.AssignedTo).UserName,
-                    ReturnedDate = _context.ReturnRequests.FirstOrDefault(rr => rr.AssignmentId == assignment.Id
-                                    && rr.State == ReturnRequestState.Completed).ReturnedDate
-                });
-            }
+                    var query = _context.ReturnRequests.FirstOrDefault(rr => rr.AssignmentId == assignment.Id
+                                        && rr.State == ReturnRequestState.Completed);
+                    if (query == null) continue;
+                    histories.Add(new AssignmentHistory()
+                    {
+
+                        ReturnedDate = query.ReturnedDate,
+                        AssignedDate = assignment.AssignedDate,
+                        AssignedBy = _context.Users.Find(assignment.AssignedBy).UserName,
+                        AssignedTo = _context.Users.Find(assignment.AssignedTo).UserName,
+
+                    });
+                }
+            var category = await _context.Categories.FindAsync(asset.CategoryId);
             var detailedAsset = new AssetVM()
             {
                 Code = asset.Code,
                 Name = asset.Name,
-                Category = asset.Category,
+                Category = new CategoryVM
+                {
+                    Id = category.Id,
+                    Code = category.Code,
+                    Name = category.Name,
+                },
                 InstalledDate = asset.InstalledDate,
                 State = asset.State,
                 Location = asset.Location,
                 Specification = asset.Specification,
-                Histories = histories
-
+                Histories = histories != null ? histories : null
             };
             return detailedAsset;
         }
@@ -106,44 +115,36 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request)
         {
             // Standardize
-            List<string> categories = request.CategoriesFilter.Split(',').ToList();
-            List<int> states = request.StatesFilter.Split(',').Select(Int32.Parse).ToList();
+            List<int> categories = request.CategoriesFilter != null ? request.CategoriesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
+            List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter
             IQueryable<Asset> query = _context.Assets.AsQueryable();
             query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
-            .WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.Category.Name))
-            .WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
+                        .WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId))
+                        .WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             // Sort
-            switch (request.SortBy)
-            {
-                case "assetcode":
-                    query = request.IsAscending ? query.OrderBy(u => u.Code) : query.OrderByDescending(u => u.Code);
-                    break;
-                case "assetname":
-                    query = request.IsAscending ? query.OrderBy(u => u.Name) : query.OrderByDescending(u => u.Name);
-                    break;
-                case "category":
-                    query = request.IsAscending ? query.OrderBy(u => u.Category.Name) : query.OrderByDescending(u => u.Category.Name);
+            query = query.OrderByIf(request.SortBy == "assetcode", x => x.Code, request.IsAscending)
+                         .OrderByIf(request.SortBy == "assetname", x => x.Name, request.IsAscending)
+                         .OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending)
+                         .OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
 
-                    break;
-                case "state":
-                    query = request.IsAscending ? query.OrderBy(u => u.State) : query.OrderByDescending(u => u.State);
-
-                    break;
-                default:
-                    break;
-            }
             // Paging and Projection
+            var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()
             {
                 Code = a.Code,
                 Name = a.Name,
-                Category = a.Category,
+                Category = new CategoryVM
+                {
+                    Id = a.Category.Id,
+                    Code = a.Category.Code,
+                    Name = a.Category.Name,
+                },
                 State = a.State
             }).ToListAsync();
             var pagedResult = new PagedResultBase<AssetVM>()
             {
-                TotalRecords = data.Count,
+                TotalRecords = totalRecord,
                 PageSize = request.PageSize,
                 PageIndex = request.PageIndex,
                 Items = data
@@ -156,7 +157,7 @@ namespace RookieOnlineAssetManagement.Services
             var asset = await _context.Assets.FindAsync(request.Id);
             if (asset == null)
                 throw new Exception($"Cannot find a asset with id {request.Id}");
-            if (request.State == AssetState.Assigned)
+            if (asset.State == AssetState.Assigned)
                 throw new Exception($"Cannot edit a asset with state Assigned");
             asset.State = request.State;
             asset.Name = request.Name;
@@ -168,33 +169,56 @@ namespace RookieOnlineAssetManagement.Services
 
         }
 
-        public List<string> GetAllCategories()
+        public List<CategoryVM> GetAllCategories()
         {
-            var categories = _context.Categories.OrderBy(x => x.Name).Select(c => c.Name.ToString()).ToList();
+            var categories = _context.Categories.OrderBy(x => x.Name).Select(c => new CategoryVM
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Code = c.Code
+            }).ToList();
             return categories;
         }
-
-        public List<string> GetAllAssetStates()
+        public async Task<CategoryVM> GetCategoryByCode(string code)
         {
-            List<string> assetStateList = new List<string>();
+            var query = await _context.Categories.FirstOrDefaultAsync(c=> c.Code == code);
+            var category = new CategoryVM
+            {
+                Id = query.Id,
+                Name = query.Name,
+                Code = query.Code
+            };
+            return category;
+        }
+        public List<StateVM> GetAllAssetStates()
+        {
+            List<StateVM> assetStateList = new List<StateVM>();
             foreach (var state in (AssetState[])Enum.GetValues(typeof(AssetState)))
             {
-                assetStateList.Add(state.ToString());
+                assetStateList.Add(new StateVM
+                {
+                    Name = state.ToString(),
+                    Value = (int)state,
+
+                });
             }
             return assetStateList;
         }
-        private string GenerateAssetCode(int categoryId)
+        public string GenerateAssetCode(int categoryId)
         {
             string categoryCode = _context.Categories.FirstOrDefault(c => c.Id == categoryId).Code;
             var maxAssetCode = _context.Assets.Where(a => a.CategoryId == categoryId)
-                                              .OrderBy(a => a.Code).FirstOrDefault();
-            int number = Convert.ToInt32(maxAssetCode.Code.Replace(categoryCode, "")) + 1;
+                                              .OrderByDescending(a => a.Code).FirstOrDefault();
+
+            int number = maxAssetCode != null ? Convert.ToInt32(maxAssetCode.Code.Replace(categoryCode, "")) + 1 : 1;
             string newAssetCode = categoryCode + number.ToString("D6");
             return newAssetCode;
         }
-        private string GenerateCategoryCode(string categoryName)
+        public string GenerateCategoryCode(string categoryName)
         {
             List<string> words = categoryName.Split(' ').ToList();
+            if (words.Count == 1)
+                return categoryName.Substring(0, 2).ToUpper();
             StringBuilder categoryCode = new StringBuilder();
             foreach (var word in words)
             {
@@ -202,5 +226,11 @@ namespace RookieOnlineAssetManagement.Services
             };
             return categoryCode.ToString();
         }
+        public string CapitalizeEachWord(string categoryName)
+        {
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            return textInfo.ToTitleCase(categoryName);
+        }
+
     }
 }

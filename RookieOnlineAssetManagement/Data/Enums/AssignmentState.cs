@@ -9,7 +9,7 @@ namespace RookieOnlineAssetManagement.Data.Enums
     {
         WaitingForAcceptance,
         Accepted,
-        Declined,
+        Declined, 
         WaitingForReturning,
         Returned
     }

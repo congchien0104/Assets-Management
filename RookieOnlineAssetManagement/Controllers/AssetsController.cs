@@ -62,7 +62,7 @@ namespace RookieOnlineAssetManagement.Controllers
             }
             request.Id = assetId;
             var result = await _assetService.Update(request);
-            if (result)
+            if (!result)
                 return BadRequest();
             return Ok(result);
 
@@ -71,7 +71,7 @@ namespace RookieOnlineAssetManagement.Controllers
         public async Task<IActionResult> Delete(int assetId)
         {
             var result = await _assetService.Delete(assetId);
-            if (result)
+            if (!result)
                 return BadRequest();
             return Ok(result);
 

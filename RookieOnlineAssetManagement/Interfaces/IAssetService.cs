@@ -1,4 +1,5 @@
-﻿using RookieOnlineAssetManagement.Models.Assets;
+﻿using RookieOnlineAssetManagement.Models;
+using RookieOnlineAssetManagement.Models.Assets;
 using RookieOnlineAssetManagement.Shared;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace RookieOnlineAssetManagement.Interfaces
         public Task<AssetVM> GetDetailedAsset(int assetId);
         public Task<bool> Update(AssetUpdateRequest request);
         public Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request);
-        public List<string> GetAllCategories();
-        public List<string> GetAllAssetStates();
+        public List<CategoryVM> GetAllCategories();
+        public List<StateVM> GetAllAssetStates();
 
     }
 }
