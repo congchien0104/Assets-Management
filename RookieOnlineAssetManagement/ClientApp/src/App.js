@@ -16,6 +16,9 @@ import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
 import User from "./pages/ManageUsers/User";
 import { Modal, Button } from 'react-bootstrap';
+import UserForm from "./pages/ManageUsers/UserForm";
+import UserTemp from "./pages/ManageUsers/UserTemp";
+import EditUser from "./pages/ManageUsers/EditUser";
 
 axios.interceptors.request.use((config) => {
   return config;
@@ -149,6 +152,12 @@ function App() {
             />
             <Route exact path="/report" component={() => <Reports />} />
             <Route exact path="/users/add" component={() => <AddUser />} />
+            <Route exact path="/users/form" component={() => <UserForm />} />
+            <Route
+              exact
+              path="/users/temp/:id"
+              component={() => <EditUser />}
+            />
             <Route exact path="/users/:id" component={() => <User />} />
             <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>

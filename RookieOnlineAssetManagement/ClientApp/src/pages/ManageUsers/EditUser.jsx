@@ -5,8 +5,27 @@ import * as Yup from 'yup';
 
 import userService from "../../services/user.service";
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
 
-function UserTemp(props) {
+const getSaturdayOrSunday = (value) => {
+    console.log(value.getDay());
+
+    if(value.getDay() === 6 || value.getDay() === 0){
+        return true;
+    }
+    return false;
+}
+
+function EditUser(props) {
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -37,44 +56,48 @@ function UserTemp(props) {
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, reset, formState, watch } = useForm(formOptions);
+    const { register, handleSubmit, reset, formState, watch } = useForm(formOptions,
+        {
+            defaultValues: {
+                firstName: 'chien',
+                lastName: 'cong'
+              }
+        });
     const { errors } = formState;
     const watchAllFields = watch();
-    const [btn, setBtn] = useState(false);
-    console.log(new Date().toISOString());
+
+
+    const initialUserState = {
+        id: null,
+        firstName: "",
+        lastName: "",
+        doB: new Date(),
+        gender: true,
+        joinedDate: new Date(),
+        type: null,
+    };
+
+    const [currentUser, setCurrentUser] = useState(initialUserState);
+    const [btn, setBtn] = useState(true);
+
+    const getUser = (id) => {
+        userService.getUser(id)
+          .then((response) => {
+            setCurrentUser(response.data);
+            console.log(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      };
+
     useEffect(() => {
-        const subscription = watch((value, { name, type }) => console.log(value, name, type));
-        console.log(subscription);
-        for(var item in subscription){
-            if(!item){
-                console.log("ok");
-                setBtn(false);
-            }
-        }
-        setBtn(true);
-        //return () => subscription.unsubscribe();
-    }, [watch]);
+        getUser(10);
+        //console.log(props.match.params.id);
+      }, []);
 
 
-    function getAge(dateString) {
-        var today = new Date();
-        var birthDate = new Date(dateString);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        return age;
-    }
-
-    const getSaturdayOrSunday = (value) => {
-        console.log(value.getDay());
-
-        if(value.getDay() === 6 || value.getDay() === 0){
-            return true;
-        }
-        return false;
-    }
+    
     
     function onSubmit(data) {
         // display form data on success
@@ -111,7 +134,7 @@ function UserTemp(props) {
                 <div class="form-group row">
                     <label htmlFor="firstName" class="col-sm-2 col-form-label">FirstName</label>
                     <div class="col-sm-4">
-                        <input name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                        <input value={currentUser.firstName} name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.firstName?.message}</div>
                     </div>
                 </div>
@@ -173,4 +196,4 @@ function UserTemp(props) {
     );
 }
 
-export default UserTemp;
+export default EditUser;

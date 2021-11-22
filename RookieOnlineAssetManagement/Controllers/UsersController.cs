@@ -49,6 +49,8 @@ namespace RookieOnlineAssetManagement.Controllers
 
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
+        [HttpPost]
+        public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)
         {
             var isLogout = await _userService.Logout();
             return Ok(new { isLogout = isLogout });

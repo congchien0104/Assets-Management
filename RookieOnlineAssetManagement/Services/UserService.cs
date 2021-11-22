@@ -162,12 +162,13 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<PagedResultBase<UserVM>> GetUsersPagingFilter(UserPagingFilter request)
         {
            
-            List<string> types = request.TypeFilter.Split(',').ToList();
+            //List<string> types = request.TypeFilter.Split(',').ToList();
+            List<int> types = request.TypeFilter != null ? request.TypeFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             ///List<int> states = request.StatesFilter.Split(',').Select(Int32.Parse).ToList();
             // Filter
             IQueryable<User> query = _context.Users.AsQueryable();
             query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
-            .WhereIf(types != null && types.Count > 0, x => types.Contains(x.Type.ToString()));
+            .WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
             // Sort
             switch (request.SortBy)
             {
