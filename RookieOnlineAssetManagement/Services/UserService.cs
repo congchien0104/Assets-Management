@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
 using RookieOnlineAssetManagement.Data.Enums;
@@ -27,7 +28,7 @@ namespace RookieOnlineAssetManagement.Services
             _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
-            _context = context;
+            _dbContext = dbContext;
         }
 
         public async Task<int> Create(UserModel model)
@@ -60,7 +61,7 @@ namespace RookieOnlineAssetManagement.Services
         }
         public async Task<UserVM> GetUser(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _dbContext.Users.FindAsync(userId);
             if (user == null)
                 throw new Exception($"Cannot find a user with id {userId}");
             //var histories = new List<AssignmentHistory>();
@@ -69,9 +70,9 @@ namespace RookieOnlineAssetManagement.Services
             //    histories.Add(new AssignmentHistory()
             //    {
             //        AssignedDate = assignment.AssignedDate,
-            //        AssignedBy = _context.Users.Find(assignment.AssignedBy).UserName,
-            //        AssignedTo = _context.Users.Find(assignment.AssignedTo).UserName,
-            //        ReturnedDate = _context.ReturnRequests.FirstOrDefault(rr => rr.AssignmentId == assignment.Id
+            //        AssignedBy = _dbContext.Users.Find(assignment.AssignedBy).UserName,
+            //        AssignedTo = _dbContext.Users.Find(assignment.AssignedTo).UserName,
+            //        ReturnedDate = _dbContext.ReturnRequests.FirstOrDefault(rr => rr.AssignmentId == assignment.Id
             //                        && rr.State == ReturnRequestState.Completed).ReturnedDate
             //    });
             //}
@@ -94,7 +95,7 @@ namespace RookieOnlineAssetManagement.Services
 
         public async Task<bool> Update(UserUpdate model)
         {
-            var user = await _context.Users.FindAsync(model.Id);
+            var user = await _dbContext.Users.FindAsync(model.Id);
             if (user == null)
                 throw new Exception($"Cannot find a user with id {model.Id}");
             user.DoB = model.DoB;
@@ -102,29 +103,29 @@ namespace RookieOnlineAssetManagement.Services
             user.JoinedDate = model.JoinedDate;
             user.Type = model.Type;
             user.UpdatedDate = DateTime.Now;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> Disable(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _dbContext.Users.FindAsync(userId);
             if (user == null)
                 throw new Exception($"Cannot find a user with id {userId}");
             if (user.AssignmentsTos.Count > 0)
                 return false;
 
             user.State = true;
-            _context.Users.Update(user);
-            return await _context.SaveChangesAsync() > 0;
+            _dbContext.Users.Update(user);
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
 
         public string GenerateUserCode()
         {
             string staffPrefix = "SD";
-            var maxUserCode = _context.Users.OrderByDescending(a => a.Code).FirstOrDefault();
+            var maxUserCode = _dbContext.Users.OrderByDescending(a => a.Code).FirstOrDefault();
             int number = maxUserCode != null ? Convert.ToInt32(maxUserCode.Code.Replace(staffPrefix, "")) + 1 : 1;
             string newUserCode = staffPrefix + number.ToString("D4");
             return newUserCode;
@@ -139,7 +140,7 @@ namespace RookieOnlineAssetManagement.Services
             {
                 username.Append(Char.ToLower(word[0]));
             };
-            var userCount = _context.Users.Where(s => s.UserName.Contains(username.ToString())).ToList().Count();
+            var userCount = _dbContext.Users.Where(s => s.UserName.Contains(username.ToString())).ToList().Count();
             if(userCount > 0)
             {
                 username.Append(userCount);
@@ -172,7 +173,7 @@ namespace RookieOnlineAssetManagement.Services
             List<int> types = request.TypeFilter != null ? request.TypeFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             ///List<int> states = request.StatesFilter.Split(',').Select(Int32.Parse).ToList();
             // Filter
-            IQueryable<User> query = _context.Users.AsQueryable();
+            IQueryable<User> query = _dbContext.Users.AsQueryable();
             query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
             .WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
             // Sort

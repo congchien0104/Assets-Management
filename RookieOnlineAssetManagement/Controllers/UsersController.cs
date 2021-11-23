@@ -39,7 +39,8 @@ namespace RookieOnlineAssetManagement.Controllers
             claimsIdentity.AddClaim(new Claim("location", user.Location));
             User.AddIdentity(claimsIdentity);
 
-            return Ok(new { 
+            return Ok(new
+            {
                 id = user.Id,
                 fullName = user.LastName + " " + user.FirstName,
                 gender = user.Gender,
@@ -49,8 +50,6 @@ namespace RookieOnlineAssetManagement.Controllers
 
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
-        [HttpPost]
-        public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)
         {
             var isLogout = await _userService.Logout();
             return Ok(new { isLogout = isLogout });
@@ -62,7 +61,7 @@ namespace RookieOnlineAssetManagement.Controllers
             var result = await _userService.ChangePassword(vm);
             if (result == 1)
                 return Ok(new { message = "Password has been changed successfully!" });
-            else if(result == 2)
+            else if (result == 2)
                 return BadRequest(new { message = "Incorrect current password!" });
             return BadRequest(new { message = "Both password can not be empty!" });
         }
@@ -71,7 +70,19 @@ namespace RookieOnlineAssetManagement.Controllers
         public async Task<IActionResult> ChangePasswordFirstTime(ChangePasswordVM vm)
         {
             var result = await _userService.ChangePasswordFirstTime(vm);
-        [HttpPut("{userId}")]
+            if (!result)
+                return BadRequest();
+            return Ok(new { message = "Password has been changed successfully!" });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)
+        {
+            var isLogout = await _userService.Logout();
+            return Ok(new { isLogout = isLogout });
+        }
+
+            [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int userId, [FromForm] UserUpdate model)
         {
             if (!ModelState.IsValid)

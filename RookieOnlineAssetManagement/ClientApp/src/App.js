@@ -16,9 +16,6 @@ import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
 import User from "./pages/ManageUsers/User";
 import { Modal, Button } from 'react-bootstrap';
-import UserForm from "./pages/ManageUsers/UserForm";
-import UserTemp from "./pages/ManageUsers/UserTemp";
-import EditUser from "./pages/ManageUsers/EditUser";
 
 axios.interceptors.request.use((config) => {
   return config;
@@ -142,7 +139,6 @@ function App() {
                           component={() => <EditAsset />}
                       />
                       <Route exact path="/" component={() => <Home />} />
-            <Route exact path="/assets" component={() => <Assets />} />
             <Route exact path="/users" component={() => <Users />} />
             <Route exact path="/assignments" component={() => <Asignments />} />
             <Route

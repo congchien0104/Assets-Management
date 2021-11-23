@@ -89,7 +89,7 @@ namespace RookieOnlineAssetManagement.UnitTests
 
             }
             var mockContext = new ApplicationDbContext(options);
-            _userService = new UserService(null, null, mockContext);
+            _userService = new UserService(mockContext, null, null);
         }
 
         //[Fact]
