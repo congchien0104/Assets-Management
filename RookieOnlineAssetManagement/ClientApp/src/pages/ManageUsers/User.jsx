@@ -82,6 +82,7 @@ function User(props) {
               .then((response) => {
                   console.log(response.data);
                 const fields = ['firstName', 'lastName', 'doB', 'gender','joinedDate', 'type'];
+                //response.data['gender'] = "M";
                 fields.forEach((field) => {
                     if(field === 'doB' || field === 'joinedDate'){
                         console.log(response.data[field]);
@@ -89,7 +90,8 @@ function User(props) {
                         const temp = formatDate(response.data[field]);
                         console.log(temp);
                         setValue(field, temp);
-                    }else{
+                    }
+                    else{
                         console.log(field);
                         setValue(field, response.data[field]);
                     }
@@ -173,11 +175,11 @@ function User(props) {
                     <label htmlFor="gender" class="col-sm-2 col-form-label">Gender</label>
                     <div class="col-sm-4">
                         <div class="form-check form-check-inline">
-                                <input name="gender" type="radio" {...register('gender')} id="gender" value={true} checked={user.gender === true} className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
+                                <input name="gender" type="radio" {...register('gender')} id="gender1" value="true" className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
                                 <label class="form-check-label" for="gender">Female</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input name="gender" type="radio" {...register('gender')} id="gender" value={false} checked={user.gender === false} className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
+                                <input name="gender" type="radio" {...register('gender')} id="gender2" value="false" className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
                                 <label class="form-check-label" for="gender">Male</label>
                         </div>
                     </div>
