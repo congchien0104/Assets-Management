@@ -231,6 +231,11 @@ namespace RookieOnlineAssetManagement.Services
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
             return textInfo.ToTitleCase(categoryName);
         }
+        private string GetCurrentLocation()
+        {
+            string location = "HCM";
+            return location;
+        }
 
     }
 }

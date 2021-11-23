@@ -10,13 +10,9 @@ namespace RookieOnlineAssetManagement.Models.Assets
 {
     public class AssetCreateRequest
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
         public string Specification { get; set; }
-        [Required]
         public bool IsAvailable { get; set; }
-        [Required]
         public DateTime InstalledDate { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }

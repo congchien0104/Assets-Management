@@ -6,7 +6,9 @@ import Header from "./components/Header";
 import SideBar from "./components/Sidebar";
 import { Switch, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import Assets from "./pages/ManageAssets/Assets";
+import ListAssets from "./pages/ManageAssets/listAssets/ListAssets";
+import NewAsset from "./pages/ManageAssets/newAsset/newAsset";
+import EditAsset from "./pages/ManageAssets/editAsset/editAsset";
 import Users from "./pages/ManageUsers/Users";
 import Asignments from "./pages/ManageAssignments";
 import RequestForReturning from "./pages/RequestForReturning";
@@ -127,17 +129,24 @@ function App() {
         </div>
         <div className="col-sm-10">
           <Switch>
-              <Route exact path="/" component={() => <Home />} />
-              <Route exact path="/assets" component={() => userData.type == 2 ? <Assets /> : <div>404 Not Found!</div>} />
-                  <Route exact path="/users" component={() => userData.type == 2 ? <Users /> : <div>404 Not Found!</div>} />
-                  <Route exact path="/assignments" component={() => userData.type == 2 ? <Asignments /> : <div>404 Not Found!</div>} />
-                  <Route
-                    exact
-                    path="/request-for-returning"
-                    component={() => userData.type == 2 ? <RequestForReturning /> : <div>404 Not Found!</div>}
-                  />
-                  <Route exact path="/report" component={() => userData.type == 2 ? <Reports /> : <div>404 Not Found!</div>} />
-              <Route path="*" component={() => <div>404 Not Found!</div>} />
+                      
+                      <Route exact path="/assets" component={() => <ListAssets />} />
+                      <Route
+                          exact
+                          path="/asset/edit/:id"
+                          component={() => <EditAsset />}
+                      />
+                      <Route exact path="/" component={() => <Home />} />
+            <Route exact path="/assets" component={() => <Assets />} />
+            <Route exact path="/users" component={() => <Users />} />
+            <Route exact path="/assignments" component={() => <Asignments />} />
+            <Route
+              exact
+              path="/request-for-returning"
+              component={() => <RequestForReturning />}
+            />
+            <Route exact path="/report" component={() => <Reports />} />
+            <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>
         </div>
       </div>
