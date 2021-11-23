@@ -46,8 +46,10 @@ namespace RookieOnlineAssetManagement.Services
                 JoinedDate = model.JoinedDate,
                 Gender = model.Gender,
                 Type = model.Type,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
             };
+
+            user.Location = GetCurrentLocation();
 
             var result = await _userManager.CreateAsync(user, password);
             //if (result.Succeeded)
@@ -119,7 +121,7 @@ namespace RookieOnlineAssetManagement.Services
         }
 
 
-        private string GenerateUserCode()
+        public string GenerateUserCode()
         {
             string staffPrefix = "SD";
             var maxUserCode = _context.Users.OrderByDescending(a => a.Code).FirstOrDefault();
@@ -127,7 +129,7 @@ namespace RookieOnlineAssetManagement.Services
             string newUserCode = staffPrefix + number.ToString("D4");
             return newUserCode;
         }
-        private string GenerateUserName(string firstName, string lastName)
+        public string GenerateUserName(string firstName, string lastName)
         {
             StringBuilder username = new StringBuilder();
             username.Append(firstName.ToLower());
@@ -144,7 +146,7 @@ namespace RookieOnlineAssetManagement.Services
             }
             return username.ToString();
         }
-        private string GeneratePassword(string username, DateTime dob)
+        public string GeneratePassword(string username, DateTime dob)
         {
             StringBuilder password = new StringBuilder();
             password.Append(username);
@@ -158,7 +160,11 @@ namespace RookieOnlineAssetManagement.Services
 
             return password.ToString();
         }
-
+        private string GetCurrentLocation()
+        {
+            string location = "HCM";
+            return location;
+        }
         public async Task<PagedResultBase<UserVM>> GetUsersPagingFilter(UserPagingFilter request)
         {
            

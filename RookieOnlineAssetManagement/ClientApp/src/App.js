@@ -152,12 +152,6 @@ function App() {
             />
             <Route exact path="/report" component={() => <Reports />} />
             <Route exact path="/users/add" component={() => <AddUser />} />
-            <Route exact path="/users/form" component={() => <UserForm />} />
-            <Route
-              exact
-              path="/users/temp/:id"
-              component={() => <EditUser />}
-            />
             <Route exact path="/users/:id" component={() => <User />} />
             <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>

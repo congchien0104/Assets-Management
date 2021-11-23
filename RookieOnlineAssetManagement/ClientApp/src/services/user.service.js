@@ -7,6 +7,7 @@ const create = (data) => {
 };
 
 const update = (id, data) => {
+  console.log(data);
   return axios.put(API_URL + `/users/${id}`, data);
 };
 

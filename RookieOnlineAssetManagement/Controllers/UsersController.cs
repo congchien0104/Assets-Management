@@ -71,6 +71,15 @@ namespace RookieOnlineAssetManagement.Controllers
         public async Task<IActionResult> ChangePasswordFirstTime(ChangePasswordVM vm)
         {
             var result = await _userService.ChangePasswordFirstTime(vm);
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int userId, [FromForm] UserUpdate model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            model.Id = userId;
+            var result = await _userService.Update(model);
             if (!result)
                 return BadRequest();
             return Ok(new { message = "Password has been changed successfully!" });

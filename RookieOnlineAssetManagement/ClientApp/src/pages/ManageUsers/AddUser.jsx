@@ -6,6 +6,38 @@ import * as Yup from 'yup';
 import userService from "../../services/user.service";
 
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+const getSaturdayOrSunday = (value) => {
+    console.log(value.getDay());
+
+    if(value.getDay() === 6 || value.getDay() === 0){
+        return true;
+    }
+    return false;
+}
+
+const formatDate = (date) => {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+};
+
 function UserTemp(props) {
 
     // form validation rules 
@@ -19,77 +51,37 @@ function UserTemp(props) {
             .test("DOB", "User is under 18. Please select a different date", (value) => {
                 return getAge(value) >= 18;
             }),
+        gender: Yup.string()
+            .required('Gender is required'),
         joinedDate:  Yup.date()
             .required('DoB is required')
-            // .default("2021-01-01")
             .min(
                 Yup.ref('doB'),
                 "Joined date is not later than Date of Birth. Please select a different date"
               )
-            // .when("doB",
-            // (doB, Yup) => doB && Yup.min(doB, "Joined date is not later than Date of Birth. Please select a different date"))
             .test("doB", "Joined date is Saturday or Sunday. Please select a different date", (value) => {
                 return getSaturdayOrSunday(value) === false;
               }),
         type: Yup.string()
             .required('Type is required'),
         });
-    const formOptions = { resolver: yupResolver(validationSchema) };
+    const formOptions = { resolver: yupResolver(validationSchema), mode: "onChange" };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, reset, formState, watch } = useForm(formOptions);
-    const { errors } = formState;
-    const watchAllFields = watch();
-    const [btn, setBtn] = useState(false);
-    console.log(new Date().toISOString());
-    useEffect(() => {
-        const subscription = watch((value, { name, type }) => console.log(value, name, type));
-        console.log(subscription);
-        for(var item in subscription){
-            if(!item){
-                console.log("ok");
-                setBtn(false);
-            }
-        }
-        setBtn(true);
-        //return () => subscription.unsubscribe();
-    }, [watch]);
+    const { register, handleSubmit, reset, formState, setValue } = useForm(formOptions);
+    const { errors, isDirty, isValid } = formState;
 
 
-    function getAge(dateString) {
-        var today = new Date();
-        var birthDate = new Date(dateString);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        return age;
-    }
-
-    const getSaturdayOrSunday = (value) => {
-        console.log(value.getDay());
-
-        if(value.getDay() === 6 || value.getDay() === 0){
-            return true;
-        }
-        return false;
-    }
+    
     
     function onSubmit(data) {
         // display form data on success
         console.log(data);
         const user = new FormData();
         for(var key in data){
-            if(key==='gender'){
-                var temp = data[key] === 'true' ? true : false;
+            if(key==='doB' || key==='joinedDate'){
+                var temp = formatDate(data[key]);
                 user.append(key, temp);
-            }
-            if(key==='doB'){
-                console.log(data[key]);
-                const now = getAge(data[key]);
-                console.log(now);
-                console.log(errors);
             }
             else{
                 user.append(key, data[key]);
@@ -133,12 +125,14 @@ function UserTemp(props) {
                     <label htmlFor="gender" class="col-sm-2 col-form-label">Gender</label>
                     <div class="col-sm-4">
                         <div class="form-check form-check-inline">
-                                <input name="gender" type="radio" {...register('gender')} id="gender" value={true} checked className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
-                                <label class="form-check-label" for="gender">Female</label>
+                                <input name="gender" type="radio" {...register('gender')} id="gender" value={true}
+                                    className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
+                                <label class="form-check-label" htmlFor="gender">Female</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input name="gender" type="radio" {...register('gender')} id="gender" value={false} className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
-                                <label class="form-check-label" for="gender">Male</label>
+                                <input name="gender" type="radio" {...register('gender')} id="gender" value={false}
+                                    className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
+                                <label class="form-check-label" htmlFor="gender">Male</label>
                         </div>
                     </div>
                 </div>
@@ -164,8 +158,8 @@ function UserTemp(props) {
                     <div class="col-sm-4">
                     </div>
                     <div class="col-sm-4">
-                        <button type="submit" class={btn ? "btn btn-danger mr-4" : "btn btn-danger mr-4 disabled"}>Save</button>
-                        <button type="submit" class="btn btn-light">Cancel</button>
+                        <button type="submit" class="btn btn-danger mr-4" disabled={!isDirty || !isValid} >Save</button>
+                        <button type="button" class="btn btn-light">Cancel</button>
                     </div>
                 </div>
             </form>
