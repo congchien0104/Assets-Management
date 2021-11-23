@@ -30,6 +30,7 @@ export default function AddAsset(props) {
   useEffect(() => {
     GetDetail(id)
       .then((response) => {
+        response.state = response.state.toString();
         setAsset({ ...response });
         setValue("name", asset.name);
         setValue("specification", asset.specification);
@@ -61,7 +62,7 @@ export default function AddAsset(props) {
       })
       .catch((error) => console.log(error));
   };
-
+  const [state, setState] = useState();
   return (
     <div className="container">
       <div class="mx-auto">
@@ -123,7 +124,7 @@ export default function AddAsset(props) {
                   class="form-check-input "
                   type="radio"
                   name="state"
-                  value={0}
+                  value="0"
                   {...register("state", { required: true })}
                 />
                 <label class="form-check-label" for="state">
@@ -135,7 +136,7 @@ export default function AddAsset(props) {
                   class="form-check-input"
                   type="radio"
                   name="state"
-                  value={1}
+                  value="1"
                   {...register("state", { required: true })}
                 />
                 <label class="form-check-label" for="state">
@@ -147,7 +148,7 @@ export default function AddAsset(props) {
                   class="form-check-input "
                   type="radio"
                   name="state"
-                  value={3}
+                  value="3"
                   {...register("state", { required: true })}
                 />
                 <label class="form-check-label" for="state">
@@ -158,7 +159,7 @@ export default function AddAsset(props) {
                 <input
                   class="form-check-input "
                   type="radio"
-                  value={4}
+                  value="4"
                   name="state"
                   {...register("state", { required: true })}
                 />
