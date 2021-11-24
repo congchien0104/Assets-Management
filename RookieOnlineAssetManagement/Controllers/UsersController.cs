@@ -85,6 +85,7 @@ namespace RookieOnlineAssetManagement.Controllers
             [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int userId, [FromForm] UserUpdate model)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -93,7 +94,8 @@ namespace RookieOnlineAssetManagement.Controllers
             var result = await _userService.Update(model);
             if (!result)
                 return BadRequest();
-            return Ok(new { message = "Password has been changed successfully!" });
+            return Ok(result);
+
         }
     }
 }

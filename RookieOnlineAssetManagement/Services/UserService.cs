@@ -28,7 +28,6 @@ namespace RookieOnlineAssetManagement.Services
             _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
-            _dbContext = dbContext;
         }
 
         public async Task<int> Create(UserModel model)

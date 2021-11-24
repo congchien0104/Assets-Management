@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useHistory, Link } from "react-router-dom";
 
 import userService from "../../services/user.service";
 
@@ -39,7 +40,7 @@ const formatDate = (date) => {
 };
 
 function UserTemp(props) {
-
+    let history = useHistory();
     // form validation rules 
     const validationSchema = Yup.object().shape({
         firstName: Yup.string()
@@ -89,7 +90,7 @@ function UserTemp(props) {
         }
         userService.create(user)
         .then((response) => {
-            //setSubmitted(true);
+            history.push("/users");
             console.log("Create new User");
           })
           .catch((e) => {
@@ -159,7 +160,15 @@ function UserTemp(props) {
                     </div>
                     <div class="col-sm-4">
                         <button type="submit" class="btn btn-danger mr-4" disabled={!isDirty || !isValid} >Save</button>
-                        <button type="button" class="btn btn-light">Cancel</button>
+                        <Link
+                            to={{
+                            pathname: "/users",
+                            }}
+                        >
+                            <button class="btn btn-light">
+                            Cancel
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </form>

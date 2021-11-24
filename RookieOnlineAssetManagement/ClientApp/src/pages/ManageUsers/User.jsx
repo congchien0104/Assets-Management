@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import * as moment from 'moment';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 
 import userService from "../../services/user.service";
 
@@ -40,6 +40,7 @@ const formatDate = (date) => {
 };
 
 function User(props) {
+    let history = useHistory();
     
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -48,9 +49,6 @@ function User(props) {
             .test("DOB", "User is under 18. Please select a different date", (value) => {
                 return getAge(value) >= 18;
             }),
-        gender: Yup.boolean()
-            .default(true)
-            .required('Gender is required'),
         joinedDate:  Yup.date()
             .required('DoB is required')
             .min(
@@ -91,6 +89,10 @@ function User(props) {
                         console.log(temp);
                         setValue(field, temp);
                     }
+                    else if(field === 'gender'){
+                        const tmp = response.data['gender'] ? 'F' : 'M';
+                        setValue(field, tmp);
+                    }
                     else{
                         console.log(field);
                         setValue(field, response.data[field]);
@@ -125,7 +127,7 @@ function User(props) {
     function onSubmit(data) {
         // display form data on success
         //const id = props.match.params.id;
-        console.log(data);
+        console.log(id);
         const user = new FormData();
         for(var key in data){
             //user.append(key, data[key]);
@@ -133,13 +135,18 @@ function User(props) {
                 var temp = formatDate(data[key]);
                 user.append(key, temp);
             }
+            else if(key === 'gender'){
+                const tmp = data[key] === 'F' ? true : false;
+                user.append(key, tmp);
+            }
             else{
                 user.append(key, data[key]);
             }
         }
-        userService.update(11, user)
+        console.log(user);
+        userService.update(id, user)
         .then((response) => {
-            //setSubmitted(true);
+            history.push("/users");
             console.log("Update User");
           })
           .catch((e) => {
@@ -175,11 +182,11 @@ function User(props) {
                     <label htmlFor="gender" class="col-sm-2 col-form-label">Gender</label>
                     <div class="col-sm-4">
                         <div class="form-check form-check-inline">
-                                <input name="gender" type="radio" {...register('gender')} id="gender1" value="true" className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
+                                <input name="gender" type="radio" {...register('gender')} id="gender1" value="F" className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
                                 <label class="form-check-label" for="gender">Female</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input name="gender" type="radio" {...register('gender')} id="gender2" value="false" className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
+                                <input name="gender" type="radio" {...register('gender')} id="gender2" value="M" className={`form-check-input ${errors.gender ? 'is-invalid' : ''}`} />
                                 <label class="form-check-label" for="gender">Male</label>
                         </div>
                     </div>
@@ -207,7 +214,15 @@ function User(props) {
                     </div>
                     <div class="col-sm-4">
                         <button type="submit" class="btn btn-danger mr-4">Save</button>
-                        <button type="submit" class="btn btn-light">Cancel</button>
+                        <Link
+                            to={{
+                            pathname: "/users",
+                            }}
+                        >
+                            <button class="btn btn-light">
+                                Cancel
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </form>
