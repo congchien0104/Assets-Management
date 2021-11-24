@@ -74,6 +74,16 @@ namespace RookieOnlineAssetManagement.Controllers
                 return BadRequest();
             return Ok(new { message = "Password has been changed successfully!" });
         }
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetUsersPagingFilter([FromQuery] UserPagingFilter request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var users = await _userService.GetUsersPagingFilter(request);
+            return Ok(users);
+        }
 
         [HttpPost]
         public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)

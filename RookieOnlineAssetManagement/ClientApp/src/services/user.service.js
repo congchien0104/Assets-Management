@@ -15,9 +15,13 @@ const getUser = (id) => {
   return axios.get(API_URL + `/users/${id}`);
 };
 
+const getUserFilter = () => {
+  return axios.get(API_URL + "/users/paging?pageSize=10");
+};
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getUser,
   create,
   update,
+  getUserFilter,
 };

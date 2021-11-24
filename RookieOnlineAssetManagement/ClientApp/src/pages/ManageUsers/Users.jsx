@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { Table, Button } from 'react-bootstrap';
 import { MdEdit } from 'react-icons/md';
 import { CgCloseO } from 'react-icons/cg';
 import { Link } from "react-router-dom";
 
+import userService from "../../services/user.service";
+
 const Users = () => {
+    const [users , setUsers] = useState([]);
+    useEffect(() => {
+        userService.getUserFilter()
+            .then((response) =>{
+                setUsers(response.data.items);
+                console.log(response.data.items);
+            })
+            .catch((e) => {
+                console.log(e);
+              });
+      }, []);
     return (
         <React.Fragment>
         <div style={{ padding: '120px' }}>
@@ -25,23 +38,25 @@ const Users = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                <td>SD0011</td>
-                <td>Default: userId = 11</td>
-                <td>Default: userId = 11</td>
-                <td>Default: userId = 11</td>
-                <td>Default: userId = 11</td>
-                <td>
-                    <Link
-                      to={{
-                        pathname: "/users/11",
-                      }}
-                    >
-                        <MdEdit style={{ color: '#808080', fontSize: '20px', marginRight: '20px', cursor: 'pointer' }} />
-                    </Link>
-                    <CgCloseO style={{ color: '#dc3545', fontSize: '20px', cursor: 'pointer' }} />
-                </td>
-                </tr>
+                { users &&
+                    users.map((user, index) => (
+                        <tr key={index}>
+                            <td>{user.code}</td>
+                            <td>{user.firstName}</td>
+                            <td>{user.userName}</td>
+                            <td>{user.joinedDate}</td>
+                            <td>{user.type}</td>
+                            <td>
+                                <Link
+                                to={`/users/${index + 1}`}
+                                >
+                                    <MdEdit style={{ color: '#808080', fontSize: '20px', marginRight: '20px', cursor: 'pointer' }} />
+                                </Link>
+                                <CgCloseO style={{ color: '#dc3545', fontSize: '20px', cursor: 'pointer' }} />
+                            </td>
+                        </tr>
+                    ))
+                }
             </tbody>
             </Table>
         </div>
