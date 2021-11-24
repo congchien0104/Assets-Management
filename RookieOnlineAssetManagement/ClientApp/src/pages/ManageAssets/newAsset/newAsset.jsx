@@ -144,9 +144,7 @@ export default function NewAsset(props) {
                   pathname: "/assets",
                 }}
               >
-                <button class="btn btn-light">
-                  Cancel
-                </button>
+                <button class="btn btn-light">Cancel</button>
               </Link>
             </div>
           </div>
