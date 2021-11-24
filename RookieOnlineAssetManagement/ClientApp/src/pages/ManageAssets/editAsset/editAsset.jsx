@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-export default function AddAsset(props) {
+export default function EditAsset(props) {
   let history = useHistory();
   const initAsset = {
     id: null,

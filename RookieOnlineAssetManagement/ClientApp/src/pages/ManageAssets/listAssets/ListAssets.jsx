@@ -77,7 +77,11 @@ const ListAssets = () => {
                   <td>
                     <Link
                       to={{
-                        pathname: "/asset/edit/" + asset.id,
+                        pathname: `${
+                          asset.state === 1
+                            ? "/assets"
+                            : "/asset/edit/" + asset.id
+                        }`,
                       }}
                     >
                       <MdEdit
@@ -85,7 +89,9 @@ const ListAssets = () => {
                           color: "#808080",
                           fontSize: "20px",
                           marginRight: "20px",
-                          cursor: "pointer",
+                          cursor: `${
+                            asset.state === 1 ? "default" : "pointer"
+                          }`,
                         }}
                       />
                     </Link>
