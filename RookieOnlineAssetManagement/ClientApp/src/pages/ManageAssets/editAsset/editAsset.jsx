@@ -180,9 +180,7 @@ export default function AddAsset(props) {
                   pathname: "/assets",
                 }}
               >
-                <button type="submit" class="btn btn-light">
-                  Cancel
-                </button>
+                <button class="btn btn-light">Cancel</button>
               </Link>
             </div>
           </div>
