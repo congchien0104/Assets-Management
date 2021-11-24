@@ -132,6 +132,7 @@ namespace RookieOnlineAssetManagement.Services
             var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()
             {
+                Id = a.Id,
                 Code = a.Code,
                 Name = a.Name,
                 Category = new CategoryVM

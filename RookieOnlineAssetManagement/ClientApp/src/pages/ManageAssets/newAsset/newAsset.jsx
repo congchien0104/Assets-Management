@@ -12,7 +12,7 @@ import {
   Col,
   Input,
 } from "reactstrap";
-export default function AddAsset(props) {
+export default function NewAsset(props) {
   let history = useHistory();
   const [categories, setCategories] = useState([]);
   useEffect(() => {
@@ -63,116 +63,17 @@ export default function AddAsset(props) {
               Category
             </label>
             <div class="col-sm-4">
-              {/* <ul
+              <select
                 class="form-control form-select"
                 {...register("categoryId", { required: true })}
               >
-                <li value=""></li>
+                <option value=""></option>
                 {categories &&
                   categories.map((categories) => (
-                    <li value={categories.id}>{categories.name}</li>
+                    <option value={categories.id}>{categories.name}</option>
                   ))}
                 <option>create new category</option>
-              </ul> */}
-
-              <Dropdown isOpen={true} toggle={function noRefCheck() {}}>
-                <DropdownToggle caret>Dropdown</DropdownToggle>
-                <DropdownMenu>
-                  {categories &&
-                    categories.map((categories) => (
-                      <DropdownItem value={categories.id}>
-                        {categories.name}
-                      </DropdownItem>
-                    ))}
-                  <DropdownItem divider />
-                  <DropdownItem className="asset_form_category">
-                    <div>
-                      <FormGroup row>
-                        <Col md={5}>
-                          <Input
-                            input="text"
-                            placeholder="Input name"
-                            // onChange={(e) =>
-                            //   onChangeNewCategory(
-                            //     "categoryName",
-                            //     e.target.value
-                            //   )
-                            // }
-                            // value={newCategory.categoryName}
-                          />
-                          <p className="error">
-                            {/* {validateCategoryError.nameError} */}
-                          </p>
-                        </Col>
-                        <Col md={5}>
-                          <Input
-                            input="text"
-                            placeholder="Input prefix"
-                            // onChange={(e) =>
-                            //   onChangeNewCategory("categoryId", e.target.value)
-                            // }
-                            // value={newCategory.categoryId}
-                          />
-                          <p className="error">
-                            {/* {validateCategoryError.prefixError} */}
-                          </p>
-                        </Col>
-                        <Col md="1">
-                          <div
-                          // onClick={handleSubmitCategory}
-                          // className="asset_form_categorySaveBtn"
-                          // disabled={isCategoryFormSubmiting}
-                          >
-                            <svg
-                              aria-hidden="true"
-                              focusable="false"
-                              data-prefix="fas"
-                              data-icon="check"
-                              className="svg-inline--fa fa-check fa-w-16"
-                              role="img"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 512 512"
-                            >
-                              <path
-                                fill="red"
-                                d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"
-                              ></path>
-                            </svg>
-                          </div>
-                        </Col>
-                        <Col md="1">
-                          <div
-                            // onClick={() => {
-                            //   setIsCreateNewCategory(false);
-                            //   setValidateCategoryError({
-                            //     nameError: "",
-                            //     prefixError: "",
-                            //   });
-                            // }}
-                            className="asset_form_categoryCancelBtn"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              focusable="false"
-                              data-prefix="fas"
-                              data-icon="times"
-                              className="svg-inline--fa fa-times fa-w-11"
-                              role="img"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 352 512"
-                            >
-                              <path
-                                fill="black"
-                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                              ></path>
-                            </svg>
-                          </div>
-                        </Col>
-                      </FormGroup>
-                    </div>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+              </select>
             </div>
           </div>
           <div class="form-group row my-3">

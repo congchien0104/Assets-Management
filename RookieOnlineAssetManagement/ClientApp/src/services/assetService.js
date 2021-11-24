@@ -23,3 +23,8 @@ export async function GetAssetState() {
 export async function Delete(id) {
   return axios.delete(API_URL + `${id}`).then((response) => response.data);
 }
+export async function GetAssetsPaging() {
+  return await axios
+    .get(API_URL + "paging?pageSize=10")
+    .then((response) => response.data);
+}
