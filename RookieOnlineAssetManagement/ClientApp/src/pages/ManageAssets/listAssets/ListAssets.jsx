@@ -1,23 +1,49 @@
 import React from "react";
-import { Modal, Table, Button } from "react-bootstrap";
+import { Modal, Table, Button, FormControl, InputGroup } from "react-bootstrap";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { GetAssetsPaging, Delete } from "../../../services/assetService";
+import { Link } from "react-router-dom";
+import { GetAssetsPaging, GetAssetState, GetAllCategories, Delete } from "../../../services/assetService";
+import { MultiSelect } from "react-multi-select-component";
+import { HiFilter } from 'react-icons/hi';
+import { BsSearch } from 'react-icons/bs';
+import Pagination from 'react-responsive-pagination';
 import queryString from "query-string";
+
 const ListAssets = () => {
+
+  const [states, setStates] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedState, setSelectedState] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
   const [assets, setAssets] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeletingError, setIsDeletingError] = useState(false);
   const [idDeletingAsset, setIdDeletingAsset] = useState();
   const { search } = useLocation();
   const { IsSortByCreateDate, IsSortByUpdatedDate } = queryString.parse(search);
+
   useEffect(() => {
+    GetAssetState()
+      .then((response) => {
+        const arrState = response.map(x => ({value: x.value, label: x.name}));
+        setStates(arrState)
+      })
+      .catch((error) => console.log(error));
+
+    GetAllCategories()
+      .then((response) => {
+        const arrCategory = response.map(x => ({value: x.code, label: x.name}));
+        setCategories(arrCategory)
+      })
+      .catch((error) => console.log(error));
+    
     GetAssetsPaging()
       .then((response) => setAssets([...response.items]))
       .catch((error) => console.log(error));
-  }, [isDeleting]);
+  }, []);
+
   const StateToString = (state) => {
     switch (state) {
       case 0:
@@ -64,18 +90,60 @@ const ListAssets = () => {
     <React.Fragment>
       <div style={{ padding: "120px" }}>
         <div
+          style={{ color: "#dc3545", fontSize: "25px", fontWeight: "bold", marginBottom: '25px' }}
+        >
+          Asset List
+        </div>
+        <div
           style={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: 'center',
             width: "1000px",
             paddingBottom: "20px",
           }}
         >
-          <div
-            style={{ color: "#dc3545", fontSize: "25px", fontWeight: "bold" }}
-          >
-            Asset List
+          
+          <div style={{ width: '200px' }}>
+            <MultiSelect
+              options={states}
+              value={selectedState}
+              onChange={setSelectedState}
+              labelledBy="State"
+              disableSearch={true}
+              valueRenderer={() => 'State'}
+              ArrowRenderer={() => 
+                <div style={{ borderLeft: '1px solid #ccc', height: '40px', paddingLeft: '10px' }}>
+                  <HiFilter style={{ fontSize: '18px', marginTop: '12px' }} />
+                </div>}
+              ClearSelectedIcon={() => ''}
+            />
           </div>
+
+          <div style={{ width: '200px' }}>
+            <MultiSelect
+              options={categories}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              labelledBy="Category"
+              disableSearch={true}
+              valueRenderer={() => 'Category'}
+              ArrowRenderer={() => 
+                <div style={{ borderLeft: '1px solid #ccc', height: '40px', paddingLeft: '10px' }}>
+                  <HiFilter style={{ fontSize: '18px', marginTop: '12px' }} />
+                </div>}
+              ClearSelectedIcon={() => ''}
+            />
+          </div>
+
+          <InputGroup style={{ width: '250px' }}>
+            <FormControl
+              type="search"
+              placeholder="Search"
+            />
+            <Button style={{ backgroundColor: '#FFF', borderColor: '#ced4da' }}><BsSearch style={{ color: '#000', marginBottom: '3px' }} /></Button>
+          </InputGroup>
+
           <Link to="/asset/new">
             <Button variant="danger">Create new asset</Button>
           </Link>
@@ -151,6 +219,20 @@ const ListAssets = () => {
               ))}
           </tbody>
         </Table>
+        <div style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            width: '1000px',
+            marginTop: '30px'
+        }}>
+          <Pagination
+            current={1}
+            total={3}
+            onPageChange={() => {}}
+            previousLabel="Previous"
+            nextLabel="Next"
+          />
+        </div>
       </div>
       <Modal show={isDeleting} centered>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
