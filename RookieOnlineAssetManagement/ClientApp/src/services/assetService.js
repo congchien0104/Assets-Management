@@ -24,7 +24,7 @@ export async function GetAssetState() {
   return await axios.get(API_URL + "states").then((response) => response.data);
 }
 export async function Delete(id) {
-  return axios.delete(API_URL + `${id}`).then((response) => response.data);
+  return axios.delete(API_URL + `${id}`);
 }
 export async function GetAssetsPaging() {
   return await axios

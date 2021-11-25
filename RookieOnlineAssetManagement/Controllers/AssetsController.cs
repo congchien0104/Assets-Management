@@ -27,6 +27,7 @@ namespace RookieOnlineAssetManagement.Controllers
             {
                 return BadRequest(ModelState);
             }
+            request.Location = User.FindFirst("location")?.Value;
             var assets = await _assetService.GetAssetsPagingFilter(request);
             return Ok(assets);
         }

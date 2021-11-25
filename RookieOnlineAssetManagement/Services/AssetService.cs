@@ -51,7 +51,7 @@ namespace RookieOnlineAssetManagement.Services
                 State = request.IsAvailable == true ? AssetState.Available : AssetState.NotAvailable,
                 InstalledDate = request.InstalledDate,
                 CreatedDate = DateTime.Now,
-                CategoryId =request.CategoryId,
+                CategoryId = request.CategoryId,
                 Location = request.Location
             };
             asset.Code = GenerateAssetCode(asset.CategoryId);
@@ -122,13 +122,15 @@ namespace RookieOnlineAssetManagement.Services
             IQueryable<Asset> query = _context.Assets.AsQueryable();
             query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
                         .WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId))
-                        .WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
+                        .WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State))
+                        .WhereIf(request.Location != null, x => x.Location == request.Location);
             // Sort
             query = query.OrderByIf(request.SortBy == "assetcode", x => x.Code, request.IsAscending)
                          .OrderByIf(request.SortBy == "assetname", x => x.Name, request.IsAscending)
                          .OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending)
-                         .OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
-
+                         .OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending)
+                         .OrderByIf(request.IsSortByCreateDate == true, x => x.CreatedDate, !request.IsAscending)
+                         .OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, !request.IsAscending);
             // Paging and Projection
             var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()
@@ -183,7 +185,7 @@ namespace RookieOnlineAssetManagement.Services
         }
         public async Task<CategoryVM> GetCategoryByCode(string code)
         {
-            var query = await _context.Categories.FirstOrDefaultAsync(c=> c.Code == code);
+            var query = await _context.Categories.FirstOrDefaultAsync(c => c.Code == code);
             var category = new CategoryVM
             {
                 Id = query.Id,
