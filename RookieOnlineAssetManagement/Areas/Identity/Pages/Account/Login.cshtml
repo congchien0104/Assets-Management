@@ -26,12 +26,12 @@
             </div>
             <form id="account" method="post">
                 <div asp-validation-summary="All" class="text-danger" style="display: flex; justify-content: center;"></div>
-                <div class="form-group">
+                <div class="form-group" id="Username">
                     <label asp-for="Input.Username"></label>
                     <input asp-for="Input.Username" class="form-control" />
                     <span asp-validation-for="Input.Username" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="Password">
                     <label asp-for="Input.Password"></label>
                     <input asp-for="Input.Password" class="form-control" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
@@ -60,6 +60,30 @@
     $(document).ready(function () {
         validate();
         $('input').on('keyup', validate);
+
+        $('#account input').blur(function () {
+            const usernameError = "<span class='text-danger' id='usernameError'>The Username field is required.</span>"
+            const passwordError = "<span class='text-danger' id='passwordError'>The Password field is required.</span>"
+
+            $("#usernameError").remove();
+            $("#passwordError").remove();
+
+            if (!$(this).val()) {
+                if ($(this).attr('name') == "Input.Username") {
+                    $("#Username").append($(usernameError));
+                }
+                else {
+                    $("#Password").append($(passwordError));
+                }
+            }
+
+            if ($("#Input_Username-error").val() != null) {
+                $("#usernameError").remove();
+            }
+            if ($("#Input_Password-error").val() != null) {
+                $("#passwordError").remove();
+            }
+        });
     });
 
     function validate() {
