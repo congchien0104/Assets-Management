@@ -34,11 +34,6 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var user = await _userService.GetUserLogin(User.Identity.Name);
 
-            // Add claim location to User ClaimsIdentity
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new Claim("location", user.Location));
-            User.AddIdentity(claimsIdentity);
-
             return Ok(new
             {
                 id = user.Id,

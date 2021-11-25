@@ -44,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\logo\Logo.png" />
     <Content Remove="wwwroot\logo\logoJPG.jpg" />
   </ItemGroup>
 
@@ -54,7 +53,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\logo\Logo.png" />
     <None Include="wwwroot\logo\logoJPG.jpg" />
   </ItemGroup>
 

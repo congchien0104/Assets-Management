@@ -212,9 +212,9 @@ namespace RookieOnlineAssetManagement.Services
             return pagedResult;
         }
 
-        public async Task<User> GetUserLogin(string email)
+        public async Task<User> GetUserLogin(string username)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(username);
             await _userManager.AddClaimAsync(user, new Claim("location", user.Location));
             return user;
         }
