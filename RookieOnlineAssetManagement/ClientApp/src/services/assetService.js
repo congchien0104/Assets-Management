@@ -1,9 +1,12 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:44303/api/assets/";
+const API_URL = "/api/assets/";
 
 export async function Create(data) {
   return await axios.post(API_URL, data);
+}
+export async function CreateCategory(data) {
+  return await axios.post(API_URL + "category/", data);
 }
 export async function Update(id, data) {
   return await axios.put(API_URL + `${id}`, data);

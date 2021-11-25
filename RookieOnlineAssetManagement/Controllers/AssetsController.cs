@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
@@ -37,11 +37,26 @@ namespace RookieOnlineAssetManagement.Controllers
             {
                 return BadRequest(ModelState);
             }
+            request.Location = User.FindFirst("location")?.Value;
             var assetId = await _assetService.Create(request);
+            
             if (assetId < 0)
                 return BadRequest();
             var asset = await _assetService.GetDetailedAsset(assetId);
             return CreatedAtAction(nameof(GetDetailedAsset), new { id = assetId }, asset);
+        }
+        [HttpPost("category")]
+        public async Task<IActionResult> CreateCategory([FromForm] string categoryName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var assetId = await _assetService.CreateCategory(categoryName);
+            
+            if (assetId < 0)
+                return BadRequest();
+            return Ok(assetId);
         }
         [HttpGet("{assetId}")]
         public async Task<IActionResult> GetDetailedAsset(int assetId)

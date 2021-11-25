@@ -51,7 +51,8 @@ namespace RookieOnlineAssetManagement.Services
                 State = request.IsAvailable == true ? AssetState.Available : AssetState.NotAvailable,
                 InstalledDate = request.InstalledDate,
                 CreatedDate = DateTime.Now,
-                CategoryId =request.CategoryId
+                CategoryId =request.CategoryId,
+                Location = request.Location
             };
             asset.Code = GenerateAssetCode(asset.CategoryId);
             _context.Assets.Add(asset);
@@ -238,5 +239,19 @@ namespace RookieOnlineAssetManagement.Services
             return location;
         }
 
+        public async Task<int> CreateCategory(string request)
+        {
+            string newCode = GenerateCategoryCode(request);
+            var checkCodeExist = _context.Categories.FirstOrDefault(x => x.Code == newCode);
+            var newCategory = new Category()
+            {
+                Name = CapitalizeEachWord(request),
+                Code = newCode,
+                CreatedDate = DateTime.Now
+            };
+            _context.Categories.Add(newCategory);
+            await _context.SaveChangesAsync();
+            return newCategory.Id;
+        }
     }
 }

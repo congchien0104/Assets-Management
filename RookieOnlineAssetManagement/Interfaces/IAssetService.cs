@@ -17,6 +17,7 @@ namespace RookieOnlineAssetManagement.Interfaces
         public Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request);
         public List<CategoryVM> GetAllCategories();
         public List<StateVM> GetAllAssetStates();
+        public Task<int> CreateCategory(string request);
 
     }
 }

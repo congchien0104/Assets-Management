@@ -13,6 +13,7 @@ using RookieOnlineAssetManagement.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -214,6 +215,7 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<User> GetUserLogin(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            await _userManager.AddClaimAsync(user, new Claim("location", user.Location));
             return user;
         }
 

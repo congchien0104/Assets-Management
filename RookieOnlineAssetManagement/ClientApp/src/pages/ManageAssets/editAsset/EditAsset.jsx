@@ -66,7 +66,15 @@ export default function EditAsset(props) {
   return (
     <div className="container">
       <div class="mx-auto">
-        <h2>Create New asset</h2>
+        <h2
+          style={{
+            color: "#dc3545",
+            marginTop: "10px",
+            fontWeight: "bold",
+          }}
+        >
+          Edit Asset
+        </h2>
         <form onSubmit={handleSubmit(onHandleSubmit)}>
           <div class="form-group row my-3">
             <label htmlFor="name" class="col-sm-2 col-form-label">
