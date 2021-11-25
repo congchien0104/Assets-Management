@@ -48,9 +48,9 @@ namespace RookieOnlineAssetManagement.UnitTests
                     Type = UserType.Admin,
                     State = true,
                     Location = "HCM",
-                    UserName = "admin@gmail.com",
-                    NormalizedUserName = "ADMIN@GMAIL.COM",
-                    Email = "admin@gmail.com",
+                    UserName = "admin",
+                    NormalizedUserName = "ADMIN",
+                    Email = "admin",
                     PasswordHash = "AQAAAAEAACcQAAAAEP9LsCgOYz5eEZutumo1M+iY8dXqgJ+Db3Wa8tXy0xn+/x8XkH5P3zEKMMqmXW44CQ==",
                     PhoneNumber = "0123456789"
                 });
@@ -69,13 +69,13 @@ namespace RookieOnlineAssetManagement.UnitTests
         {
             //Arrange
             var user = await _dbContext.Users.FindAsync(1);
-            _mockUserManager.Setup(userManager => userManager.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+            _mockUserManager.Setup(userManager => userManager.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(user);
             var userService = new UserService(_dbContext, _mockUserManager.Object, _mockSignInManager.Object);
             var controller = new UsersController(userService);
 
             var userClaim = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
 {
-                new Claim(ClaimTypes.Name, "admin@gmail.com"),
+                new Claim(ClaimTypes.Name, "admin"),
                 new Claim(ClaimTypes.NameIdentifier, "1"),
             }, "mock"));
 
