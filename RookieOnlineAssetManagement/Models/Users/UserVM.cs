@@ -9,6 +9,7 @@ namespace RookieOnlineAssetManagement.Models.Users
 {
     public class UserVM
     {
+        public int Id { get; set; }
         public string Code { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }

@@ -83,11 +83,29 @@ namespace RookieOnlineAssetManagement.Controllers
         [HttpPost]
         public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)
         {
-            var isLogout = await _userService.Logout();
-            return Ok(new { isLogout = isLogout });
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            model.Location = User.FindFirst("location")?.Value;
+            var userId = await _userService.Create(model);
+            if (userId < 0)
+                return BadRequest();
+            var user = await _userService.GetUser(userId);
+            return CreatedAtAction(nameof(GetUser), new { id = userId }, user);
         }
 
-            [HttpPut("{userId}")]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(int userId)
+        {
+            var result = await _userService.GetUser(userId);
+            if (result == null)
+                return BadRequest();
+            return Ok(result);
+
+        }
+
+        [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int userId, [FromForm] UserUpdate model)
         {
 
@@ -97,6 +115,15 @@ namespace RookieOnlineAssetManagement.Controllers
             }
             model.Id = userId;
             var result = await _userService.Update(model);
+            if (!result)
+                return BadRequest();
+            return Ok(result);
+
+        }
+        [HttpPatch("{userId}")]
+        public async Task<IActionResult> DisabledUser(int userId)
+        {
+            var result = await _userService.Disabled(userId);
             if (!result)
                 return BadRequest();
             return Ok(result);

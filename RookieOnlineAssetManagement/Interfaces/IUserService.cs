@@ -17,7 +17,7 @@ namespace RookieOnlineAssetManagement.Interfaces
         Task<bool> Logout();
         public Task<int> Create(UserModel model);
         public Task<bool> Update(UserUpdate model);
-        public Task<bool> Disable(int userId);
+        public Task<bool> Disabled(int userId);
         public Task<UserVM> GetUser(int userId);
         public Task<PagedResultBase<UserVM>> GetUsersPagingFilter(UserPagingFilter request);
     }

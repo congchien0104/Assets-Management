@@ -18,5 +18,6 @@ namespace RookieOnlineAssetManagement.Models.Users
         public bool Gender { get; set; }
         [Required]
         public UserType Type { get; set; }
+        public string Location { get; set; }
     }
 }

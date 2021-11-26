@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:44303/api";
+const API_URL = "/api";
 
 const create = (data) => {
   return axios.post(API_URL + "/users", data);
@@ -15,8 +15,12 @@ const getUser = (id) => {
   return axios.get(API_URL + `/users/${id}`);
 };
 
-const getUserFilter = () => {
-  return axios.get(API_URL + "/users/paging?pageSize=10");
+const getUserFilter = (page) => {
+  return axios.get(API_URL + `/users/paging?pageIndex=${page}`);
+};
+const disabled = (id) => {
+  console.log(id);
+  return axios.patch(API_URL + `/users/${id}`);
 };
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -24,4 +28,5 @@ export default {
   create,
   update,
   getUserFilter,
+  disabled,
 };

@@ -48,9 +48,8 @@ namespace RookieOnlineAssetManagement.Services
                 Gender = model.Gender,
                 Type = model.Type,
                 CreatedDate = DateTime.Now,
+                Location = model.Location
             };
-
-            user.Location = GetCurrentLocation();
 
             var result = await _userManager.CreateAsync(user, password);
             //if (result.Succeeded)
@@ -108,12 +107,12 @@ namespace RookieOnlineAssetManagement.Services
             return true;
         }
 
-        public async Task<bool> Disable(int userId)
+        public async Task<bool> Disabled(int userId)
         {
-            var user = await _dbContext.Users.FindAsync(userId);
+            var user = await _dbContext.Users.Include(a => a.AssignmentsTos).Include(a => a.AssignmentsBys).FirstOrDefaultAsync(a => a.Id == userId);
             if (user == null)
                 throw new Exception($"Cannot find a user with id {userId}");
-            if (user.AssignmentsTos.Count > 0)
+            if (user.AssignmentsTos.Count > 0 || user.AssignmentsBys.Count > 0)
                 return false;
 
             user.State = true;
@@ -161,21 +160,17 @@ namespace RookieOnlineAssetManagement.Services
 
             return password.ToString();
         }
-        private string GetCurrentLocation()
-        {
-            string location = "HCM";
-            return location;
-        }
         public async Task<PagedResultBase<UserVM>> GetUsersPagingFilter(UserPagingFilter request)
         {
-           
+
             //List<string> types = request.TypeFilter.Split(',').ToList();
             List<int> types = request.TypeFilter != null ? request.TypeFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             ///List<int> states = request.StatesFilter.Split(',').Select(Int32.Parse).ToList();
             // Filter
             IQueryable<User> query = _dbContext.Users.AsQueryable();
-            query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
-            .WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
+            //query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
+            query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
+            //.WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
             // Sort
             switch (request.SortBy)
             {
@@ -194,13 +189,16 @@ namespace RookieOnlineAssetManagement.Services
             }
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new UserVM()
             {
+                Id = a.Id,
                 Code = a.Code,
                 UserName = a.UserName,
                 FirstName = a.FirstName,
                 LastName = a.LastName,
                 DoB = a.DoB,
                 Gender = a.Gender,
-                JoinedDate = a.JoinedDate
+                JoinedDate = a.JoinedDate,
+                Type = a.Type,
+                State = a.State,
             }).ToListAsync();
             var pagedResult = new PagedResultBase<UserVM>()
             {
