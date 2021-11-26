@@ -96,6 +96,7 @@ namespace RookieOnlineAssetManagement.Services
             var category = await _context.Categories.FindAsync(asset.CategoryId);
             var detailedAsset = new AssetVM()
             {
+                Id=asset.Id,
                 Code = asset.Code,
                 Name = asset.Name,
                 Category = new CategoryVM
@@ -127,10 +128,11 @@ namespace RookieOnlineAssetManagement.Services
             query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
             // Sort
             query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, request.IsAscending);
-            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, request.IsAscending).OrderByIf(request.SortBy == "assetcode", x => x.Code, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "assetname", x => x.Name, request.IsAscending);
+            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
             query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
             query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
             // Paging and Projection
             var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()

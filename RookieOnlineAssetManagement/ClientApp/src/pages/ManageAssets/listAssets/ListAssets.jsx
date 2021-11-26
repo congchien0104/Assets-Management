@@ -1,5 +1,14 @@
 import React from "react";
-import { Modal, Table, Button, FormControl, InputGroup } from "react-bootstrap";
+import {
+  Modal,
+  Table,
+  Button,
+  FormControl,
+  InputGroup,
+  Row,
+  Form,
+  Col,
+} from "react-bootstrap";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
@@ -10,17 +19,20 @@ import {
   GetAllCategories,
   Delete,
   GetAssetsPagingFilter,
+  GetDetail,
 } from "../../../services/assetService";
 import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
+import { GoTriangleDown } from "react-icons/go";
 import Pagination from "react-responsive-pagination";
 import queryString from "query-string";
+import "./ListAssets.css";
 const ListAssets = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
   const afterCreated = params.IsSortByCreatedDate;
-  const afterUpdated = params.IsSortByUpdatedDate;
+  const [afterUpdated, setAfterUpdated] = useState(params.IsSortByUpdatedDate);
   const [states, setStates] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedState, setSelectedState] = useState([]);
@@ -33,8 +45,23 @@ const ListAssets = () => {
   const [searchFilterModel, setSearchFilterModel] = useState({});
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
-  const [isAscending, setIsAscending] = useState(true);
-  const [sortBy, setSortBy] = useState("");
+  const [isAscending, setIsAscending] = useState();
+  const [sortBy, setSortBy] = useState({ name: "", isAscending: true });
+  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [detailId, setDetailId] = useState(0);
+  const [detailedAsset, setDetailedAsset] = useState({});
+  const formatDate = (date) => {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
   useEffect(() => {
     GetAssetState()
       .then((response) => {
@@ -59,35 +86,49 @@ const ListAssets = () => {
           label: x.name,
         }));
         setCategories(arrCategory);
-        setSelectedCategory(arrCategory.filter((x) => x.id !== null));
+        setSelectedCategory(arrCategory.filter((x) => x.id));
       })
       .catch((error) => console.log(error));
 
     GetAssetsPagingDefault(afterCreated, afterUpdated)
-      .then((response) => setAssets([...response.items]))
+      .then((response) => {
+        setAssets([...response.items]);
+        setAfterUpdated(false);
+        setTotalPages(response.pageCount);
+      })
       .catch((error) => console.log(error));
-  }, [afterCreated, afterUpdated]);
+  }, []);
   useEffect(() => {
     setSearchFilterModel({
       ...searchFilterModel,
+      isAscending: isAscending,
+      sortBy: sortBy,
       keyword: keyword,
       statesFilter: selectedState.map((s) => s.value).toString(),
       categoriesFilter: selectedCategory.map((s) => s.id).toString(),
       IsSortByCreatedDate: afterCreated,
       IsSortByUpdatedDate: afterUpdated,
-      sortBy: sortBy,
-      pageIndex: 1,
-      sortBy: sortBy,
-      isAscending: isAscending,
+      pageIndex: currentPage,
     });
     setIsFilter(true);
-  }, [selectedState, selectedCategory, isSearch]);
+  }, [
+    selectedState,
+    selectedCategory,
+    isSearch,
+    currentPage,
+    sortBy,
+    isAscending,
+  ]);
+  useEffect(() => {
+    console.log(searchFilterModel);
+  }, [searchFilterModel]);
   useEffect(() => {
     GetAssetsPagingFilter(searchFilterModel)
       .then((response) => {
         setAssets([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
+        setTotalPages(response.pageCount);
       })
       .catch((error) => console.log(error));
   }, [isFilter]);
@@ -136,7 +177,29 @@ const ListAssets = () => {
   const onSearchClick = () => {
     console.log(keyword);
     setIsSearch(true);
+    setCurrentPage(1);
   };
+  function handlePageChange(page) {
+    setCurrentPage(page);
+    // ... do something with `page`
+    console.log(page);
+  }
+  useEffect(() => {
+    GetDetail(detailId).then((res) => {
+      console.log(res);
+      setDetailedAsset({
+        ...detailedAsset,
+        code: res.code,
+        name: res.name,
+        category: res.category.name,
+        installedDate: formatDate(res.installedDate),
+        state: StateToString(res.state),
+        location: res.location,
+        specification: res.specification,
+        history: res.histories,
+      });
+    });
+  }, [detailId]);
   return (
     <React.Fragment>
       <div style={{ padding: "120px" }}>
@@ -227,21 +290,61 @@ const ListAssets = () => {
         <Table style={{ width: "1000px" }}>
           <thead>
             <tr>
-              <th>Asset Code</th>
-              <th>Asset Name</th>
-              <th>Category</th>
-              <th>State</th>
+              <th>
+                Asset Code
+                <GoTriangleDown
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("code");
+                  }}
+                ></GoTriangleDown>
+              </th>
+              <th>
+                Asset Name
+                <GoTriangleDown
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("name");
+                  }}
+                ></GoTriangleDown>
+              </th>
+              <th>
+                Category
+                <GoTriangleDown
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("category");
+                  }}
+                ></GoTriangleDown>
+              </th>
+              <th>
+                State
+                <GoTriangleDown
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("state");
+                  }}
+                ></GoTriangleDown>
+              </th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {assets &&
               assets.map((asset) => (
-                // <option value={categories.id}>{categories.name}</option>
-                <tr>
+                <tr
+                  onClick={() => {
+                    setDetailId(asset.id);
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
                   <td>{asset.code}</td>
                   <td>{asset.name}</td>
-                  <td>{asset.category.name}</td>
+                  <td> {asset.category.name}</td>
                   <td>{StateToString(asset.state)}</td>
                   <td>
                     <Link
@@ -305,14 +408,144 @@ const ListAssets = () => {
           }}
         >
           <Pagination
-            current={1}
-            total={3}
-            onPageChange={() => {}}
+            total={totalPages}
+            current={currentPage}
             previousLabel="Previous"
             nextLabel="Next"
+            onPageChange={(page) => handlePageChange(page)}
           />
         </div>
       </div>
+      <Modal dialogClassName="modal-90w" show={detailId !== 0}>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
+          <Modal.Title
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#dc3545",
+              marginLeft: "20px",
+            }}
+          >
+            Detailed Asset Information
+          </Modal.Title>
+          <MdOutlineCancelPresentation
+            onClick={() => {
+              setDetailId(0);
+            }}
+            style={{
+              color: "#dc3545",
+              fontSize: "20px",
+              cursor: "pointer",
+            }}
+          />
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              Asset Code
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.code}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              Asset name
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.name}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              Category
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.category}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              Installed Date
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.installedDate}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              State
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.state}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              Location
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.location}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={3}>
+              Specification
+            </Form.Label>
+
+            <Form.Label column="sm" lg={9}>
+              {detailedAsset.specification}
+            </Form.Label>
+          </Row>
+          <br />
+          {detailedAsset.history === undefined ? (
+            <Row style={{ display: "inline" }}>
+              <Form.Label column="sm" lg={3}>
+                History
+              </Form.Label>
+
+              <Form.Label column="sm" lg={9}>
+                This Asset doesn't has any assignment history
+              </Form.Label>
+            </Row>
+          ) : (
+            <div>
+              <Form.Label column="sm" lg={3}>
+                History
+              </Form.Label>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Assigned to</th>
+                    <th>Assigned by</th>
+                    <th>Returned</th>
+                  </tr>
+                </thead>
+              </Table>
+            </div>
+          )}
+
+          <br />
+        </Modal.Body>
+      </Modal>
       <Modal show={isDeleting} centered>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
           <Modal.Title

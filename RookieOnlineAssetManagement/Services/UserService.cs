@@ -152,7 +152,7 @@ namespace RookieOnlineAssetManagement.Services
             password.Append(username);
             password.Append("@");
             string day = dob.ToString("dd");
-            string month = dob.Month.ToString();
+            string month = dob.Month.ToString("D2");
             string year = dob.ToString("yyyy");
             password.Append(day);
             password.Append(month);

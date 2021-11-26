@@ -20,11 +20,11 @@ namespace RookieOnlineAssetManagement.ExtensionMethods
             }
             return query;
         }
-        public static IQueryable<TSource> OrderByIf<TSource, TKey>(this IQueryable<TSource> query, bool condition, Expression<Func<TSource, TKey>> keySelector, bool descending)
+        public static IQueryable<TSource> OrderByIf<TSource, TKey>(this IQueryable<TSource> query, bool condition, Expression<Func<TSource, TKey>> keySelector, bool ascending)
         {
             if (condition)
             {
-                return !descending ? query.OrderBy(keySelector) : query.OrderByDescending(keySelector);
+                return ascending ? query.OrderBy(keySelector) : query.OrderByDescending(keySelector);
             }
             return query;
         }
