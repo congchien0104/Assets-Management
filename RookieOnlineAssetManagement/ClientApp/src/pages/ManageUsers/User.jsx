@@ -155,7 +155,7 @@ function User(props) {
     }
     return (
         <div className="container">
-            <h2>Edit User</h2>
+            <h2 style={{ color: '#dc3545', fontSize: '25px', fontWeight: 'bold' }}>Edit User</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div class="form-group row">
                     <label htmlFor="firstName" class="col-sm-2 col-form-label">FirstName</label>

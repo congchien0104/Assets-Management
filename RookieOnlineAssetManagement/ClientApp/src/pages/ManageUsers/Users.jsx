@@ -64,7 +64,7 @@ const Users = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '1000px', paddingBottom: '20px' }}>
             <div style={{ color: '#dc3545', fontSize: '25px', fontWeight: 'bold' }}>User List</div>
             <Link to="/users/add">
-                <Button variant="danger">User List</Button>
+                <Button variant="danger">Create New User</Button>
             </Link>
             </div>
             <Table style={{ width: '1000px' }}>
