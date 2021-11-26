@@ -65,16 +65,22 @@
             const usernameError = "<span class='text-danger' id='usernameError'>The Username field is required.</span>"
             const passwordError = "<span class='text-danger' id='passwordError'>The Password field is required.</span>"
 
-            $("#usernameError").remove();
-            $("#passwordError").remove();
+            if (!$(this).val() && $(this).attr('name') == "Input.Username") {
+                $("#usernameError").remove();
+                $("#Username").append($(usernameError));
+            }
 
-            if (!$(this).val()) {
-                if ($(this).attr('name') == "Input.Username") {
-                    $("#Username").append($(usernameError));
-                }
-                else {
-                    $("#Password").append($(passwordError));
-                }
+            if (!$(this).val() && $(this).attr('name') == "Input.Password") {
+                $("#passwordError").remove();
+                $("#Password").append($(passwordError));
+            }
+
+            if ($(this).val() && $(this).attr('name') == "Input.Username") {
+                $("#usernameError").remove();
+            }
+
+            if ($(this).val() && $(this).attr('name') == "Input.Password") {
+                $("#passwordError").remove();
             }
 
             if ($("#Input_Username-error").val() != null) {
