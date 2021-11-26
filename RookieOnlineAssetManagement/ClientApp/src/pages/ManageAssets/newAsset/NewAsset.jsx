@@ -44,7 +44,7 @@ export default function NewAsset(props) {
       .then((response) => {
         if (response.status) {
           console.log(response);
-          history.push("/assets");
+          history.push("/assets?IsSortByCreatedDate=true");
         }
       })
       .catch((error) => console.log(error));

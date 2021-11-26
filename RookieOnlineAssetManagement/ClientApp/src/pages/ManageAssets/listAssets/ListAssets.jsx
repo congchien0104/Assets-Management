@@ -3,16 +3,24 @@ import { Modal, Table, Button, FormControl, InputGroup } from "react-bootstrap";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { GetAssetsPaging, GetAssetState, GetAllCategories, Delete } from "../../../services/assetService";
+import { Link, useLocation } from "react-router-dom";
+import {
+  GetAssetsPagingDefault,
+  GetAssetState,
+  GetAllCategories,
+  Delete,
+  GetAssetsPagingFilter,
+} from "../../../services/assetService";
 import { MultiSelect } from "react-multi-select-component";
-import { HiFilter } from 'react-icons/hi';
-import { BsSearch } from 'react-icons/bs';
-import Pagination from 'react-responsive-pagination';
+import { HiFilter } from "react-icons/hi";
+import { BsSearch } from "react-icons/bs";
+import Pagination from "react-responsive-pagination";
 import queryString from "query-string";
-
 const ListAssets = () => {
-
+  const { search } = useLocation();
+  const params = queryString.parse(search);
+  const afterCreated = params.IsSortByCreatedDate;
+  const afterUpdated = params.IsSortByUpdatedDate;
   const [states, setStates] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedState, setSelectedState] = useState([]);
@@ -21,29 +29,68 @@ const ListAssets = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeletingError, setIsDeletingError] = useState(false);
   const [idDeletingAsset, setIdDeletingAsset] = useState();
-  const { search } = useLocation();
-  const { IsSortByCreateDate, IsSortByUpdatedDate } = queryString.parse(search);
-
+  const [isFilter, setIsFilter] = useState(false);
+  const [searchFilterModel, setSearchFilterModel] = useState({});
+  const [keyword, setKeyword] = useState();
+  const [isSearch, setIsSearch] = useState(false);
+  const [isAscending, setIsAscending] = useState(true);
+  const [sortBy, setSortBy] = useState("");
   useEffect(() => {
     GetAssetState()
       .then((response) => {
-        const arrState = response.map(x => ({value: x.value, label: x.name}));
-        setStates(arrState)
+        const arrState = response.map((x) => ({
+          value: x.value,
+          label: x.name,
+        }));
+        setStates(arrState);
+        setSelectedState(
+          arrState.filter(
+            (a) => a.value === 0 || a.value === 1 || a.value === 2
+          )
+        );
       })
       .catch((error) => console.log(error));
 
     GetAllCategories()
       .then((response) => {
-        const arrCategory = response.map(x => ({value: x.code, label: x.name}));
-        setCategories(arrCategory)
+        const arrCategory = response.map((x) => ({
+          id: x.id,
+          value: x.code,
+          label: x.name,
+        }));
+        setCategories(arrCategory);
+        setSelectedCategory(arrCategory.filter((x) => x.id !== null));
       })
       .catch((error) => console.log(error));
-    
-    GetAssetsPaging()
+
+    GetAssetsPagingDefault(afterCreated, afterUpdated)
       .then((response) => setAssets([...response.items]))
       .catch((error) => console.log(error));
-  }, []);
-
+  }, [afterCreated, afterUpdated]);
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      keyword: keyword,
+      statesFilter: selectedState.map((s) => s.value).toString(),
+      categoriesFilter: selectedCategory.map((s) => s.id).toString(),
+      IsSortByCreatedDate: afterCreated,
+      IsSortByUpdatedDate: afterUpdated,
+      sortBy: sortBy,
+      pageIndex: 1,
+      sortBy: sortBy,
+      isAscending: isAscending,
+    });
+    setIsFilter(true);
+  }, [selectedState, selectedCategory, isSearch]);
+  useEffect(() => {
+    GetAssetsPagingFilter(searchFilterModel)
+      .then((response) => {
+        setAssets([...response.items]);
+        setIsFilter(false);
+        setIsSearch(false);
+      })
+      .catch((error) => console.log(error));
+  }, [isFilter]);
   const StateToString = (state) => {
     switch (state) {
       case 0:
@@ -72,7 +119,7 @@ const ListAssets = () => {
     if (asset.histories === null) {
       Delete(idDeletingAsset)
         .then((res) => {
-          GetAssetsPaging()
+          GetAssetsPagingFilter(searchFilterModel)
             .then((response) => setAssets([...response.items]))
             .catch((error) => console.log(error));
         })
@@ -86,11 +133,20 @@ const ListAssets = () => {
       setIsDeletingError(true);
     }
   };
+  const onSearchClick = () => {
+    console.log(keyword);
+    setIsSearch(true);
+  };
   return (
     <React.Fragment>
       <div style={{ padding: "120px" }}>
         <div
-          style={{ color: "#dc3545", fontSize: "25px", fontWeight: "bold", marginBottom: '25px' }}
+          style={{
+            color: "#dc3545",
+            fontSize: "25px",
+            fontWeight: "bold",
+            marginBottom: "25px",
+          }}
         >
           Asset List
         </div>
@@ -98,50 +154,70 @@ const ListAssets = () => {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: 'center',
+            alignItems: "center",
             width: "1000px",
             paddingBottom: "20px",
           }}
         >
-          
-          <div style={{ width: '200px' }}>
+          <div style={{ width: "200px" }}>
             <MultiSelect
               options={states}
               value={selectedState}
               onChange={setSelectedState}
               labelledBy="State"
               disableSearch={true}
-              valueRenderer={() => 'State'}
-              ArrowRenderer={() => 
-                <div style={{ borderLeft: '1px solid #ccc', height: '40px', paddingLeft: '10px' }}>
-                  <HiFilter style={{ fontSize: '18px', marginTop: '12px' }} />
-                </div>}
-              ClearSelectedIcon={() => ''}
+              valueRenderer={() => "State"}
+              ArrowRenderer={() => (
+                <div
+                  style={{
+                    borderLeft: "1px solid #ccc",
+                    height: "40px",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  <HiFilter style={{ fontSize: "18px", marginTop: "12px" }} />
+                </div>
+              )}
+              ClearSelectedIcon={() => ""}
             />
           </div>
 
-          <div style={{ width: '200px' }}>
+          <div style={{ width: "200px" }}>
             <MultiSelect
               options={categories}
               value={selectedCategory}
               onChange={setSelectedCategory}
               labelledBy="Category"
               disableSearch={true}
-              valueRenderer={() => 'Category'}
-              ArrowRenderer={() => 
-                <div style={{ borderLeft: '1px solid #ccc', height: '40px', paddingLeft: '10px' }}>
-                  <HiFilter style={{ fontSize: '18px', marginTop: '12px' }} />
-                </div>}
-              ClearSelectedIcon={() => ''}
+              valueRenderer={() => "Category"}
+              ArrowRenderer={() => (
+                <div
+                  style={{
+                    borderLeft: "1px solid #ccc",
+                    height: "40px",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  <HiFilter style={{ fontSize: "18px", marginTop: "12px" }} />
+                </div>
+              )}
+              ClearSelectedIcon={() => ""}
             />
           </div>
 
-          <InputGroup style={{ width: '250px' }}>
+          <InputGroup style={{ width: "250px" }}>
             <FormControl
               type="search"
               placeholder="Search"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
             />
-            <Button style={{ backgroundColor: '#FFF', borderColor: '#ced4da' }}><BsSearch style={{ color: '#000', marginBottom: '3px' }} /></Button>
+            <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
+              <BsSearch
+                style={{ color: "#000", marginBottom: "3px" }}
+                onClick={onSearchClick}
+              />
+            </Button>
           </InputGroup>
 
           <Link to="/asset/new">
@@ -195,11 +271,12 @@ const ListAssets = () => {
                       />
                     </Link>
                     <CgCloseO
-                      onClick={(e) => {
-                        setIdDeletingAsset(asset.id);
-                        setIsDeleting(true);
+                      onClick={() => {
+                        if (StateToString(asset.state) !== "Assigned") {
+                          setIdDeletingAsset(asset.id);
+                          setIsDeleting(true);
+                        }
                       }}
-                      value={asset.id}
                       style={{
                         color: `${
                           StateToString(asset.state) === "Assigned"
@@ -219,12 +296,14 @@ const ListAssets = () => {
               ))}
           </tbody>
         </Table>
-        <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            width: '1000px',
-            marginTop: '30px'
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            width: "1000px",
+            marginTop: "30px",
+          }}
+        >
           <Pagination
             current={1}
             total={3}

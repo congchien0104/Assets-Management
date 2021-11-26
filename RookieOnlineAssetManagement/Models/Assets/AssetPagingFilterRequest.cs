@@ -15,7 +15,7 @@ namespace RookieOnlineAssetManagement.Models.Assets
         public string SortBy { get; set; }
         public bool IsAscending { get; set; }
         public bool IsSortByUpdatedDate { get; set; }
-        public bool IsSortByCreateDate { get; set; }
+        public bool IsSortByCreatedDate { get; set; }
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
         public AssetPagingFilterRequest()
@@ -24,7 +24,6 @@ namespace RookieOnlineAssetManagement.Models.Assets
             StatesFilter = $"{(int)AssetState.Available},{(int)AssetState.NotAvailable},{(int)AssetState.Assigned}";
             PageIndex = 1;
             PageSize = 5;
-            IsSortByUpdatedDate = false;
         }
         public string Location { get; set; }
     }

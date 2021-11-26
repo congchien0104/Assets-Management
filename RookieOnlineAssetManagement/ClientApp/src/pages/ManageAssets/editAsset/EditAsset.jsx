@@ -40,13 +40,19 @@ export default function EditAsset(props) {
       .catch((error) => console.log(error));
   }, [id, asset.name]);
   console.log(asset.state);
-  const { register, handleSubmit, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { isDirty, isValid },
+  } = useForm({
     defaultValues: {
       name: asset.name,
       specification: asset.specification,
       installedDate: formatDate(asset.installedDate),
       state: 0,
     },
+    mode: "onChange",
   });
   const onHandleSubmit = (data) => {
     const fd = new FormData();
@@ -57,7 +63,7 @@ export default function EditAsset(props) {
       .then((response) => {
         if (response.status) {
           console.log(response);
-          history.push("/assets");
+          history.push("/assets?IsSortByUpdatedDate=true");
         }
       })
       .catch((error) => console.log(error));
@@ -180,7 +186,11 @@ export default function EditAsset(props) {
           <div class="form-group row my-3 mt-4">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
-              <button type="submit" class="btn btn-danger mr-4">
+              <button
+                type="submit"
+                class="btn btn-danger mr-4"
+                disabled={!isDirty || !isValid}
+              >
                 Save
               </button>
               <Link

@@ -120,17 +120,16 @@ namespace RookieOnlineAssetManagement.Services
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter
             IQueryable<Asset> query = _context.Assets.AsQueryable();
-            query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord))
-                        .WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId))
-                        .WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State))
-                        .WhereIf(request.Location != null, x => x.Location == request.Location);
+            query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
+            query = query.WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId));
+            query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
+            query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
             // Sort
-            query = query.OrderByIf(request.SortBy == "assetcode", x => x.Code, request.IsAscending)
-                         .OrderByIf(request.SortBy == "assetname", x => x.Name, request.IsAscending)
-                         .OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending)
-                         .OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending)
-                         .OrderByIf(request.IsSortByCreateDate == true, x => x.CreatedDate, !request.IsAscending)
-                         .OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, !request.IsAscending);
+            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, request.IsAscending);
+            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, request.IsAscending).OrderByIf(request.SortBy == "assetcode", x => x.Code, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "assetname", x => x.Name, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
             // Paging and Projection
             var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()
