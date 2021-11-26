@@ -137,29 +137,29 @@ function App() {
         </div>
         <div className="col-sm-10">
           <Switch>
-            <Route exact path="/assets" component={() => <ListAssets />} />
+            <Route exact path="/assets" component={() => userData.type == 2 ? <ListAssets /> : <div>404 Not Found!</div>} />
             <Route
               exact
               path="/asset/edit/:id"
-              component={() => <EditAsset />}
+              component={() => userData.type == 2 ? <EditAsset /> : <div>404 Not Found!</div>}
             />
-            <Route exact path="/asset/new" component={() => <NewAsset />} />
+            <Route exact path="/asset/new" component={() => userData.type == 2 ? <NewAsset /> : <div>404 Not Found!</div>} />
             <Route exact path="/" component={() => <Home />} />
-            <Route exact path="/users" component={() => <Users />} />
-            <Route exact path="/assignments" component={() => <Asignments />} />
+            <Route exact path="/users" component={() => userData.type == 2 ? <Users /> : <div>404 Not Found!</div>} />
+            <Route exact path="/assignments" component={() => userData.type == 2 ? <Asignments /> : <div>404 Not Found!</div>} />
             <Route
               exact
               path="/request-for-returning"
-              component={() => <RequestForReturning />}
+              component={() => userData.type == 2 ? <RequestForReturning /> : <div>404 Not Found!</div>}
             />
-            <Route exact path="/report" component={() => <Reports />} />
-            <Route exact path="/users/add" component={() => <AddUser />} />
-            <Route exact path="/users/:id" component={() => <User />} />
+            <Route exact path="/report" component={() => userData.type == 2 ? <Reports /> : <div>404 Not Found!</div>} />
+            <Route exact path="/users/add" component={() => userData.type == 2 ? <AddUser /> : <div>404 Not Found!</div>} />
+            <Route exact path="/users/:id" component={() => userData.type == 2 ? <User /> : <div>404 Not Found!</div>} />
             <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>
         </div>
       </div>
-      {userData.type == 0 ? (
+      {userData.state == 0 ? (
         /* Modal for Change Password First Time */
         <Modal show={true}>
           <Modal.Header

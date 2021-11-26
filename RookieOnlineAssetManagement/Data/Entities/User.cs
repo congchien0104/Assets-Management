@@ -14,7 +14,7 @@ namespace RookieOnlineAssetManagement.Data.Entities
         public DateTime JoinedDate { get; set; }
         public bool Gender { get; set; }
         public UserType Type { get; set; }
-        public bool State { get; set; }
+        public StateType State { get; set; }
         public string Location { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

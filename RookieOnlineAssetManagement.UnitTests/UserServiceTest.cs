@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
+using RookieOnlineAssetManagement.Data.Enums;
 using RookieOnlineAssetManagement.Services;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace RookieOnlineAssetManagement.UnitTests
                         JoinedDate = DateTime.Now,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
-                        State = false,
+                        State = StateType.Available,
                         Location = "HCM"
                     },
                     new User
@@ -49,7 +50,7 @@ namespace RookieOnlineAssetManagement.UnitTests
                         JoinedDate = DateTime.Now,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
-                        State = false,
+                        State = StateType.Available,
                         Location = "HCM"
                     },
                     new User
@@ -64,7 +65,7 @@ namespace RookieOnlineAssetManagement.UnitTests
                         JoinedDate = DateTime.Now,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
-                        State = false,
+                        State = StateType.Available,
                         Location = "HCM"
                     },
                     new User
@@ -79,7 +80,7 @@ namespace RookieOnlineAssetManagement.UnitTests
                         JoinedDate = DateTime.Now,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = DateTime.Now,
-                        State = false,
+                        State = StateType.Available,
                         Location = "HCM"
                     });
 

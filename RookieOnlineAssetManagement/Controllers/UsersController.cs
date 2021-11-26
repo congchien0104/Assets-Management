@@ -39,7 +39,8 @@ namespace RookieOnlineAssetManagement.Controllers
                 id = user.Id,
                 fullName = user.LastName + " " + user.FirstName,
                 gender = user.Gender,
-                type = user.Type
+                type = user.Type,
+                state = user.State
             });
         }
 

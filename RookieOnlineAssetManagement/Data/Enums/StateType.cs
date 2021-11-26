@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Data.Enums
 {
-    public enum UserType
+    public enum StateType
     {
-        Staff = 1,
-        Admin = 2
+        FirstTime = 0,
+        Available = 1,
+        Disable = 2
     }
 }

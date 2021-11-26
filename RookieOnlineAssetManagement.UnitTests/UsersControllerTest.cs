@@ -46,7 +46,7 @@ namespace RookieOnlineAssetManagement.UnitTests
                     JoinedDate = new DateTime(2020, 11, 19),
                     Gender = false,
                     Type = UserType.Admin,
-                    State = true,
+                    State = StateType.Available,
                     Location = "HCM",
                     UserName = "admin",
                     NormalizedUserName = "ADMIN",

@@ -115,7 +115,7 @@ namespace RookieOnlineAssetManagement.Services
             if (user.AssignmentsTos.Count > 0 || user.AssignmentsBys.Count > 0)
                 return false;
 
-            user.State = true;
+            user.State = StateType.Disable;
             _dbContext.Users.Update(user);
             return await _dbContext.SaveChangesAsync() > 0;
         }
@@ -231,7 +231,7 @@ namespace RookieOnlineAssetManagement.Services
                 PasswordHasher<User> hash = new PasswordHasher<User>();
                 var hashPassword = hash.HashPassword(user, vm.passwordNew);
                 user.PasswordHash = hashPassword;
-                user.Type = UserType.Staff;
+                user.State = StateType.Available;
 
                 return await _dbContext.SaveChangesAsync() > 0;
             }
