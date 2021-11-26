@@ -200,6 +200,9 @@ const ListAssets = () => {
       });
     });
   }, [detailId]);
+  useEffect(() => {
+    console.log(detailId);
+  }, [detailId]);
   return (
     <React.Fragment>
       <div style={{ padding: "120px" }}>
@@ -509,13 +512,12 @@ const ListAssets = () => {
             <Form.Label column="sm" lg={3}>
               Specification
             </Form.Label>
-
             <Form.Label column="sm" lg={9}>
               {detailedAsset.specification}
             </Form.Label>
           </Row>
           <br />
-          {detailedAsset.history === undefined ? (
+          {detailedAsset.history.length === 0 ? (
             <Row style={{ display: "inline" }}>
               <Form.Label column="sm" lg={3}>
                 History
