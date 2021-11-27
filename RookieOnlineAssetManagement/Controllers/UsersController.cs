@@ -77,6 +77,7 @@ namespace RookieOnlineAssetManagement.Controllers
             {
                 return BadRequest(ModelState);
             }
+            request.Location = User.FindFirst("location")?.Value;
             var users = await _userService.GetUsersPagingFilter(request);
             return Ok(users);
         }

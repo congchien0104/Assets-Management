@@ -39,7 +39,7 @@ const formatDate = (date) => {
     return [year, month, day].join("-");
 };
 
-function UserTemp(props) {
+function AddUser(props) {
     let history = useHistory();
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -76,8 +76,6 @@ function UserTemp(props) {
     
     
     function onSubmit(data) {
-        // display form data on success
-        console.log(data);
         const user = new FormData();
         for(var key in data){
             if(key==='doB' || key==='joinedDate'){
@@ -90,8 +88,7 @@ function UserTemp(props) {
         }
         userService.create(user)
         .then((response) => {
-            history.push("/users");
-            console.log("Create new User");
+            history.push("/users?IsSortByCreatedDate=true");
           })
           .catch((e) => {
             console.log(e);
@@ -102,14 +99,14 @@ function UserTemp(props) {
             <h2 style={{ color: '#dc3545', fontSize: '25px', fontWeight: 'bold' }}>Create New User</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div class="form-group row">
-                    <label htmlFor="firstName" class="col-sm-2 col-form-label">FirstName</label>
+                    <label htmlFor="firstName" class="col-sm-2 col-form-label">First Name</label>
                     <div class="col-sm-4">
                         <input name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.firstName?.message}</div>
                     </div>
                 </div>
                 <div class="form-group row mt-4">
-                    <label htmlFor="lastName" class="col-sm-2 col-form-label">LastName</label>
+                    <label htmlFor="lastName" class="col-sm-2 col-form-label">Last Name</label>
                     <div class="col-sm-4">
                         <input name="lastName" type="text" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.lastName?.message}</div>
@@ -176,4 +173,4 @@ function UserTemp(props) {
     );
 }
 
-export default UserTemp;
+export default AddUser;

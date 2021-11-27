@@ -48,14 +48,11 @@ namespace RookieOnlineAssetManagement.Services
                 Gender = model.Gender,
                 Type = model.Type,
                 CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
                 Location = model.Location
             };
 
             var result = await _userManager.CreateAsync(user, password);
-            //if (result.Succeeded)
-            //{
-            //    await _userManager.AddToRoleAsync(user, "Staff");
-            //}
             return user.Id;
         }
         public async Task<UserVM> GetUser(int userId)
@@ -63,18 +60,6 @@ namespace RookieOnlineAssetManagement.Services
             var user = await _dbContext.Users.FindAsync(userId);
             if (user == null)
                 throw new Exception($"Cannot find a user with id {userId}");
-            //var histories = new List<AssignmentHistory>();
-            //foreach (var assignment in asset.Assignments)
-            //{
-            //    histories.Add(new AssignmentHistory()
-            //    {
-            //        AssignedDate = assignment.AssignedDate,
-            //        AssignedBy = _dbContext.Users.Find(assignment.AssignedBy).UserName,
-            //        AssignedTo = _dbContext.Users.Find(assignment.AssignedTo).UserName,
-            //        ReturnedDate = _dbContext.ReturnRequests.FirstOrDefault(rr => rr.AssignmentId == assignment.Id
-            //                        && rr.State == ReturnRequestState.Completed).ReturnedDate
-            //    });
-            //}
             var result = new UserVM()
             {
                 Code = user.Code,
@@ -87,6 +72,8 @@ namespace RookieOnlineAssetManagement.Services
                 Type = user.Type,
                 State = user.State,
                 Location = user.Location,
+                CreatedDate = user.CreatedDate,
+                UpdatedDate = user.UpdatedDate
             };
             return result;
         }
@@ -132,7 +119,7 @@ namespace RookieOnlineAssetManagement.Services
         public string GenerateUserName(string firstName, string lastName)
         {
             StringBuilder username = new StringBuilder();
-            username.Append(firstName.ToLower());
+            username.Append(firstName.Trim().ToLower());
             List<string> words = lastName.Split(' ').ToList();
             
             foreach (var word in words)
@@ -163,30 +150,26 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<PagedResultBase<UserVM>> GetUsersPagingFilter(UserPagingFilter request)
         {
 
-            //List<string> types = request.TypeFilter.Split(',').ToList();
             List<int> types = request.TypeFilter != null ? request.TypeFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
-            ///List<int> states = request.StatesFilter.Split(',').Select(Int32.Parse).ToList();
             // Filter
+
             IQueryable<User> query = _dbContext.Users.AsQueryable();
             //query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
             query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
-            //.WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
-            // Sort
-            switch (request.SortBy)
-            {
-                case "code":
-                    query = request.IsAscending ? query.OrderBy(u => u.Code) : query.OrderByDescending(u => u.Code);
-                    break;
-                case "username":
-                    query = request.IsAscending ? query.OrderBy(u => u.UserName) : query.OrderByDescending(u => u.UserName);
-                    break;
-                case "type":
-                    query = request.IsAscending ? query.OrderBy(u => u.Type) : query.OrderByDescending(u => u.Type);
+            query = query.WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
+            query = query.Where(x => x.State == StateType.FirstTime || x.State == StateType.Available);
 
-                    break;
-                default:
-                    break;
-            }
+
+            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
+            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
+            query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "fullName", x => x.FirstName, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "userName", x => x.UserName, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "joinedDate", x => x.JoinedDate, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "type", x => x.Type, request.IsAscending);
+            // Sort
+
+            var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new UserVM()
             {
                 Id = a.Id,
@@ -199,10 +182,12 @@ namespace RookieOnlineAssetManagement.Services
                 JoinedDate = a.JoinedDate,
                 Type = a.Type,
                 State = a.State,
+                CreatedDate = a.CreatedDate,
+                UpdatedDate = a.UpdatedDate
             }).ToListAsync();
             var pagedResult = new PagedResultBase<UserVM>()
             {
-                TotalRecords = data.Count,
+                TotalRecords = totalRecord,
                 PageSize = request.PageSize,
                 PageIndex = request.PageIndex,
                 Items = data

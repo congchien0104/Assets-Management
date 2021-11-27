@@ -20,6 +20,8 @@ namespace RookieOnlineAssetManagement.Models.Users
         public UserType Type { get; set; }
         public StateType State { get; set; }
         public string Location { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public List<ReturnRequest> ReturnsRequests { get; set; }
         public List<ReturnRequest> ReturnsAccepts { get; set; }
         public List<Assignment> AssignmentsTos { get; set; }

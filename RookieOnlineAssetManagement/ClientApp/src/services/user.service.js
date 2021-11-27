@@ -22,6 +22,30 @@ const disabled = (id) => {
   console.log(id);
   return axios.patch(API_URL + `/users/${id}`);
 };
+
+const getUsersPagingDefault = (afterCreated, affterUpdated) => {
+  var query = afterCreated ? `${"&IsSortByCreatedDate=" + afterCreated}` : "";
+  query += affterUpdated ? `${"&IsSortByUpdatedDate=" + affterUpdated}` : "";
+  return axios.get(API_URL + "/users/paging?pageSize=10" + query);
+};
+
+const getUsersPagingFilter = (filter) => {
+  console.log("filter start");
+  var query = filter.keyword ? `${"&keyword=" + filter.keyword}` : "";
+  query += filter.typeFilter ? `${"&typeFilter=" + filter.typeFilter}` : "";
+  query += filter.sortBy ? `${"&sortBy=" + filter.sortBy}` : "";
+  query += filter.IsSortByCreatedDate
+    ? `${"&IsSortByCreatedDate=" + filter.IsSortByCreatedDate}`
+    : "";
+  query += filter.IsSortByUpdatedDate
+    ? `${"&IsSortByUpdatedDate=" + filter.IsSortByUpdatedDate}`
+    : "";
+  query += filter.pageIndex ? `${"&pageIndex=" + filter.pageIndex}` : "";
+  query += filter.sortBy ? `${"&sortBy=" + filter.sortBy}` : "";
+  query += filter.isAscending === false ? "&isAscending=false" : "";
+  return axios.get(API_URL + "/users/paging?pageSize=10" + query);
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getUser,
@@ -29,4 +53,6 @@ export default {
   update,
   getUserFilter,
   disabled,
+  getUsersPagingDefault,
+  getUsersPagingFilter,
 };

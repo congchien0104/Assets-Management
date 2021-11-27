@@ -78,13 +78,9 @@ function User(props) {
         const getUser = (id) => {
             userService.getUser(id)
               .then((response) => {
-                  console.log(response.data);
                 const fields = ['firstName', 'lastName', 'doB', 'gender','joinedDate', 'type'];
-                //response.data['gender'] = "M";
                 fields.forEach((field) => {
                     if(field === 'doB' || field === 'joinedDate'){
-                        console.log(response.data[field]);
-                        console.log(field);
                         const temp = formatDate(response.data[field]);
                         console.log(temp);
                         setValue(field, temp);
@@ -94,11 +90,9 @@ function User(props) {
                         setValue(field, tmp);
                     }
                     else{
-                        console.log(field);
                         setValue(field, response.data[field]);
                     }
                 });
-                //setUser(user);
                 setUser(response.data);
                 console.log(user);
               })
@@ -109,7 +103,6 @@ function User(props) {
     
         useEffect(() => {
             getUser(id);
-            //console.log(props.match.params.id);
           }, [id]);
 
     const formOptions = { resolver: yupResolver(validationSchema), mode: "onChange" };
@@ -125,12 +118,8 @@ function User(props) {
     
     
     function onSubmit(data) {
-        // display form data on success
-        //const id = props.match.params.id;
-        console.log(id);
         const user = new FormData();
         for(var key in data){
-            //user.append(key, data[key]);
             if(key==='doB' || key==='joinedDate'){
                 var temp = formatDate(data[key]);
                 user.append(key, temp);
@@ -146,7 +135,7 @@ function User(props) {
         console.log(user);
         userService.update(id, user)
         .then((response) => {
-            history.push("/users");
+            history.push("/users?IsSortByUpdatedDate=true");
             console.log("Update User");
           })
           .catch((e) => {
@@ -158,14 +147,14 @@ function User(props) {
             <h2 style={{ color: '#dc3545', fontSize: '25px', fontWeight: 'bold' }}>Edit User</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div class="form-group row">
-                    <label htmlFor="firstName" class="col-sm-2 col-form-label">FirstName</label>
+                    <label htmlFor="firstName" class="col-sm-2 col-form-label">First Name</label>
                     <div class="col-sm-4">
                         <input disabled name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.firstName?.message}</div>
                     </div>
                 </div>
                 <div class="form-group row mt-4">
-                    <label htmlFor="lastName" class="col-sm-2 col-form-label">LastName</label>
+                    <label htmlFor="lastName" class="col-sm-2 col-form-label">Last Name</label>
                     <div class="col-sm-4">
                         <input disabled name="lastName" type="text" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
                         <div className="invalid-feedback">{errors.lastName?.message}</div>

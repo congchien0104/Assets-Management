@@ -345,17 +345,44 @@ const ListAssets = () => {
           <tbody>
             {assets &&
               assets.map((asset) => (
-                <tr
-                  onClick={() => {
-                    setIsShowDetail(true);
-                    setDetailId(asset.id);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>{asset.code}</td>
-                  <td>{asset.name}</td>
-                  <td> {asset.category.name}</td>
-                  <td>{StateToString(asset.state)}</td>
+                <tr>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(asset.id);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {asset.code}
+                  </td>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(asset.id);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {asset.name}
+                  </td>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(asset.id);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {" "}
+                    {asset.category.name}
+                  </td>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(asset.id);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {StateToString(asset.state)}
+                  </td>
                   <td>
                     <Link
                       to={{
