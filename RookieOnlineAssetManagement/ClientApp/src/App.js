@@ -106,6 +106,7 @@ function App() {
         .then((response) => {
           alert(response.data.message);
           history.push("/");
+          window.location.href = window.location.pathname;
         });
     }
   };
