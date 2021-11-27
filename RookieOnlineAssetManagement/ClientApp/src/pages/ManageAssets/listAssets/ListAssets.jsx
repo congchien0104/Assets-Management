@@ -12,7 +12,7 @@ import {
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import {
   GetAssetsPagingDefault,
   GetAssetState,
@@ -49,8 +49,20 @@ const ListAssets = () => {
   const [sortBy, setSortBy] = useState({ name: "", isAscending: true });
   const [totalPages, setTotalPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [detailId, setDetailId] = useState(0);
-  const [detailedAsset, setDetailedAsset] = useState({});
+  const [detailId, setDetailId] = useState();
+  const [isShowDetail, setIsShowDetail] = useState(false);
+  const [detailedAsset, setDetailedAsset] = useState({
+    id: detailId,
+    code: "",
+    name: "",
+    category: "",
+    installedDate: null,
+    state: "",
+    location: "",
+    specification: "",
+    history: [],
+  });
+  const history = useHistory();
   const formatDate = (date) => {
     var d = new Date(date),
       month = "" + (d.getMonth() + 1),
@@ -120,15 +132,13 @@ const ListAssets = () => {
     isAscending,
   ]);
   useEffect(() => {
-    console.log(searchFilterModel);
-  }, [searchFilterModel]);
-  useEffect(() => {
     GetAssetsPagingFilter(searchFilterModel)
       .then((response) => {
         setAssets([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
         setTotalPages(response.pageCount);
+        history.replace("/assets");
       })
       .catch((error) => console.log(error));
   }, [isFilter]);
@@ -156,7 +166,6 @@ const ListAssets = () => {
   };
   const handleDelete = () => {
     var asset = assets.find((a) => a.id === idDeletingAsset);
-    console.log(asset);
     if (asset.histories === null) {
       Delete(idDeletingAsset)
         .then((res) => {
@@ -175,20 +184,17 @@ const ListAssets = () => {
     }
   };
   const onSearchClick = () => {
-    console.log(keyword);
     setIsSearch(true);
     setCurrentPage(1);
   };
   function handlePageChange(page) {
     setCurrentPage(page);
-    // ... do something with `page`
-    console.log(page);
   }
   useEffect(() => {
     GetDetail(detailId).then((res) => {
-      console.log(res);
       setDetailedAsset({
         ...detailedAsset,
+        id: res.id,
         code: res.code,
         name: res.name,
         category: res.category.name,
@@ -201,8 +207,8 @@ const ListAssets = () => {
     });
   }, [detailId]);
   useEffect(() => {
-    console.log(detailId);
-  }, [detailId]);
+    console.log(detailedAsset.history);
+  }, [detailedAsset]);
   return (
     <React.Fragment>
       <div style={{ padding: "120px" }}>
@@ -341,6 +347,7 @@ const ListAssets = () => {
               assets.map((asset) => (
                 <tr
                   onClick={() => {
+                    setIsShowDetail(true);
                     setDetailId(asset.id);
                   }}
                   style={{ cursor: "pointer" }}
@@ -419,7 +426,7 @@ const ListAssets = () => {
           />
         </div>
       </div>
-      <Modal dialogClassName="modal-90w" show={detailId !== 0}>
+      <Modal dialogClassName="modal-90w" show={isShowDetail}>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
           <Modal.Title
             style={{
@@ -433,7 +440,7 @@ const ListAssets = () => {
           </Modal.Title>
           <MdOutlineCancelPresentation
             onClick={() => {
-              setDetailId(0);
+              setIsShowDetail(false);
             }}
             style={{
               color: "#dc3545",
@@ -517,7 +524,7 @@ const ListAssets = () => {
             </Form.Label>
           </Row>
           <br />
-          {detailedAsset.history.length === 0 ? (
+          {detailedAsset.history === null ? (
             <Row style={{ display: "inline" }}>
               <Form.Label column="sm" lg={3}>
                 History
@@ -532,7 +539,7 @@ const ListAssets = () => {
               <Form.Label column="sm" lg={3}>
                 History
               </Form.Label>
-              <Table>
+              <Table style={{ fontSize: ".875rem" }}>
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -541,6 +548,17 @@ const ListAssets = () => {
                     <th>Returned</th>
                   </tr>
                 </thead>
+                <tbody>
+                  {detailedAsset.history &&
+                    detailedAsset.history.map((historyItem) => (
+                      <tr>
+                        <td>{formatDate(historyItem.assignedDate)}</td>
+                        <td>{historyItem.assignedTo}</td>
+                        <td>{historyItem.assignedBy}</td>
+                        <td>{formatDate(historyItem.returnedDate)}</td>
+                      </tr>
+                    ))}
+                </tbody>
               </Table>
             </div>
           )}

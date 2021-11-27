@@ -21,7 +21,7 @@ namespace RookieOnlineAssetManagement.Models.Assets
         public AssetPagingFilterRequest()
         {
             IsAscending = true;
-            StatesFilter = $"{(int)AssetState.Available},{(int)AssetState.NotAvailable},{(int)AssetState.Assigned}";
+            //StatesFilter = $"{(int)AssetState.Available},{(int)AssetState.NotAvailable},{(int)AssetState.Assigned}";
             PageIndex = 1;
             PageSize = 5;
         }

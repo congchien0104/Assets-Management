@@ -109,7 +109,7 @@ namespace RookieOnlineAssetManagement.Services
                 State = asset.State,
                 Location = asset.Location,
                 Specification = asset.Specification,
-                Histories = histories != null ? histories : null
+                Histories = histories != null && histories.Count > 0 ? histories : null
             };
             return detailedAsset;
         }
@@ -127,8 +127,8 @@ namespace RookieOnlineAssetManagement.Services
             query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
             // Sort
-            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, request.IsAscending);
-            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, request.IsAscending);
+            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
+            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
             query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
             query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
             query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
