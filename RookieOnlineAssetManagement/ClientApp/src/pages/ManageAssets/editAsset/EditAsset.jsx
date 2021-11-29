@@ -77,15 +77,17 @@ export default function EditAsset(props) {
   return (
     <div className="container">
       <div class="mx-auto">
-        <h2
+        <h1
           style={{
             color: "#dc3545",
-            marginTop: "10px",
+            fontSize: "25px",
             fontWeight: "bold",
+            marginTop: "25px",
+            marginBottom: "25px",
           }}
         >
           Edit Asset
-        </h2>
+        </h1>
         <form onSubmit={handleSubmit(onHandleSubmit)}>
           <div class="form-group row my-3">
             <label htmlFor="name" class="col-sm-2 col-form-label">
