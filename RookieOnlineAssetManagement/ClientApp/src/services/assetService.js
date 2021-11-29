@@ -26,16 +26,16 @@ export async function GetAssetState() {
 export async function Delete(id) {
   return axios.delete(API_URL + `${id}`);
 }
-export async function GetAssetsPagingDefault(afterCreated, affterUpdated) {
+export async function GetAssetsPagingDefault(afterCreated, afterUpdated) {
   var query = afterCreated ? `${"&IsSortByCreatedDate=" + afterCreated}` : "";
-  query += affterUpdated ? `${"&IsSortByUpdatedDate=" + affterUpdated}` : "";
+  query += afterUpdated ? `${"&IsSortByUpdatedDate=" + afterUpdated}` : "";
+  query += "&sortby=code";
   return await axios
     .get(API_URL + "paging?pageSize=10" + query)
     .then((response) => response.data);
 }
 export async function GetAssetsPagingFilter(filter) {
   var query = filter.pageIndex ? `${"&pageIndex=" + filter.pageIndex}` : "";
-  query += filter.sortBy ? `${"&sortBy=" + filter.sortBy}` : "";
   query += filter.isAscending === false ? `${"&isAscending=false"}` : "";
   query += filter.keyword ? `${"&keyword=" + filter.keyword}` : "";
   query += filter.statesFilter

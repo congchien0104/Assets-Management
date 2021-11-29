@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
+import { MdOutlineCancelPresentation } from "react-icons/md";
 export default function EditAsset(props) {
+  const [errorMessage, setErrorMessage] = useState(false);
   let history = useHistory();
   const initAsset = {
     id: null,
@@ -66,7 +69,9 @@ export default function EditAsset(props) {
           history.push("/assets?IsSortByUpdatedDate=true");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        if (error.response.data) setErrorMessage(true);
+      });
   };
   const [state, setState] = useState();
   return (
@@ -204,6 +209,59 @@ export default function EditAsset(props) {
           </div>
         </form>
       </div>
+      <Modal show={errorMessage} centered>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
+          <Modal.Title
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#dc3545",
+              marginLeft: "20px",
+            }}
+          >
+            Cannot Edit Asset
+          </Modal.Title>
+          <MdOutlineCancelPresentation
+            onClick={() => {
+              setErrorMessage(false);
+            }}
+            style={{
+              color: "#dc3545",
+              fontSize: "20px",
+              cursor: "pointer",
+            }}
+          />
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            marginLeft: "20px",
+            display: "inline",
+          }}
+        >
+          <p>Asset information has no longer existed.</p>
+          <p>Please return Manage Asset Page</p>
+        </Modal.Body>
+        <Modal.Footer
+          style={{ justifyContent: "flex-end", marginLeft: "20px" }}
+        >
+          <Link
+            to={{
+              pathname: "/assets",
+            }}
+          >
+            <Button
+              style={{
+                backgroundColor: "#dc3545",
+                border: "1px solid #dc3545",
+                borderRadius: "4px",
+              }}
+            >
+              Back
+            </Button>
+          </Link>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

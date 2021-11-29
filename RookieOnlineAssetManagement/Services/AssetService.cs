@@ -127,12 +127,19 @@ namespace RookieOnlineAssetManagement.Services
             query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
             // Sort
-            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
-            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
-            query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
+            if(request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
+            {
+                query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
+                query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
+            }
+            else
+            {
+                query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
+            }
+            
             // Paging and Projection
             var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()

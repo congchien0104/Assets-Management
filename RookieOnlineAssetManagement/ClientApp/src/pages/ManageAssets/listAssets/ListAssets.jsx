@@ -46,7 +46,7 @@ const ListAssets = () => {
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState();
-  const [sortBy, setSortBy] = useState({ name: "", isAscending: true });
+  const [sortBy, setSortBy] = useState("code");
   const [totalPages, setTotalPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [detailId, setDetailId] = useState();
@@ -453,7 +453,7 @@ const ListAssets = () => {
           />
         </div>
       </div>
-      <Modal dialogClassName="modal-90w" show={isShowDetail}>
+      <Modal dialogClassName="modal-90w" centered show={isShowDetail}>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
           <Modal.Title
             style={{
