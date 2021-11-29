@@ -167,7 +167,7 @@ namespace RookieOnlineAssetManagement.Services
             query = query.OrderByIf(request.SortBy == "fullName", x => x.FirstName, request.IsAscending);
             query = query.OrderByIf(request.SortBy == "userName", x => x.UserName, request.IsAscending);
             query = query.OrderByIf(request.SortBy == "joinedDate", x => x.JoinedDate, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "type", x => x.Type, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "type", x => x.Type, !request.IsAscending);
             // Sort
 
             var totalRecord = await query.CountAsync();
