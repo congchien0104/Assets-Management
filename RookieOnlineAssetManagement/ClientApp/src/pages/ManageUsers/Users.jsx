@@ -34,8 +34,8 @@ const Users = () => {
   const [searchFilterModel, setSearchFilterModel] = useState({});
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
-  const [isAscending, setIsAscending] = useState(true);
-  const [sortBy, setSortBy] = useState({ name: "", isAscending: true });
+  const [isAscending, setIsAscending] = useState();
+  const [sortBy, setSortBy] = useState("code");
   const [detailId, setDetailId] = useState(0);
   const [detailedUser, setDetailedUser] = useState({});
 
@@ -127,7 +127,14 @@ const Users = () => {
   return (
     <React.Fragment>
       <div style={{ padding: "120px" }}>
-        <div style={{ color: "#dc3545", fontSize: "25px", fontWeight: "bold" }}>
+        <div
+          style={{
+            color: "#dc3545",
+            fontSize: "25px",
+            fontWeight: "bold",
+            marginBottom: "25px",
+          }}
+        >
           User List
         </div>
         <div
@@ -331,7 +338,7 @@ const Users = () => {
         </Modal.Header>
 
         <Modal.Body>
-          <p>Do you want to disable this user ?</p>
+          <p>Do you want to disable this user?</p>
         </Modal.Body>
 
         <Modal.Footer>
@@ -393,7 +400,7 @@ const Users = () => {
               marginLeft: "20px",
             }}
           >
-            Detailed Asset Information
+            Detailed User Information
           </Modal.Title>
           <MdOutlineCancelPresentation
             onClick={() => {
@@ -448,7 +455,7 @@ const Users = () => {
             </Form.Label>
 
             <Form.Label column="sm" lg={9}>
-              {detailedUser.doB}
+              {formatDate(detailedUser.doB)}
             </Form.Label>
           </Row>
           <br />

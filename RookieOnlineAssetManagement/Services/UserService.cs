@@ -154,8 +154,9 @@ namespace RookieOnlineAssetManagement.Services
             // Filter
 
             IQueryable<User> query = _dbContext.Users.AsQueryable();
-            //query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
-            query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
+            query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
+            query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord) 
+                || (x.FirstName + " " + x.LastName).Contains(request.KeyWord));
             query = query.WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
             query = query.Where(x => x.State == StateType.FirstTime || x.State == StateType.Available);
 
