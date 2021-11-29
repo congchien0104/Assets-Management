@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import logo from "../../assets/img/Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Index(props) {
+  const location = useLocation();
+
   const initialMenus = [
     {
       id: 1,
@@ -36,20 +38,26 @@ function Index(props) {
     },
   ];
 
-  const [menus, setMenus] = useState(initialMenus)
+  const [menus, setMenus] = useState(initialMenus);
   const [state, setState] = useState(1);
-
   useEffect(() => {
-    if(props.type != null && props.type != 2) {
-      setMenus(menus.slice(0, 1))
+    if (location.pathname.includes("/home")) setState(1);
+    if (location.pathname.includes("/users")) setState(2);
+    if (location.pathname.includes("/assets")) setState(3);
+    if (location.pathname.includes("/assignments")) setState(4);
+    if (location.pathname.includes("/request-for-returning")) setState(5);
+    if (location.pathname.includes("/report")) setState(5);
+  }, [location]);
+  useEffect(() => {
+    if (props.type != null && props.type != 2) {
+      setMenus(menus.slice(0, 1));
     }
-
-  }, [props])
+  }, [props]);
 
   return (
     <div>
       <img src={logo} alt="..." className="img-thumbnail" />
-      <h6 style={{ padding: '10px' }}>
+      <h6 style={{ padding: "10px" }}>
         <span className="text-danger">Online Asset Management</span>
       </h6>
       <div className="list-group" id="list-tab" role="tablist">
