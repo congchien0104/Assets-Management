@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RookieOnlineAssetManagement.Interfaces;
+using RookieOnlineAssetManagement.Models.Assignments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,73 @@ namespace RookieOnlineAssetManagement.Controllers
         public AssignmentsController(IAssignmentService assignmentService)
         {
             _assignmentService = assignmentService;
+        }
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAssignmentPagingFilter([FromQuery] AssignmentPagingFilterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            request.Location = User.FindFirst("location")?.Value;
+            var assignments = await _assignmentService.GetAssignmentPagingFilter(request);
+            return Ok(assignments);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] AssignmentCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var assignmentId = await _assignmentService.Create(request);
+
+            if (assignmentId < 0)
+                return BadRequest();
+            var assignment = await _assignmentService.GetDetailedAssignment(assignmentId);
+            return CreatedAtAction(nameof(GetDetailedAssignment), new { id = assignmentId }, assignment);
+        }
+        [HttpGet("{assignmentId}")]
+        public async Task<IActionResult> GetDetailedAssignment(int assignmentId)
+        {
+            var result = await _assignmentService.GetDetailedAssignment(assignmentId);
+            if (result == null)
+                return BadRequest();
+            return Ok(result);
+
+        }
+        [HttpPut("{assignmentId}")]
+        public async Task<IActionResult> Update([FromRoute] int assignmentId, [FromForm] AssignmentUpdateRequest request)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            request.Id = assignmentId;
+            var result = await _assignmentService.Update(request);
+            if (!result)
+                return BadRequest();
+            return Ok(result);
+
+        }
+        [HttpDelete("{assignmentId}")]
+        public async Task<IActionResult> Delete(int assignmentId)
+        {
+            var result = await _assignmentService.Delete(assignmentId);
+            if (!result)
+                return BadRequest();
+            return Ok(result);
+
+        }
+        [HttpGet("states")]
+        public IActionResult GetAssignmentState()
+        {
+            var result = _assignmentService.GetAssignmentStates();
+            if (result == null)
+                return BadRequest();
+            return Ok(result);
+
         }
     }
 }

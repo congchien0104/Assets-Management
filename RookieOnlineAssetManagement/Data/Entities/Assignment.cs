@@ -16,6 +16,8 @@ namespace RookieOnlineAssetManagement.Data.Entities
         public int AssetId { get; set; }
         public int AssignedBy { get; set; }
         public int AssignedTo { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public Asset Asset { get; set; }
         public User AssignByUser { get; set; }
         public User AssignToUser { get; set; }
