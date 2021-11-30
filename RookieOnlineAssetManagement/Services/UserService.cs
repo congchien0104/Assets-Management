@@ -155,19 +155,27 @@ namespace RookieOnlineAssetManagement.Services
 
             IQueryable<User> query = _dbContext.Users.AsQueryable();
             query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
+
             query = query.WhereIf(request.KeyWord != null, x => x.UserName.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord) 
                 || (x.FirstName + " " + x.LastName).Contains(request.KeyWord));
             query = query.WhereIf(types != null && types.Count > 0, x => types.Contains((int)x.Type));
             query = query.Where(x => x.State == StateType.FirstTime || x.State == StateType.Available);
 
+            // Sort
+            if (request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
+            {
+                query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
+                query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
+            }
+            else
+            {
+                query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "fullName", x => x.FirstName, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "userName", x => x.UserName, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "joinedDate", x => x.JoinedDate, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "type", x => x.Type, !request.IsAscending);
+            }
 
-            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
-            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
-            query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "fullName", x => x.FirstName, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "userName", x => x.UserName, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "joinedDate", x => x.JoinedDate, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "type", x => x.Type, !request.IsAscending);
             // Sort
 
             var totalRecord = await query.CountAsync();
