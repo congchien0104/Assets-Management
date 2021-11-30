@@ -70,7 +70,7 @@ export default function EditAsset(props) {
         }
       })
       .catch((error) => {
-        if (error.response.data) setErrorMessage(true);
+        setErrorMessage(true);
       });
   };
   const [state, setState] = useState();
