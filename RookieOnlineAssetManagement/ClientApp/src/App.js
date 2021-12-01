@@ -10,12 +10,14 @@ import ListAssets from "./pages/ManageAssets/listAssets/ListAssets";
 import NewAsset from "./pages/ManageAssets/newAsset/NewAsset";
 import EditAsset from "./pages/ManageAssets/editAsset/EditAsset";
 import Users from "./pages/ManageUsers/Users";
-import Asignments from "./pages/ManageAssignments";
+import Asignments from "./pages/ManageAssignments/Assignments";
 import RequestForReturning from "./pages/RequestForReturning";
 import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
 import User from "./pages/ManageUsers/User";
 import { Modal, Button } from "react-bootstrap";
+import CreateAssignment from "./pages/ManageAssignments/CreateAssignment";
+
 axios.interceptors.request.use((config) => {
   return config;
 });
@@ -172,6 +174,13 @@ function App() {
               path="/assignments"
               component={() =>
                 userData.type == 2 ? <Asignments /> : <div>404 Not Found!</div>
+              }
+            />
+            <Route
+              exact
+              path="/assignment/new"
+              component={() =>
+                userData.type == 2 ? <CreateAssignment /> : <div>404 Not Found!</div>
               }
             />
             <Route

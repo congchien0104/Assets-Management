@@ -45,8 +45,9 @@ function Index(props) {
     if (location.pathname.includes("/users")) setState(2);
     if (location.pathname.includes("/assets")) setState(3);
     if (location.pathname.includes("/assignments")) setState(4);
+    if (location.pathname.includes("/assignment/new")) setState(4);
     if (location.pathname.includes("/request-for-returning")) setState(5);
-    if (location.pathname.includes("/report")) setState(5);
+    if (location.pathname.includes("/report")) setState(6);
   }, [location]);
   useEffect(() => {
     if (props.type != null && props.type != 2) {
