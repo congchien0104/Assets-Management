@@ -28,8 +28,8 @@ const Users = () => {
 
   const { search } = useLocation();
   const params = queryString.parse(search);
-  const afterCreated = params.IsSortByCreatedDate;
-  const afterUpdated = params.IsSortByUpdatedDate;
+  const [afterCreated, setAfterCreated] = useState(params.IsSortByCreatedDate);
+  const [afterUpdated, setAfterUpdated] = useState(params.IsSortByUpdatedDate);
   const [isFilter, setIsFilter] = useState(false);
   const [searchFilterModel, setSearchFilterModel] = useState({});
   const [keyword, setKeyword] = useState();
@@ -202,6 +202,8 @@ const Users = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("code");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 />
               </th>
@@ -212,6 +214,8 @@ const Users = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("fullName");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 />
               </th>
@@ -222,6 +226,8 @@ const Users = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("userName");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 />
               </th>
@@ -232,6 +238,8 @@ const Users = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("joinedDate");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 />
               </th>
@@ -242,9 +250,12 @@ const Users = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("type");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 />
               </th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
