@@ -41,7 +41,7 @@ function Index(props) {
   const [menus, setMenus] = useState(initialMenus);
   const [state, setState] = useState(1);
   useEffect(() => {
-    if (location.pathname.includes("/home")) setState(1);
+    if (location.pathname.includes("/")) setState(1);
     if (location.pathname.includes("/users")) setState(2);
     if (location.pathname.includes("/assets")) setState(3);
     if (location.pathname.includes("/assignments")) setState(4);

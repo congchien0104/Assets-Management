@@ -42,9 +42,9 @@ function App() {
     oldPassword: "",
     newPassword: "",
   });
-  const [openModalChangePasswordSuccess, setOpenModalChangePasswordSuccess] =
-    useState(false);
+  const [openModalChangePasswordSuccess, setOpenModalChangePasswordSuccess] = useState(false);
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
+  const [openModalChangePasswordFirstTime, setOpenModalChangePasswordFirstTime] = useState(true);
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [userData, setUserData] = useState({});
 
@@ -104,9 +104,9 @@ function App() {
           passwordNew: passwordChange.newPassword,
         })
         .then((response) => {
-          alert(response.data.message);
-          history.push("/");
-          window.location.href = window.location.pathname;
+          history.push("/")
+          setOpenModalChangePasswordFirstTime(false);
+          setOpenModalChangePasswordSuccess(true);
         });
     }
   };
@@ -212,7 +212,7 @@ function App() {
       </div>
       {userData.state == 0 ? (
         /* Modal for Change Password First Time */
-        <Modal show={true}>
+        <Modal show={openModalChangePasswordFirstTime}>
           <Modal.Header
             style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}
           >
