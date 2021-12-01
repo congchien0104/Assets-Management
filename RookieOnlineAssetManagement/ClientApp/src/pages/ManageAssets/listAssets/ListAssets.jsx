@@ -27,7 +27,6 @@ import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import Pagination from "react-responsive-pagination";
 import queryString from "query-string";
-import "./ListAssets.css";
 const ListAssets = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
@@ -154,7 +153,7 @@ const ListAssets = () => {
         return "Assigned";
         break;
       case 3:
-        return "WaitingForRecycling";
+        return "Waiting For Recycling";
         break;
       case 4:
         return "Recycled";
@@ -231,7 +230,7 @@ const ListAssets = () => {
             paddingBottom: "20px",
           }}
         >
-          <div style={{ width: "200px" }}>
+          <div style={{ width: "220px" }}>
             <MultiSelect
               options={states}
               value={selectedState}
@@ -296,7 +295,14 @@ const ListAssets = () => {
             <Button variant="danger">Create new asset</Button>
           </Link>
         </div>
-        <Table style={{ width: "1000px" }}>
+        <Table
+          style={{
+            width: "1000px",
+            height: "500px",
+            overflowX: "auto",
+            overflowY: "hidden",
+          }}
+        >
           <thead>
             <tr>
               <th>

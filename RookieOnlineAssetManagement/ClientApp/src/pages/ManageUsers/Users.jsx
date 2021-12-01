@@ -185,7 +185,14 @@ const Users = () => {
             <Button variant="danger">Create New User</Button>
           </Link>
         </div>
-        <Table style={{ width: "1000px" }}>
+        <Table
+          style={{
+            width: "1000px",
+            height: "300px",
+            overflowX: "auto",
+            overflowY: "hidden",
+          }}
+        >
           <thead>
             <tr>
               <th>

@@ -13,6 +13,7 @@ using RookieOnlineAssetManagement.ExtensionMethods;
 using RookieOnlineAssetManagement.Shared;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace RookieOnlineAssetManagement.Services
 {
@@ -210,7 +211,7 @@ namespace RookieOnlineAssetManagement.Services
             {
                 assetStateList.Add(new StateVM
                 {
-                    Name = state.ToString(),
+                    Name = AddSpacesToSentence(state.ToString()),
                     Value = (int)state,
 
                 });
@@ -243,6 +244,10 @@ namespace RookieOnlineAssetManagement.Services
         {
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
             return textInfo.ToTitleCase(categoryName);
+        }
+        private string AddSpacesToSentence(string text)
+        {
+            return Regex.Replace(text, "([a-z])([A-Z])", "$1 $2");
         }
         public async Task<int> CreateCategory(string request)
         {
