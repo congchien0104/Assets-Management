@@ -1,4 +1,5 @@
 import React from "react";
+import "./ListAssets.css";
 import {
   Modal,
   Table,
@@ -298,7 +299,7 @@ const ListAssets = () => {
         <Table
           style={{
             width: "1000px",
-            height: "500px",
+            height: "400px",
             overflowX: "auto",
             overflowY: "hidden",
           }}

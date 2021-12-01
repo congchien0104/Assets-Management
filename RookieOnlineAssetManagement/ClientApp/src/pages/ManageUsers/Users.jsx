@@ -188,7 +188,7 @@ const Users = () => {
         <Table
           style={{
             width: "1000px",
-            height: "300px",
+            height: "400px",
             overflowX: "auto",
             overflowY: "hidden",
           }}
