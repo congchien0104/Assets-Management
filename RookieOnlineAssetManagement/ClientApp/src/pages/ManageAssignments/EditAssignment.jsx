@@ -28,8 +28,10 @@ function EditAssignment() {
   const { errors } = formState;
 
   const getAssignment = (id) => {
+    console.log();
     GetDetail(id)
       .then((response) => {
+        console.log(response);
         const fields = ["assignedToName", "assetName", "assignedDate", "note"];
         fields.forEach((field) => {
           if (field === "assignedDate") {
@@ -183,7 +185,7 @@ const formatDate = (date) => {
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
 
-  return [year, month, day].join("-");
+  return [month, day, year].join("-");
 };
 
 export default EditAssignment;

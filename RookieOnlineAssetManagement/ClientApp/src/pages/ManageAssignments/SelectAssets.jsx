@@ -3,11 +3,11 @@ import "./SelectUser.css";
 import { Table, Modal, Button, FormControl, InputGroup } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
-import userService from "../../services/user.service";
+import { GetAssetsPagingFilter } from "../../services/assetService";
 
-const SelectUsers = (props) => {
-  const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(0);
+const SelectAssets = (props) => {
+  const [assets, setAssets] = useState([]);
+  const [selectedAssetId, setSelectedAssetId] = useState(0);
   const [isFilter, setIsFilter] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState(true);
@@ -20,13 +20,10 @@ const SelectUsers = (props) => {
   };
 
   const handleSave = () => {
-    const fullName =
-      users.filter((x) => x.id == selectedUserId)[0].firstName +
-      " " +
-      users.filter((x) => x.id == selectedUserId)[0].lastName;
-    props.setValue(selectedUserId);
-    props.setLabel(fullName);
-    props.setIsOpenSelectUsers(false);
+    const name = assets.filter((x) => x.id == selectedAssetId)[0].name;
+    props.setValue(setSelectedAssetId);
+    props.setLabel(name);
+    props.setIsOpenSelectAssets(false);
   };
   useEffect(() => {
     setSearchFilterModel({
@@ -39,12 +36,12 @@ const SelectUsers = (props) => {
   }, [isSearch, sortBy, isAscending]);
 
   useEffect(() => {
-    userService
-      .getUsersPagingFilter(searchFilterModel)
+    GetAssetsPagingFilter(searchFilterModel)
       .then((response) => {
-        setUsers(response.data.items);
+        setAssets([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
+        console.log(assets);
       })
       .catch((error) => {
         console.log(error);
@@ -73,7 +70,7 @@ const SelectUsers = (props) => {
                 fontWeight: "bold",
               }}
             >
-              Select User
+              Select Asset
             </div>
             <InputGroup style={{ width: "300px" }}>
               <FormControl
@@ -97,7 +94,7 @@ const SelectUsers = (props) => {
               <tr>
                 <th style={{ width: "50px" }}></th>
                 <th>
-                  Staff Code
+                  Asset Code
                   <GoTriangleDown
                     style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
@@ -107,42 +104,42 @@ const SelectUsers = (props) => {
                   />
                 </th>
                 <th>
-                  Full Name
+                  Asset Name
                   <GoTriangleDown
                     style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
                       setIsAscending(!isAscending);
-                      setSortBy("fullName");
+                      setSortBy("name");
                     }}
                   />
                 </th>
                 <th>
-                  Type
+                  Category
                   <GoTriangleDown
                     style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
                       setIsAscending(!isAscending);
-                      setSortBy("type");
+                      setSortBy("category");
                     }}
                   />
                 </th>
               </tr>
             </thead>
             <tbody>
-              {users &&
-                users.map((user, index) => (
+              {assets &&
+                assets.map((asset, index) => (
                   <tr key={index}>
                     <td style={{ width: "50px" }}>
                       <input
                         type="radio"
-                        value={user.id}
+                        value={asset.id}
                         name="userId"
-                        onChange={(e) => setSelectedUserId(e.target.value)}
+                        onChange={(e) => setSelectedAssetId(e.target.value)}
                       />
                     </td>
-                    <td>{user.code}</td>
-                    <td>{user.firstName + " " + user.lastName}</td>
-                    <td>{user.type == 1 ? "Staff" : "Admin"}</td>
+                    <td>{asset.code}</td>
+                    <td>{asset.name}</td>
+                    <td>{asset.category.name}</td>
                   </tr>
                 ))}
             </tbody>
@@ -156,7 +153,7 @@ const SelectUsers = (props) => {
                 marginRight: "20px",
               }}
               onClick={handleSave}
-              disabled={selectedUserId == 0 ? true : false}
+              disabled={selectedAssetId === 0 ? true : false}
             >
               Save
             </Button>
@@ -167,7 +164,7 @@ const SelectUsers = (props) => {
                 borderRadius: "4px",
                 color: "#808080",
               }}
-              onClick={() => props.setIsOpenSelectUsers(false)}
+              onClick={() => props.setIsOpenSelectAssets(false)}
             >
               Cancel
             </Button>
@@ -178,4 +175,4 @@ const SelectUsers = (props) => {
   );
 };
 
-export default SelectUsers;
+export default SelectAssets;

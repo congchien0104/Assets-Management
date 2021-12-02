@@ -51,8 +51,9 @@ namespace RookieOnlineAssetManagement.Services
                 UpdatedDate = DateTime.Now,
                 Location = model.Location
             };
-
             var result = await _userManager.CreateAsync(user, password);
+            await _userManager.AddClaimAsync(user, new Claim("location", user.Location));
+            await _userManager.AddClaimAsync(user, new Claim("userId", user.Id.ToString()));
             return user.Id;
         }
         public async Task<UserVM> GetUser(int userId)

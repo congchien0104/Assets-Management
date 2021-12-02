@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import SelectUsers from "./SelectUsers";
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import { InputGroup, FormControl, Button } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { FaCalendarAlt } from "react-icons/fa";
-
+import SelectAssets from "./SelectAssets";
 function CreateAssignment(props) {
   const [isOpenSelectUsers, setIsOpenSelectUsers] = useState(false);
-  const [label, setLabel] = useState("");
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    console.log("value", value);
-  }, [value]);
+  const [isOpenSelectAssets, setIsOpenSelectAssets] = useState(false);
+  const [assetLabel, setAssetLabel] = useState("");
+  const [assetValue, setAssetValue] = useState(0);
+  const [userLabel, setUserLabel] = useState("");
+  const [userValue, setUserValue] = useState(0);
 
   return (
-    <div style={{ padding: "50px", width: '600px' }}>
+    <div style={{ padding: "50px", width: "600px" }}>
       <div
         style={{
           color: "#dc3545",
@@ -25,64 +24,103 @@ function CreateAssignment(props) {
       >
         Create New Assignment
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '450px' }}>
-        <div style={{ marginRight: '115px' }}>User</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "450px",
+        }}
+      >
+        <div style={{ marginRight: "115px" }}>User</div>
         <InputGroup style={{ width: "300px" }}>
-            <FormControl
-              type="search"
-              placeholder=""
-              value={label}
-              onClick={() => setIsOpenSelectUsers(true)}
-              style={{ borderRight: '0px', backgroundColor: '#FFF' }}
-              readOnly
-            />
-            <InputGroup.Text style={{ backgroundColor: '#FFF' }}>
-              <BsSearch
-                style={{ color: "#000", marginBottom: "3px" }}
-              />
-            </InputGroup.Text>
+          <FormControl
+            type="search"
+            placeholder=""
+            value={userLabel}
+            onClick={() => setIsOpenSelectUsers(true)}
+            style={{ borderRight: "0px", backgroundColor: "#FFF" }}
+            readOnly
+          />
+          <InputGroup.Text style={{ backgroundColor: "#FFF" }}>
+            <BsSearch style={{ color: "#000", marginBottom: "3px" }} />
+          </InputGroup.Text>
         </InputGroup>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '450px', marginTop: '20px' }}>
-        <div style={{ marginRight: '110px' }}>Asset</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "450px",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ marginRight: "110px" }}>Asset</div>
         <InputGroup style={{ width: "300px" }}>
-            <FormControl
-              type="search"
-              placeholder=""
-              value=""
-              onClick={() => {}}
-              style={{ borderRight: '0px', backgroundColor: '#FFF' }}
-              readOnly
-            />
-            <InputGroup.Text style={{ backgroundColor: '#FFF' }}>
-              <BsSearch
-                style={{ color: "#000", marginBottom: "3px" }}
-              />
-            </InputGroup.Text>
+          <FormControl
+            type="search"
+            placeholder=""
+            value={assetLabel}
+            onClick={() => setIsOpenSelectAssets(true)}
+            style={{ borderRight: "0px", backgroundColor: "#FFF" }}
+            readOnly
+          />
+          <InputGroup.Text style={{ backgroundColor: "#FFF" }}>
+            <BsSearch style={{ color: "#000", marginBottom: "3px" }} />
+          </InputGroup.Text>
         </InputGroup>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '450px', marginTop: '20px' }}>
-        <div style={{ marginRight: '45px' }}>Assigned Date</div>
-        <InputGroup style={{ width: "300px", borderRight: '1px solid #ced4da', borderRadius: '.25rem' }}>
-            <FormControl
-              type="date"
-              placeholder=""
-              onClick={() => {}}
-              style={{ borderRight: '0px', backgroundColor: '#FFF' }}
-            />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "450px",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ marginRight: "45px" }}>Assigned Date</div>
+        <InputGroup
+          style={{
+            width: "300px",
+            borderRight: "1px solid #ced4da",
+            borderRadius: ".25rem",
+          }}
+        >
+          <FormControl
+            type="date"
+            placeholder=""
+            onClick={() => {}}
+            style={{ borderRight: "0px", backgroundColor: "#FFF" }}
+          />
         </InputGroup>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', width: '450px', marginTop: '20px' }}>
-        <div style={{ marginRight: '45px' }}>Note</div>
-        <textarea  style={{ width: "300px", height: '80px', borderColor: '#ced4da' }}>
-
-        </textarea >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "450px",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ marginRight: "45px" }}>Note</div>
+        <textarea
+          style={{ width: "300px", height: "80px", borderColor: "#ced4da" }}
+        ></textarea>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "end", marginTop: '30px', marginRight: '50px' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          marginTop: "30px",
+          marginRight: "50px",
+        }}
+      >
         <Button
           style={{
             backgroundColor: "#dc3545",
@@ -107,14 +145,26 @@ function CreateAssignment(props) {
         </Button>
       </div>
 
-      {isOpenSelectUsers ? 
+      {isOpenSelectUsers ? (
         <SelectUsers
           isOpenSelectUsers={isOpenSelectUsers}
           setIsOpenSelectUsers={setIsOpenSelectUsers}
-          setValue={setValue}
-          setLabel={setLabel}
-        /> : ""
-      }
+          setValue={setUserValue}
+          setLabel={setUserLabel}
+        />
+      ) : (
+        ""
+      )}
+      {isOpenSelectAssets ? (
+        <SelectAssets
+          isOpenSelectUsers={isOpenSelectAssets}
+          setIsOpenSelectAssets={setIsOpenSelectAssets}
+          setValue={setAssetValue}
+          setLabel={setAssetLabel}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
