@@ -9,8 +9,6 @@ namespace RookieOnlineAssetManagement.Models.Assignments
     {
         public int Id { get; set; }
         public DateTime AssignedDate { get; set; }
-        public int AssetId { get; set; }
         public string Note { get; set; }
-        public int AssignedTo { get; set; }
     }
 }

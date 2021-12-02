@@ -13,7 +13,7 @@ import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { IoReloadOutline } from "react-icons/io5";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   GetAssignmentState,
   GetDetail,
@@ -44,7 +44,7 @@ const ListAssignments = () => {
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState();
-  const [sortBy, setSortBy] = useState("code");
+  const [sortBy, setSortBy] = useState("assetCode");
   const [totalPages, setTotalPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchFilterModel, setSearchFilterModel] = useState({});
@@ -61,7 +61,6 @@ const ListAssignments = () => {
     state: "",
     note: "",
   });
-  const history = useHistory();
   const formatDate = (date) => {
     if (date !== null && date !== undefined) {
       var d = new Date(date),
@@ -105,8 +104,6 @@ const ListAssignments = () => {
     GetAssignmentsPagingDefault(afterCreated, afterUpdated)
       .then((response) => {
         setAssignments([...response.items]);
-        setAfterUpdated(false);
-        setAfterCreated(false);
         setTotalPages(response.pageCount);
       })
       .catch((error) => console.log(error));
@@ -123,20 +120,15 @@ const ListAssignments = () => {
       pageIndex: currentPage,
       assignedDateFilter: formatDate(dateFilter),
     });
-
     setIsFilter(true);
   }, [selectedState, isSearch, currentPage, sortBy, isAscending, dateFilter]);
   useEffect(() => {
-    console.log(searchFilterModel);
     GetAssignmentsPagingFilter(searchFilterModel)
       .then((response) => {
         setAssignments([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
         setTotalPages(response.pageCount);
-        setAfterCreated(false);
-        setAfterUpdated(false);
-        history.replace("/assignments");
       })
       .catch((error) => console.log(error));
   }, [isFilter]);
@@ -174,6 +166,7 @@ const ListAssignments = () => {
       });
     });
   }, [detailId]);
+  console.log("create", afterCreated, "update", afterUpdated);
   return (
     <React.Fragment>
       <div style={{ padding: "100px 50px" }}>
@@ -300,6 +293,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("no.");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -310,6 +305,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("assetCode");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -320,6 +317,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("assetName");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -330,6 +329,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("assignedTo");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -340,6 +341,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("assignedBy");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -350,6 +353,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("assignedDate");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -363,6 +368,8 @@ const ListAssignments = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("state");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -437,7 +444,15 @@ const ListAssignments = () => {
                     {StateToString(assignment.state)}
                   </td>
                   <td>
-                    <Link>
+                    <Link
+                      to={{
+                        pathname: `${
+                          StateToString(assignment.state) === "Accepted"
+                            ? "/assignments"
+                            : "/assignments/" + assignment.id
+                        }`,
+                      }}
+                    >
                       <MdEdit
                         style={{
                           color: `${

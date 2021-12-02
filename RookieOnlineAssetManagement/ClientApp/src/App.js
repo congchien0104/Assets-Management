@@ -11,6 +11,7 @@ import NewAsset from "./pages/ManageAssets/newAsset/NewAsset";
 import EditAsset from "./pages/ManageAssets/editAsset/EditAsset";
 import Users from "./pages/ManageUsers/Users";
 import ListAssignments from "./pages/ManageAssignments/ListAssignments";
+import EditAssignment from "./pages/ManageAssignments/EditAssignment";
 import RequestForReturning from "./pages/RequestForReturning";
 import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
@@ -181,6 +182,13 @@ function App() {
               path="/assignment/new"
               component={() =>
                 userData.type == 2 ? <CreateAssignment /> : <div>404 Not Found!</div>
+              }
+            />
+            <Route
+              exact
+              path="/assignments/:id"
+              component={() =>
+                userData.type == 2 ? <EditAssignment /> : <div>404 Not Found!</div>
               }
             />
             <Route

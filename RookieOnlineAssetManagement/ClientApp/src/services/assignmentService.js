@@ -9,8 +9,11 @@ export async function GetAssignmentState() {
     return await axios.get(API_URL + "states").then((response) => response.data);
 }
 export async function Delete(id) {
-    return axios.delete(API_URL + `${id}`);
+    return await axios.delete(API_URL + `${id}`);
 }
+export async function Update(id, data) {
+    return await axios.put(API_URL + `${id}`, data);
+};
 export async function GetAssignmentsPagingDefault(afterCreated, afterUpdated) {
     var query = afterCreated ? `${"&IsSortByCreatedDate=" + afterCreated}` : "";
     query += afterUpdated ? `${"&IsSortByUpdatedDate=" + afterUpdated}` : "";
@@ -19,13 +22,16 @@ export async function GetAssignmentsPagingDefault(afterCreated, afterUpdated) {
         .then((response) => response.data);
 }
 export async function GetAssignmentsPagingFilter(filter) {
-    var query = filter.pageIndex ? `${"&pageIndex=" + filter.pageIndex}` : "";
+    console.log("filter", filter);
+    var query = filter.IsSortByCreatedDate ? `${"&IsSortByCreatedDate=" + filter.IsSortByCreatedDate}` : "";
+    query += filter.IsSortByUpdatedDate === "true" ? `${"&IsSortByUpdatedDate=" + filter.IsSortByUpdatedDate}` : "";
+    query += filter.pageIndex ? `${"&pageIndex=" + filter.pageIndex}` : "";
     query += filter.isAscending === false ? `${"&isAscending=false"}` : "";
     query += filter.keyword ? `${"&keyword=" + filter.keyword}` : "";
     query += filter.statesFilter
         ? `${"&statesFilter=" + filter.statesFilter}`
         : "";
-    query += filter.assignedDateFilter !== undefined
+    query += (filter.assignedDateFilter !== undefined && filter.assignedDateFilter !== null)
         ? `${"&assignedDateFilter=" + filter.assignedDateFilter}`
         : "";
     query += filter.sortBy ? `${"&sortBy=" + filter.sortBy}` : "";

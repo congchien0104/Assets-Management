@@ -162,15 +162,13 @@ namespace RookieOnlineAssetManagement.Services
 
         public async Task<bool> Update(AssignmentUpdateRequest request)
         {
-            if (DateTime.Now <= request.AssignedDate)
+            if (request.AssignedDate <= DateTime.Now.Date)
                 throw new Exception("Admin can select only current or future date for Assigned Date");
             var assignment = await _dbcontext.Assignments.FindAsync(request.Id);
             if (assignment == null)
                 throw new Exception($"Cannot find assignment with id {request.Id}");
-            assignment.AssetId = request.AssetId;
             assignment.AssignedDate = request.AssignedDate;
             assignment.Note = request.Note;
-            assignment.AssignedTo = request.AssignedTo;
             assignment.UpdatedDate = DateTime.Now;
             _dbcontext.Assignments.Update(assignment);
             return await _dbcontext.SaveChangesAsync() > 0;

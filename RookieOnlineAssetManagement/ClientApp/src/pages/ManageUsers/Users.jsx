@@ -59,7 +59,7 @@ const Users = () => {
       .catch((e) => {
         console.log(e);
       });
-  }, [afterCreated, afterUpdated]);
+  }, []);
 
   useEffect(() => {
     setSearchFilterModel({

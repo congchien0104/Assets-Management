@@ -30,7 +30,7 @@ import queryString from "query-string";
 const ListAssets = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
-  const afterCreated = params.IsSortByCreatedDate;
+  const [afterCreated, setAfterCreated] = useState(params.IsSortByCreatedDate);
   const [afterUpdated, setAfterUpdated] = useState(params.IsSortByUpdatedDate);
   const [states, setStates] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -104,7 +104,6 @@ const ListAssets = () => {
     GetAssetsPagingDefault(afterCreated, afterUpdated)
       .then((response) => {
         setAssets([...response.items]);
-        setAfterUpdated(false);
         setTotalPages(response.pageCount);
       })
       .catch((error) => console.log(error));
@@ -138,7 +137,6 @@ const ListAssets = () => {
         setIsFilter(false);
         setIsSearch(false);
         setTotalPages(response.pageCount);
-        history.replace("/assets");
       })
       .catch((error) => console.log(error));
   }, [isFilter]);
@@ -313,6 +311,8 @@ const ListAssets = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("code");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -323,6 +323,8 @@ const ListAssets = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("name");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -333,6 +335,8 @@ const ListAssets = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("category");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
@@ -343,6 +347,8 @@ const ListAssets = () => {
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("state");
+                    setAfterCreated("false");
+                    setAfterUpdated("false");
                   }}
                 ></GoTriangleDown>
               </th>
