@@ -38,7 +38,7 @@ namespace RookieOnlineAssetManagement.Services
                 State = AssignmentState.WaitingForAcceptance
             };
             _dbcontext.Assignments.Add(assignment);
-             await _dbcontext.SaveChangesAsync();
+            await _dbcontext.SaveChangesAsync();
             return assignment.Id;
         }
 
@@ -60,26 +60,34 @@ namespace RookieOnlineAssetManagement.Services
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter
             IQueryable<Assignment> query = _dbcontext.Assignments.AsQueryable();
-            query = query.WhereIf(request.KeyWord != null, x => x.Asset.Code.Contains(request.KeyWord) 
+            query = query.WhereIf(request.KeyWord != null, x => x.Asset.Code.Contains(request.KeyWord)
                                     || x.Asset.Name.Contains(request.KeyWord) || x.AssignToUser.UserName.Contains(request.KeyWord));
             query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             query = query.WhereIf(assignedDate != System.DateTime.MinValue, x => x.AssignedDate == assignedDate);
             query = query.WhereIf(request.Location != null, x => x.Asset.Location == request.Location);
             // Sort
-            query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
-            query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
-            query = query.OrderByIf(request.SortBy == "no.", x => x.Id, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "assetcode", x => x.Asset.Code, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "assetname", x => x.Asset.Name, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "assignedto", x => x.AssignToUser.UserName, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "assignedby", x => x.AssignByUser.UserName, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "assigneddate", x => x.AssignedDate, request.IsAscending);
-            query = query.OrderByIf(request.SortBy == "state", x => x.State.ToString(), request.IsAscending);
+            if (request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
+            {
+                query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
+                query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
+            }
+            else
+            {
+                query = query.OrderByIf(request.SortBy == "no.", x => x.Id, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "assetCode", x => x.Asset.Code, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "assetName", x => x.Asset.Name, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "assignedTo", x => x.AssignToUser.UserName, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "assignedBy", x => x.AssignByUser.UserName, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "assignedDate", x => x.AssignedDate, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "state", x => x.State, !request.IsAscending);
+            }
+
             // Paging and Projection
             var totalRecord = await query.CountAsync();
-            var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssignmentVM()
+            var data = await query.Paged(request.PageIndex, request.PageSize).Select((a) => new AssignmentVM()
             {
                 Id = a.Id,
+                // Ordinal = index,
                 AssignedDate = a.AssignedDate,
                 State = a.State,
                 AssetCode = a.Asset.Code,
@@ -87,6 +95,10 @@ namespace RookieOnlineAssetManagement.Services
                 AssignedByName = a.AssignByUser.UserName,
                 AssignedToName = a.AssignToUser.UserName,
             }).ToListAsync();
+            for (int i = 0; i < data.Count; i++)
+            {
+                data[i].Ordinal = (request.PageIndex - 1) * request.PageSize + i + 1;
+            }
             var pagedResult = new PagedResultBase<AssignmentVM>()
             {
                 TotalRecords = totalRecord,

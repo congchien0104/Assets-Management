@@ -1,5 +1,4 @@
 import React from "react";
-import "./ListAssets.css";
 import {
   Modal,
   Table,
@@ -9,102 +8,105 @@ import {
   Row,
   Form,
 } from "react-bootstrap";
+import { BsFillCalendarDateFill } from "react-icons/bs";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
+import { IoReloadOutline } from "react-icons/io5";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import {
-  GetAssetsPagingDefault,
-  GetAssetState,
-  GetAllCategories,
-  Delete,
-  GetAssetsPagingFilter,
+  GetAssignmentState,
   GetDetail,
-} from "../../../services/assetService";
+  Delete,
+  GetAssignmentsPagingDefault,
+  GetAssignmentsPagingFilter,
+} from "../../services/assignmentService";
 import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import Pagination from "react-responsive-pagination";
 import queryString from "query-string";
-const ListAssets = () => {
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+const ListAssignments = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
-  const afterCreated = params.IsSortByCreatedDate;
   const [afterUpdated, setAfterUpdated] = useState(params.IsSortByUpdatedDate);
+  const [afterCreated, setAfterCreated] = useState(params.IsSortByCreatedDate);
   const [states, setStates] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [selectedState, setSelectedState] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState([]);
-  const [assets, setAssets] = useState([]);
+  const [dateFilter, setDateFilter] = useState(null);
+  const [assignments, setAssignments] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isDeletingError, setIsDeletingError] = useState(false);
   const [idDeletingAsset, setIdDeletingAsset] = useState();
   const [isFilter, setIsFilter] = useState(false);
-  const [searchFilterModel, setSearchFilterModel] = useState({});
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState();
   const [sortBy, setSortBy] = useState("code");
   const [totalPages, setTotalPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchFilterModel, setSearchFilterModel] = useState({});
   const [detailId, setDetailId] = useState();
   const [isShowDetail, setIsShowDetail] = useState(false);
-  const [detailedAsset, setDetailedAsset] = useState({
+  const [detailedAssignment, setDetailedAssignment] = useState({
     id: detailId,
     code: "",
     name: "",
-    category: "",
-    installedDate: null,
-    state: "",
-    location: "",
     specification: "",
-    history: [],
+    AssignedTo: "",
+    AssignedBy: "",
+    AssignedDate: null,
+    state: "",
+    note: "",
   });
   const history = useHistory();
   const formatDate = (date) => {
-    var d = new Date(date),
-      month = "" + (d.getMonth() + 1),
-      day = "" + d.getDate(),
-      year = d.getFullYear();
+    if (date !== null && date !== undefined) {
+      var d = new Date(date),
+        month = "" + (d.getMonth() + 1),
+        day = "" + d.getDate(),
+        year = d.getFullYear();
 
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
+      if (month.length < 2) month = "0" + month;
+      if (day.length < 2) day = "0" + day;
 
-    return [month, day, year].join("-");
+      return [month, day, year].join("-");
+    } else {
+      return null;
+    }
+  };
+  const StateToString = (state) => {
+    switch (state) {
+      case 0:
+        return "Waiting For Acceptance";
+        break;
+      case 1:
+        return "Accepted";
+        break;
+      default:
+        return "Unknown";
+        break;
+    }
   };
   useEffect(() => {
-    GetAssetState()
+    GetAssignmentState()
       .then((response) => {
         const arrState = response.map((x) => ({
           value: x.value,
           label: x.name,
         }));
         setStates(arrState);
-        setSelectedState(
-          arrState.filter(
-            (a) => a.value === 0 || a.value === 1 || a.value === 2
-          )
-        );
+        setSelectedState(arrState);
       })
       .catch((error) => console.log(error));
 
-    GetAllCategories()
+    GetAssignmentsPagingDefault(afterCreated, afterUpdated)
       .then((response) => {
-        const arrCategory = response.map((x) => ({
-          id: x.id,
-          value: x.code,
-          label: x.name,
-        }));
-        setCategories(arrCategory);
-        setSelectedCategory(arrCategory.filter((x) => x.id));
-      })
-      .catch((error) => console.log(error));
-
-    GetAssetsPagingDefault(afterCreated, afterUpdated)
-      .then((response) => {
-        setAssets([...response.items]);
+        setAssignments([...response.items]);
         setAfterUpdated(false);
+        setAfterCreated(false);
         setTotalPages(response.pageCount);
       })
       .catch((error) => console.log(error));
@@ -116,72 +118,39 @@ const ListAssets = () => {
       sortBy: sortBy,
       keyword: keyword,
       statesFilter: selectedState.map((s) => s.value).toString(),
-      categoriesFilter: selectedCategory.map((s) => s.id).toString(),
       IsSortByCreatedDate: afterCreated,
       IsSortByUpdatedDate: afterUpdated,
       pageIndex: currentPage,
+      assignedDateFilter: formatDate(dateFilter),
     });
-    setIsFilter(true);
-  }, [
-    selectedState,
-    selectedCategory,
-    isSearch,
-    currentPage,
-    sortBy,
-    isAscending,
-  ]);
 
+    setIsFilter(true);
+  }, [selectedState, isSearch, currentPage, sortBy, isAscending, dateFilter]);
   useEffect(() => {
-    GetAssetsPagingFilter(searchFilterModel)
+    console.log(searchFilterModel);
+    GetAssignmentsPagingFilter(searchFilterModel)
       .then((response) => {
-        setAssets([...response.items]);
+        setAssignments([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
         setTotalPages(response.pageCount);
-        history.replace("/assets");
+        setAfterCreated(false);
+        setAfterUpdated(false);
+        history.replace("/assignments");
       })
       .catch((error) => console.log(error));
   }, [isFilter]);
-  const StateToString = (state) => {
-    switch (state) {
-      case 0:
-        return "Available";
-        break;
-      case 1:
-        return "Not Available";
-        break;
-      case 2:
-        return "Assigned";
-        break;
-      case 3:
-        return "Waiting For Recycling";
-        break;
-      case 4:
-        return "Recycled";
-        break;
-      default:
-        return "Unknown";
-        break;
-    }
-  };
   const handleDelete = () => {
-    var asset = assets.find((a) => a.id === idDeletingAsset);
-    if (asset.histories === null) {
-      Delete(idDeletingAsset)
-        .then((res) => {
-          GetAssetsPagingFilter(searchFilterModel)
-            .then((response) => setAssets([...response.items]))
-            .catch((error) => console.log(error));
-        })
-        .catch((error) => {
-          setIsDeleting(false);
-          setIsDeletingError(true);
-        });
-      setIsDeleting(false);
-    } else {
-      setIsDeleting(false);
-      setIsDeletingError(true);
-    }
+    Delete(idDeletingAsset)
+      .then((res) => {
+        GetAssignmentsPagingFilter(searchFilterModel)
+          .then((response) => setAssignments([...response.items]))
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => {
+        setIsDeleting(false);
+      });
+    setIsDeleting(false);
   };
   const onSearchClick = () => {
     setIsSearch(true);
@@ -192,26 +161,22 @@ const ListAssets = () => {
   }
   useEffect(() => {
     GetDetail(detailId).then((res) => {
-      setDetailedAsset({
-        ...detailedAsset,
-        id: res.id,
-        code: res.code,
-        name: res.name,
-        category: res.category.name,
-        installedDate: formatDate(res.installedDate),
-        state: StateToString(res.state),
-        location: res.location,
+      setDetailedAssignment({
+        ...detailedAssignment,
+        code: res.assetCode,
+        name: res.assetName,
         specification: res.specification,
-        history: res.histories,
+        AssignedTo: res.assignedToName,
+        AssignedBy: res.assignedByName,
+        AssignedDate: formatDate(res.assignedDate),
+        state: StateToString(res.state),
+        note: res.note,
       });
     });
   }, [detailId]);
-  useEffect(() => {
-    console.log(detailedAsset.history);
-  }, [detailedAsset]);
   return (
     <React.Fragment>
-      <div style={{ padding: "120px" }}>
+      <div style={{ padding: "100px 50px" }}>
         <div
           style={{
             color: "#dc3545",
@@ -220,7 +185,7 @@ const ListAssets = () => {
             marginBottom: "25px",
           }}
         >
-          Asset List
+          Assignment List
         </div>
         <div
           style={{
@@ -253,30 +218,49 @@ const ListAssets = () => {
               ClearSelectedIcon={() => ""}
             />
           </div>
-
-          <div style={{ width: "200px" }}>
-            <MultiSelect
-              options={categories}
-              value={selectedCategory}
-              onChange={setSelectedCategory}
-              labelledBy="Category"
-              disableSearch={true}
-              valueRenderer={() => "Category"}
-              ArrowRenderer={() => (
+          <div style={{ width: "220px" }}>
+            <ReactDatePicker
+              selected={dateFilter}
+              onChange={(date) => {
+                setDateFilter(date);
+                console.log(formatDate(date));
+              }}
+              minDate={new Date()}
+              customInput={
                 <div
                   style={{
-                    borderLeft: "1px solid #ccc",
+                    margin: "0",
+                    border: "1px solid #ccc",
                     height: "40px",
-                    paddingLeft: "10px",
+                    display: "flex",
+                    borderRadius: "5%",
                   }}
                 >
-                  <HiFilter style={{ fontSize: "18px", marginTop: "12px" }} />
+                  <label
+                    style={{
+                      borderRight: "1px solid #ccc",
+                      width: "180px",
+                      alignItems: "center",
+                      display: "flex",
+                      paddingLeft: "10px",
+                    }}
+                  >
+                    Assigned Date
+                  </label>
+                  <div
+                    style={{
+                      alignItems: "center",
+                      display: "flex",
+                      fontSize: "17px",
+                      paddingLeft: "10px",
+                    }}
+                  >
+                    <BsFillCalendarDateFill />
+                  </div>
                 </div>
-              )}
-              ClearSelectedIcon={() => ""}
+              }
             />
           </div>
-
           <InputGroup style={{ width: "250px" }}>
             <FormControl
               type="search"
@@ -292,13 +276,13 @@ const ListAssets = () => {
             </Button>
           </InputGroup>
 
-          <Link to="/asset/new">
-            <Button variant="danger">Create new asset</Button>
+          <Link to="/assignment/new">
+            <Button variant="danger">Create new Assignment</Button>
           </Link>
         </div>
         <Table
           style={{
-            width: "1000px",
+            width: "1100px",
             height: "400px",
             overflowX: "auto",
             overflowY: "hidden",
@@ -306,111 +290,164 @@ const ListAssets = () => {
         >
           <thead>
             <tr>
-              <th>
+              <th style={{ width: "70px", padding: "0" }}>
+                No.
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("no.");
+                  }}
+                ></GoTriangleDown>
+              </th>
+              <th style={{ width: "140px", padding: "0" }}>
                 Asset Code
                 <GoTriangleDown
                   style={{ marginLeft: "5px", cursor: "pointer" }}
                   onClick={() => {
                     setIsAscending(!isAscending);
-                    setSortBy("code");
+                    setSortBy("assetCode");
                   }}
                 ></GoTriangleDown>
               </th>
-              <th>
+              <th style={{ width: "140px", padding: "0" }}>
                 Asset Name
                 <GoTriangleDown
                   style={{ marginLeft: "5px", cursor: "pointer" }}
                   onClick={() => {
                     setIsAscending(!isAscending);
-                    setSortBy("name");
+                    setSortBy("assetName");
                   }}
                 ></GoTriangleDown>
               </th>
-              <th>
-                Category
+              <th style={{ width: "140px", padding: "0" }}>
+                Assigned To
                 <GoTriangleDown
                   style={{ marginLeft: "5px", cursor: "pointer" }}
                   onClick={() => {
                     setIsAscending(!isAscending);
-                    setSortBy("category");
+                    setSortBy("assignedTo");
                   }}
                 ></GoTriangleDown>
               </th>
-              <th>
-                State
+              <th style={{ width: "140px", padding: "0" }}>
+                Assigned By
                 <GoTriangleDown
                   style={{ marginLeft: "5px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("assignedBy");
+                  }}
+                ></GoTriangleDown>
+              </th>
+              <th style={{ width: "155px", padding: "0" }}>
+                Assigned Date
+                <GoTriangleDown
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("assignedDate");
+                  }}
+                ></GoTriangleDown>
+              </th>
+              <th style={{ width: "200px", padding: "0" }}>
+                State
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
                   onClick={() => {
                     setIsAscending(!isAscending);
                     setSortBy("state");
                   }}
                 ></GoTriangleDown>
               </th>
-              <th>Action</th>
+              <th style={{ width: "140px", padding: "0" }}>Action</th>
             </tr>
           </thead>
           <tbody>
-            {assets &&
-              assets.map((asset) => (
+            {assignments &&
+              assignments.map((assignment) => (
                 <tr>
                   <td
                     onClick={() => {
                       setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setDetailId(assignment.ordinal);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "60px" }}
                   >
-                    {asset.code}
+                    {assignment.ordinal}
                   </td>
                   <td
                     onClick={() => {
                       setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setDetailId(assignment.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "140px" }}
                   >
-                    {asset.name}
+                    {assignment.assetCode}
                   </td>
                   <td
                     onClick={() => {
                       setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setDetailId(assignment.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "140px" }}
                   >
-                    {" "}
-                    {asset.category.name}
+                    {assignment.assetName}
                   </td>
                   <td
                     onClick={() => {
                       setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setDetailId(assignment.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "140px" }}
                   >
-                    {StateToString(asset.state)}
+                    {assignment.assignedToName}
+                  </td>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(assignment.id);
+                    }}
+                    style={{ cursor: "pointer", width: "140px" }}
+                  >
+                    {assignment.assignedByName}
+                  </td>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(assignment.id);
+                    }}
+                    style={{ cursor: "pointer", width: "155px" }}
+                  >
+                    {formatDate(assignment.assignedDate)}
+                  </td>
+                  <td
+                    onClick={() => {
+                      setIsShowDetail(true);
+                      setDetailId(assignment.id);
+                    }}
+                    style={{ cursor: "pointer", width: "200px" }}
+                  >
+                    {StateToString(assignment.state)}
                   </td>
                   <td>
-                    <Link
-                      to={{
-                        pathname: `${
-                          StateToString(asset.state) === "Assigned"
-                            ? "/assets"
-                            : "/asset/edit/" + asset.id
-                        }`,
-                      }}
-                    >
+                    <Link>
                       <MdEdit
                         style={{
                           color: `${
-                            StateToString(asset.state) === "Assigned"
+                            StateToString(assignment.state) === "Accepted"
                               ? "#808080"
                               : "#000"
                           }`,
                           fontSize: "20px",
-                          marginRight: "20px",
                           cursor: `${
-                            StateToString(asset.state) === "Assigned"
+                            StateToString(assignment.state) === "Accepted"
                               ? "default"
                               : "pointer"
                           }`,
@@ -419,20 +456,38 @@ const ListAssets = () => {
                     </Link>
                     <CgCloseO
                       onClick={() => {
-                        if (StateToString(asset.state) !== "Assigned") {
-                          setIdDeletingAsset(asset.id);
+                        if (StateToString(assignment.state) !== "Accepted") {
+                          setIdDeletingAsset(assignment.id);
                           setIsDeleting(true);
                         }
                       }}
                       style={{
+                        marginLeft: "5px",
                         color: `${
-                          StateToString(asset.state) === "Assigned"
+                          StateToString(assignment.state) === "Accepted"
                             ? "#f2a7ac"
                             : "#dc3545"
                         }`,
                         fontSize: "20px",
                         cursor: `${
-                          StateToString(asset.state) === "Assigned"
+                          StateToString(assignment.state) === "Accepted"
+                            ? "default"
+                            : "pointer"
+                        }`,
+                      }}
+                    />
+                    <IoReloadOutline
+                      style={{
+                        fontWeight: "bold",
+                        color: `${
+                          StateToString(assignment.state) === "Accepted"
+                            ? "#095ee6"
+                            : "#999999"
+                        }`,
+                        marginLeft: "5px",
+                        fontSize: "20px",
+                        cursor: `${
+                          StateToString(assignment.state) === "Accepted"
                             ? "default"
                             : "pointer"
                         }`,
@@ -490,113 +545,82 @@ const ListAssets = () => {
           }}
         >
           <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
+            <Form.Label column="sm" lg={4}>
               Asset Code
             </Form.Label>
 
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.code}
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.code}
             </Form.Label>
           </Row>
           <br />
           <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
+            <Form.Label column="sm" lg={4}>
               Asset name
             </Form.Label>
 
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.name}
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.name}
             </Form.Label>
           </Row>
           <br />
           <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
-              Category
-            </Form.Label>
-
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.category}
-            </Form.Label>
-          </Row>
-          <br />
-          <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
-              Installed Date
-            </Form.Label>
-
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.installedDate}
-            </Form.Label>
-          </Row>
-          <br />
-          <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
-              State
-            </Form.Label>
-
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.state}
-            </Form.Label>
-          </Row>
-          <br />
-          <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
-              Location
-            </Form.Label>
-
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.location}
-            </Form.Label>
-          </Row>
-          <br />
-          <Row style={{ display: "inline" }}>
-            <Form.Label column="sm" lg={3}>
+            <Form.Label column="sm" lg={4}>
               Specification
             </Form.Label>
-            <Form.Label column="sm" lg={9}>
-              {detailedAsset.specification}
+
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.specification}
             </Form.Label>
           </Row>
           <br />
-          {detailedAsset.history === null ? (
-            <Row style={{ display: "inline" }}>
-              <Form.Label column="sm" lg={3}>
-                History
-              </Form.Label>
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={4}>
+              Assigned By
+            </Form.Label>
 
-              <Form.Label column="sm" lg={9}>
-                This Asset doesn't has any assignment history
-              </Form.Label>
-            </Row>
-          ) : (
-            <div>
-              <Form.Label column="sm" lg={3}>
-                History
-              </Form.Label>
-              <Table style={{ fontSize: ".875rem" }}>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Assigned to</th>
-                    <th>Assigned by</th>
-                    <th>Returned</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {detailedAsset.history &&
-                    detailedAsset.history.map((historyItem) => (
-                      <tr>
-                        <td>{formatDate(historyItem.assignedDate)}</td>
-                        <td>{historyItem.assignedTo}</td>
-                        <td>{historyItem.assignedBy}</td>
-                        <td>{formatDate(historyItem.returnedDate)}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </Table>
-            </div>
-          )}
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.AssignedBy}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={4}>
+              Assigned To
+            </Form.Label>
 
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.AssignedTo}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={4}>
+              Assigned Date
+            </Form.Label>
+
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.AssignedDate}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={4}>
+              State
+            </Form.Label>
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.state}
+            </Form.Label>
+          </Row>
+          <br />
+          <Row style={{ display: "inline" }}>
+            <Form.Label column="sm" lg={4}>
+              Note
+            </Form.Label>
+            <Form.Label column="sm" lg={8}>
+              {detailedAssignment.note}
+            </Form.Label>
+          </Row>
           <br />
         </Modal.Body>
       </Modal>
@@ -619,7 +643,7 @@ const ListAssets = () => {
             marginLeft: "20px",
           }}
         >
-          <p>Do you want to delete this asset</p>
+          <p>Do you want to delete this assignment</p>
         </Modal.Body>
 
         <Modal.Footer
@@ -651,61 +675,8 @@ const ListAssets = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={isDeletingError} centered>
-        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
-          <Modal.Title
-            style={{
-              fontSize: "20px",
-              fontWeight: "bold",
-              color: "#dc3545",
-              marginLeft: "20px",
-            }}
-          >
-            Cannot Delete Asset
-          </Modal.Title>
-          <MdOutlineCancelPresentation
-            onClick={() => {
-              setIsDeletingError(false);
-            }}
-            style={{
-              color: "#dc3545",
-              fontSize: "20px",
-              cursor: "pointer",
-            }}
-          />
-        </Modal.Header>
-
-        <Modal.Body
-          style={{
-            marginLeft: "20px",
-            display: "inline",
-          }}
-        >
-          <p
-            style={{
-              display: "inline",
-            }}
-          >
-            Cannot delete the asset because it belongs to one or more historical
-            assignments.
-            <br />
-            If the asset is not able to be used anymore, please update its state
-            in&nbsp;
-            <Link
-              style={{
-                display: "inline",
-              }}
-              to={{
-                pathname: `${"/asset/edit/" + idDeletingAsset}`,
-              }}
-            >
-              Edit Asset Page
-            </Link>
-          </p>
-        </Modal.Body>
-      </Modal>
     </React.Fragment>
   );
 };
 
-export default ListAssets;
+export default ListAssignments;

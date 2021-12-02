@@ -9,6 +9,7 @@ namespace RookieOnlineAssetManagement.Models.Assignments
     public class AssignmentVM
     {
         public int Id { get; set; }
+        public int Ordinal { get; set; }
         public DateTime AssignedDate { get; set; }
         public AssignmentState State { get; set; }
         public string AssetCode { get; set; }

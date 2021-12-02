@@ -10,7 +10,7 @@ import ListAssets from "./pages/ManageAssets/listAssets/ListAssets";
 import NewAsset from "./pages/ManageAssets/newAsset/NewAsset";
 import EditAsset from "./pages/ManageAssets/editAsset/EditAsset";
 import Users from "./pages/ManageUsers/Users";
-import Asignments from "./pages/ManageAssignments/Assignments";
+import ListAssignments from "./pages/ManageAssignments/ListAssignments";
 import RequestForReturning from "./pages/RequestForReturning";
 import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
@@ -173,7 +173,7 @@ function App() {
               exact
               path="/assignments"
               component={() =>
-                userData.type == 2 ? <Asignments /> : <div>404 Not Found!</div>
+                userData.type == 2 ? <ListAssignments /> : <div>404 Not Found!</div>
               }
             />
             <Route
