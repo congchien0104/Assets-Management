@@ -206,7 +206,7 @@ function App() {
               exact
               path="/report"
               component={() =>
-                userData.type == 2 ? <Reports /> : <div>404 Not Found!</div>
+                userData.type == 2 ? <ListReports /> : <div>404 Not Found!</div>
               }
             />
             <Route

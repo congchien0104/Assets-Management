@@ -72,6 +72,7 @@ namespace RookieOnlineAssetManagement
             services.AddTransient<IAssignmentService, AssignmentService>();
             services.AddTransient<IReturnRequestService, ReturnRequestService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IReportService, ReportService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
