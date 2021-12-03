@@ -191,7 +191,7 @@ function App() {
                 userData.type == 2 ? <EditAssignment /> : <div>404 Not Found!</div>
               }
             />
-            {/* <Route
+            <Route
               exact
               path="/request-for-returning"
               component={() =>
@@ -201,7 +201,7 @@ function App() {
                   <div>404 Not Found!</div>
                 )
               }
-            /> */}
+            />
             <Route
               exact
               path="/report"
