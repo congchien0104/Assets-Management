@@ -12,7 +12,7 @@ import EditAsset from "./pages/ManageAssets/editAsset/EditAsset";
 import Users from "./pages/ManageUsers/Users";
 import ListAssignments from "./pages/ManageAssignments/ListAssignments";
 import EditAssignment from "./pages/ManageAssignments/EditAssignment";
-import RequestForReturning from "./pages/RequestForReturning";
+//import RequestForReturning from "./pages/RequestForReturning";
 import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
 import User from "./pages/ManageUsers/User";
@@ -191,7 +191,7 @@ function App() {
                 userData.type == 2 ? <EditAssignment /> : <div>404 Not Found!</div>
               }
             />
-            <Route
+            {/* <Route
               exact
               path="/request-for-returning"
               component={() =>
@@ -201,7 +201,7 @@ function App() {
                   <div>404 Not Found!</div>
                 )
               }
-            />
+            /> */}
             <Route
               exact
               path="/report"

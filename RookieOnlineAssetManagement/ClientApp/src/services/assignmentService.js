@@ -19,6 +19,9 @@ export async function GetAssignmentState() {
 export async function Delete(id) {
     return await axios.delete(API_URL + `${id}`);
 }
+export async function Create(data) {
+    return await axios.post(API_URL, data);
+};
 export async function Update(id, data) {
     return await axios.put(API_URL + `${id}`, data);
 };

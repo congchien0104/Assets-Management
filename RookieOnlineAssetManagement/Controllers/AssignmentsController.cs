@@ -41,6 +41,12 @@ namespace RookieOnlineAssetManagement.Controllers
             {
                 return BadRequest(ModelState);
             }
+            int userId = int.Parse(User.FindFirst("userId")?.Value);
+            if (userId < 0)
+            {
+                return BadRequest();
+            }
+            request.AssignedBy = userId;
             var assignmentId = await _assignmentService.Create(request);
 
             if (assignmentId < 0)

@@ -71,7 +71,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(new { message = "Password has been changed successfully!" });
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [HttpGet("paging")]
         public async Task<IActionResult> GetUsersPagingFilter([FromQuery] UserPagingFilter request)
         {
@@ -84,7 +84,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(users);
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [HttpPost]
         public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)
         {
@@ -100,7 +100,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = userId }, user);
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUser(int userId)
         {
@@ -111,7 +111,7 @@ namespace RookieOnlineAssetManagement.Controllers
 
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int userId, [FromForm] UserUpdate model)
         {
@@ -128,7 +128,7 @@ namespace RookieOnlineAssetManagement.Controllers
 
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [HttpPatch("{userId}")]
         public async Task<IActionResult> DisabledUser(int userId)
         {

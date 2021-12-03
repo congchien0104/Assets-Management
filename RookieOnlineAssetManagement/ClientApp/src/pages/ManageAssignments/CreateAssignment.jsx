@@ -4,18 +4,49 @@ import { InputGroup, FormControl, Button } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { FaCalendarAlt } from "react-icons/fa";
 import SelectAssets from "./SelectAssets";
-import { useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from "react-router-dom";
+
+import { Create } from "../../services/assignmentService";
+
+
+
 
 function CreateAssignment(props) {
-
-  const history = useHistory();
-
+  let history = useHistory();
   const [isOpenSelectUsers, setIsOpenSelectUsers] = useState(false);
   const [isOpenSelectAssets, setIsOpenSelectAssets] = useState(false);
   const [assetLabel, setAssetLabel] = useState("");
   const [assetValue, setAssetValue] = useState(0);
   const [userLabel, setUserLabel] = useState("");
   const [userValue, setUserValue] = useState(0);
+  const [assignedDate, setAssignedDate] = useState(formatDate(new Date()));
+  const [note, setNote] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(true)
+
+
+  useEffect(() => {
+    if(userValue.length > 0 && assetValue.length > 0){
+      setBtnDisabled(false);
+    }
+  }, [userValue, assetValue]);
+  const submitForm = () => {
+    const assignment = new FormData();
+    
+    assignment.append("assignedTo", userValue);
+    assignment.append("assetId", assetValue);
+    assignment.append("assignedDate", assignedDate);
+    assignment.append("note", note);
+    Create(assignment)
+      .then((response) => {
+        history.push("/assignments?IsSortByCreatedDate=true");
+        console.log("Create Assignment");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+  }
+
 
   return (
     <div style={{ padding: "50px", width: "600px" }}>
@@ -97,8 +128,10 @@ function CreateAssignment(props) {
         >
           <FormControl
             type="date"
+            min={formatDate(new Date())}
+            defaultValue={formatDate(new Date())}
             placeholder=""
-            onClick={() => {}}
+            onChange={(e) => {setAssignedDate(e.target.value)}}
             style={{ borderRight: "0px", backgroundColor: "#FFF" }}
           />
         </InputGroup>
@@ -113,7 +146,7 @@ function CreateAssignment(props) {
         }}
       >
         <div style={{ marginRight: "45px" }}>Note</div>
-        <textarea
+        <textarea onChange={(e)=> {setNote(e.target.value)}}
           style={{ width: "300px", height: "80px", borderColor: "#ced4da" }}
         ></textarea>
       </div>
@@ -133,21 +166,28 @@ function CreateAssignment(props) {
             borderRadius: "4px",
             marginRight: "20px",
           }}
-          onClick={() => {}}
+          disabled={btnDisabled}
+          onClick={submitForm}
         >
           Save
         </Button>
-        <Button
-          style={{
-            backgroundColor: "#FFF",
-            border: "1px solid #808080",
-            borderRadius: "4px",
-            color: "#808080",
-          }}
-          onClick={() => history.push("/assignments")}
-        >
-          Cancel
-        </Button>
+        <Link
+            to={{
+              pathname: "/assignments",
+            }}
+          >
+            <Button
+              style={{
+                backgroundColor: "#FFF",
+                border: "1px solid #808080",
+                borderRadius: "4px",
+                color: "#808080",
+              }}
+            >
+              Cancel
+            </Button>
+        </Link>
+        
       </div>
 
       {isOpenSelectUsers ? (
@@ -173,5 +213,17 @@ function CreateAssignment(props) {
     </div>
   );
 }
+
+const formatDate = (date) => {
+  var d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
 
 export default CreateAssignment;

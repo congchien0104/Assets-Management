@@ -21,7 +21,7 @@ const SelectAssets = (props) => {
 
   const handleSave = () => {
     const name = assets.filter((x) => x.id == selectedAssetId)[0].name;
-    props.setValue(setSelectedAssetId);
+    props.setValue(selectedAssetId);
     props.setLabel(name);
     props.setIsOpenSelectAssets(false);
   };
@@ -41,7 +41,6 @@ const SelectAssets = (props) => {
         setAssets([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
-        console.log(assets);
       })
       .catch((error) => {
         console.log(error);
