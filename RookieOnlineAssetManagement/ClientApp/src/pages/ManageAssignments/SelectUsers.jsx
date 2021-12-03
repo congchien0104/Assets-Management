@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./SelectUser.css";
 import { Table, Modal, Button, FormControl, InputGroup } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
@@ -92,7 +91,7 @@ const SelectUsers = (props) => {
               </Button>
             </InputGroup>
           </div>
-          <Table>
+          <Table style={{ height: '500px' }}>
             <thead>
               <tr>
                 <th style={{ width: "50px" }}></th>

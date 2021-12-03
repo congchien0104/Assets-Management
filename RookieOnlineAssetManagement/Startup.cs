@@ -39,6 +39,11 @@ namespace RookieOnlineAssetManagement
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("type", "Admin"));
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Events.OnRedirectToLogin = (context) =>

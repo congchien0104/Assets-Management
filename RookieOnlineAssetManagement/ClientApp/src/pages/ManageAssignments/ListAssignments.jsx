@@ -39,7 +39,7 @@ const ListAssignments = () => {
   const [dateFilter, setDateFilter] = useState(null);
   const [assignments, setAssignments] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [idDeletingAsset, setIdDeletingAsset] = useState();
+  const [idDeletingAssignment, setIdDeletingAssignment] = useState();
   const [isFilter, setIsFilter] = useState(false);
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
@@ -133,7 +133,7 @@ const ListAssignments = () => {
       .catch((error) => console.log(error));
   }, [isFilter]);
   const handleDelete = () => {
-    Delete(idDeletingAsset)
+    Delete(idDeletingAssignment)
       .then((res) => {
         GetAssignmentsPagingFilter(searchFilterModel)
           .then((response) => setAssignments([...response.items]))
@@ -472,7 +472,7 @@ const ListAssignments = () => {
                     <CgCloseO
                       onClick={() => {
                         if (StateToString(assignment.state) !== "Accepted") {
-                          setIdDeletingAsset(assignment.id);
+                          setIdDeletingAssignment(assignment.id);
                           setIsDeleting(true);
                         }
                       }}

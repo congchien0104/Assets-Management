@@ -21,6 +21,7 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             _assignmentService = assignmentService;
         }
+
         [HttpGet("paging")]
         public async Task<IActionResult> GetAssignmentPagingFilter([FromQuery] AssignmentPagingFilterRequest request)
         {
@@ -32,6 +33,7 @@ namespace RookieOnlineAssetManagement.Controllers
             var assignments = await _assignmentService.GetAssignmentPagingFilter(request);
             return Ok(assignments);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] AssignmentCreateRequest request)
         {
@@ -46,6 +48,7 @@ namespace RookieOnlineAssetManagement.Controllers
             var assignment = await _assignmentService.GetDetailedAssignment(assignmentId);
             return CreatedAtAction(nameof(GetDetailedAssignment), new { id = assignmentId }, assignment);
         }
+
         [HttpGet("{assignmentId}")]
         public async Task<IActionResult> GetDetailedAssignment(int assignmentId)
         {
@@ -55,6 +58,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(result);
 
         }
+
         [HttpPut("{assignmentId}")]
         public async Task<IActionResult> Update([FromRoute] int assignmentId, [FromForm] AssignmentUpdateRequest request)
         {
@@ -70,6 +74,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(result);
 
         }
+
         [HttpDelete("{assignmentId}")]
         public async Task<IActionResult> Delete(int assignmentId)
         {
@@ -79,6 +84,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(result);
 
         }
+
         [HttpGet("states")]
         public IActionResult GetAssignmentState()
         {
@@ -87,6 +93,26 @@ namespace RookieOnlineAssetManagement.Controllers
                 return BadRequest();
             return Ok(result);
 
+        }
+
+        [HttpGet("GetOwnAssignments")]
+        public async Task<IActionResult> GetOwnAssignments([FromQuery] AssignmentPagingFilterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            request.Location = User.FindFirst("location")?.Value;
+            return Ok(await _assignmentService.GetOwnAssignments(request, User.Identity.Name));
+        }
+
+        [HttpPut("RespondAssignment/{assignmentId}/{isAccepted}")]
+        public async Task<IActionResult> RespondAssignment(int assignmentId, bool isAccepted)
+        {
+            var result = await _assignmentService.RespondAssignment(assignmentId, isAccepted);
+            if (!result)
+                return BadRequest();
+            return Ok(result);
         }
     }
 }

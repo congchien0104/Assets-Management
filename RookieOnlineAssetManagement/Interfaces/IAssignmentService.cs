@@ -22,6 +22,7 @@ namespace RookieOnlineAssetManagement.Interfaces
         public Task<PagedResultBase<AssignmentVM>> GetAssignmentPagingFilter(AssignmentPagingFilterRequest request);
         public List<StateVM> GetAssignmentStates();
         public Task<bool> RespondAssignment(int assignmentId, bool isAccepted);
+        public Task<List<AssignmentVM>> GetOwnAssignments(AssignmentPagingFilterRequest request, string userName);
 
         // Note: Return icon is only enabled for assignments have state is Accepted
     }

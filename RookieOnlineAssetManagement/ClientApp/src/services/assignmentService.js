@@ -2,6 +2,14 @@ import axios from "axios";
 
 const API_URL = "/api/assignments/";
 
+export async function GetOwnAssignments(filter) {
+    var query = filter.isAscending === false ? `${"isAscending=false"}` : "";
+    query += filter.sortBy ? `${"&sortBy=" + filter.sortBy}` : "";
+    return await axios.get(API_URL + "GetOwnAssignments?" + query).then((response) => response.data);
+}
+export async function RespondAssignment(assignmentId, isAccepted) {
+    return await axios.put(API_URL + "RespondAssignment/" + `${assignmentId}` + `/${isAccepted}`);
+}
 export async function GetDetail(id) {
     return await axios.get(API_URL + `${id}`).then((response) => response.data);
 }
@@ -22,7 +30,6 @@ export async function GetAssignmentsPagingDefault(afterCreated, afterUpdated) {
         .then((response) => response.data);
 }
 export async function GetAssignmentsPagingFilter(filter) {
-    console.log("filter", filter);
     var query = filter.IsSortByCreatedDate ? `${"&IsSortByCreatedDate=" + filter.IsSortByCreatedDate}` : "";
     query += filter.IsSortByUpdatedDate === "true" ? `${"&IsSortByUpdatedDate=" + filter.IsSortByUpdatedDate}` : "";
     query += filter.pageIndex ? `${"&pageIndex=" + filter.pageIndex}` : "";

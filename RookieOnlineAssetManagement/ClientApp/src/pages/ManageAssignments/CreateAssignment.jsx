@@ -4,7 +4,12 @@ import { InputGroup, FormControl, Button } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { FaCalendarAlt } from "react-icons/fa";
 import SelectAssets from "./SelectAssets";
+import { useHistory } from 'react-router-dom';
+
 function CreateAssignment(props) {
+
+  const history = useHistory();
+
   const [isOpenSelectUsers, setIsOpenSelectUsers] = useState(false);
   const [isOpenSelectAssets, setIsOpenSelectAssets] = useState(false);
   const [assetLabel, setAssetLabel] = useState("");
@@ -139,7 +144,7 @@ function CreateAssignment(props) {
             borderRadius: "4px",
             color: "#808080",
           }}
-          onClick={() => {}}
+          onClick={() => history.push("/assignments")}
         >
           Cancel
         </Button>

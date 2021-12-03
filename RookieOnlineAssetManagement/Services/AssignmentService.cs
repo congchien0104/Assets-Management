@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
 using RookieOnlineAssetManagement.Data.Enums;
@@ -17,10 +18,12 @@ namespace RookieOnlineAssetManagement.Services
     public class AssignmentService : IAssignmentService
     {
         private readonly ApplicationDbContext _dbcontext;
+        private readonly UserManager<User> _userManager;
 
-        public AssignmentService(ApplicationDbContext dbcontext)
+        public AssignmentService(ApplicationDbContext dbcontext, UserManager<User> userManager)
         {
             _dbcontext = dbcontext;
+            _userManager = userManager;
         }
 
         public async Task<int> Create(AssignmentCreateRequest request)
@@ -172,6 +175,39 @@ namespace RookieOnlineAssetManagement.Services
             assignment.UpdatedDate = DateTime.Now;
             _dbcontext.Assignments.Update(assignment);
             return await _dbcontext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<AssignmentVM>> GetOwnAssignments(AssignmentPagingFilterRequest request, string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if(user == null)
+                throw new Exception($"Cannot find user with id {user.Id}");
+
+            // Filter
+            IQueryable<Assignment> query = _dbcontext.Assignments.AsQueryable();
+
+            query = query.WhereIf(user != null, x => x.AssignToUser.Id == user.Id);
+            query = query.WhereIf(user != null, x => x.AssignedDate <= DateTime.Now);
+            query = query.WhereIf(request.Location != null, x => x.Asset.Location == request.Location);
+
+            query = query.OrderByIf(request.SortBy == "assetCode", x => x.Asset.Code, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "assetName", x => x.Asset.Name, request.IsAscending);
+            query = query.OrderByIf(request.SortBy == "state", x => x.State, !request.IsAscending);
+
+            var assignments = await query.Select((x) => new AssignmentVM()
+            {
+                Id = x.Id,
+                AssetCode = x.Asset.Code,
+                AssetName = x.Asset.Name,
+                Specification = x.Asset.Specification,
+                AssignedToName = x.AssignToUser.UserName,
+                AssignedByName = x.AssignByUser.UserName,
+                State = x.State,
+                Note = x.Note
+
+            }).ToListAsync();
+
+            return assignments;
         }
     }
 }
