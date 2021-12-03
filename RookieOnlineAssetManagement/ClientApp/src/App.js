@@ -12,7 +12,7 @@ import EditAsset from "./pages/ManageAssets/editAsset/EditAsset";
 import Users from "./pages/ManageUsers/Users";
 import ListAssignments from "./pages/ManageAssignments/ListAssignments";
 import EditAssignment from "./pages/ManageAssignments/EditAssignment";
-//import RequestForReturning from "./pages/RequestForReturning";
+import ListRequests from "./pages/RequestForReturning/ListRequests";
 import Reports from "./pages/Reports";
 import AddUser from "./pages/ManageUsers/AddUser";
 import User from "./pages/ManageUsers/User";
@@ -196,7 +196,7 @@ function App() {
               path="/request-for-returning"
               component={() =>
                 userData.type == 2 ? (
-                  <RequestForReturning />
+                  <ListRequests />
                 ) : (
                   <div>404 Not Found!</div>
                 )

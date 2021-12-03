@@ -40,10 +40,6 @@
     <Content Remove="wwwroot\logo\logoJPG.jpg" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\ReturnRequests\" />
-  </ItemGroup>
-
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
