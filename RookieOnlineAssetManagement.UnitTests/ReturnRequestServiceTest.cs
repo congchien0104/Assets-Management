@@ -3,23 +3,25 @@ using Moq;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
 using RookieOnlineAssetManagement.Data.Enums;
-using RookieOnlineAssetManagement.Models.Assignments;
+using RookieOnlineAssetManagement.Models.ReturnRequests;
 using RookieOnlineAssetManagement.Services;
 using RookieOnlineAssetManagement.Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace RookieOnlineAssetManagement.UnitTests
 {
-    public class AssignmentServiceTest
+    public class ReturnRequestServiceTest
     {
-        private readonly AssignmentService _assignmentService;
+        private readonly ReturnRequestService _returnRequestService;
         private readonly ApplicationDbContext _dbContext;
         private Mock<FakeUserManager> _mockUserManager;
 
-        public AssignmentServiceTest()
+        public ReturnRequestServiceTest()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
              .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -121,102 +123,65 @@ namespace RookieOnlineAssetManagement.UnitTests
                         AssetId = 1,
                         State = AssignmentState.WaitingForAcceptance,
                     });
-                context.ReturnRequests.Add(new ReturnRequest
-                {
-                    Id = 1,
-                    AssignmentId = 2,
-                    AcceptedBy = 2,
-                    RequestedBy = 1,
-                    ReturnedDate = new DateTime(2016, 9, 28),
-                    State = ReturnRequestState.Completed
-                });
+                context.ReturnRequests.AddRange(
+                    new ReturnRequest
+                    {
+                        Id = 1,
+                        AssignmentId = 2,
+                        AcceptedBy = 2,
+                        RequestedBy = 1,
+                        ReturnedDate = new DateTime(2016, 9, 28),
+                        State = ReturnRequestState.Completed
+                    }, new ReturnRequest
+                    {
+                        Id = 2,
+                        AssignmentId = 2,
+                        AcceptedBy = 2,
+                        RequestedBy = 1,
+                        ReturnedDate = new DateTime(2016, 9, 28),
+                        State = ReturnRequestState.WaitingForReturning
+                    }, new ReturnRequest
+                    {
+                        Id = 3,
+                        AssignmentId = 2,
+                        AcceptedBy = 2,
+                        RequestedBy = 1,
+                        ReturnedDate = new DateTime(2016, 9, 28),
+                        State = ReturnRequestState.WaitingForReturning
+                    });
                 context.SaveChanges();
 
             }
             _dbContext = new ApplicationDbContext(options);
             _mockUserManager = new Mock<FakeUserManager>();
-            _assignmentService = new AssignmentService(_dbContext, _mockUserManager.Object);
+            _returnRequestService = new ReturnRequestService(_dbContext);
         }
-        /*
-         * Get paging full property filter by state filter by date
-         * Get detailed with state diff Accepted and Wating for Acceptance state
-         */
+
         [Fact]
-        public async Task GetDetailedAssignmentWhichHasStateAccepted_ReturnAssignmentVM()
+        public async Task GetReturnRequestPagingFilterWithStatesAndReturnedDateFilter_ReturnPagedResultIncludeOneItem()
         {
             // Arrange
-            int assignmentId = 1;
-            // Act
-            var assignment = await _assignmentService.GetDetailedAssignment(assignmentId);
-            // Assert
-            Assert.IsType<AssignmentVM>(assignment);
-        }
-        [Fact]
-        public async Task GetDetailedAssignmentWhichHasStateReturned_ReturnExeption()
-        {
-            // Arrange
-            int assignmentId = 2;
-            // Act
-            Func<Task> act = async () => await _assignmentService.GetDetailedAssignment(assignmentId);
-            // Assert
-            var exception = await Assert.ThrowsAsync<Exception>(act);
-            Assert.Contains("Get detaled assignment will be enable with Accepted and Wating for Acceptance state", exception.Message);
-        }
-        [Fact]
-        public async Task GetAssignmentPagingWithStatesAndAssignedDateFilter_ReturnPagedResultIncludeTwoItem()
-        {
-            // Arrange
-            var request = new AssignmentPagingFilterRequest
+            var request = new ReturnRequestPagingFilterRequest
             {
-                StatesFilter = $"{(int)AssignmentState.Accepted},{(int)AssignmentState.WaitingForAcceptance}",
-                AssignedDateFilter = new DateTime(2021, 9, 28).Date.ToString()
+                StatesFilter = $"{(int)ReturnRequestState.Completed},{(int)ReturnRequestState.Declined}",
+                ReturnedDateFilter = new DateTime(2016, 9, 28).Date.ToString()
             };
             // Act
-            var assignments = await _assignmentService.GetAssignmentPagingFilter(request);
+            var returnRequests = await _returnRequestService.GetReturnRequestPagingFilter(request);
             // Assert
-            Assert.IsType<PagedResultBase<AssignmentVM>>(assignments);
-            Assert.Equal(2, assignments.TotalRecords);
+            Assert.IsType<PagedResultBase<ReturnRequestVM>>(returnRequests);
+            Assert.Equal(1, returnRequests.TotalRecords);
         }
         [Fact]
-        public async Task GetOwnAssignments_WithUserName_ReturnAssignmentsOfThisUserName()
+        public async Task GetDetailedReturnRequestWhichHasStateWaitingForReturning_ReturnReturnRequestVM()
         {
             // Arrange
-            var userName = "xuantuan1";
-            var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == userName);
-            _mockUserManager.Setup(userManager => userManager.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(user);
-            
-            var request = new AssignmentPagingFilterRequest
-            {
-                Location = "HCM"
-            };
+            int returnRequestId = 2;
             // Act
-            var assignments = await _assignmentService.GetOwnAssignments(request, userName);
+            var returnRequest = await _returnRequestService.GetDetailedReturnRequest(returnRequestId);
             // Assert
-            Assert.IsType<List<AssignmentVM>>(assignments);
-        }
-        [Fact]
-        public async Task RespondAssignment_WithAssignmentIdAndIsAcceptTrue_ReturnAssignmentStateChangeToAcceptedSuccessfully()
-        {
-            // Arrange
-            var assignmentId = 3;
-            var isAccepted = true;
-            // Act
-            var assignments = await _assignmentService.RespondAssignment(assignmentId, isAccepted);
-            // Assert
-            Assert.True(assignments);
-            Assert.Equal(AssignmentState.Accepted, _dbContext.Assignments.Find(assignmentId).State);
-        }
-        [Fact]
-        public async Task RespondAssignment_WithAssignmentIdAndIsAcceptFalse_ReturnAssignmentStateChangeToDeclinedSuccessfully()
-        {
-            // Arrange
-            var assignmentId = 3;
-            var isAccepted = false;
-            // Act
-            var assignments = await _assignmentService.RespondAssignment(assignmentId, isAccepted);
-            // Assert
-            Assert.True(assignments);
-            Assert.Equal(AssignmentState.Declined, _dbContext.Assignments.Find(assignmentId).State);
+            Assert.IsType<ReturnRequestVM>(returnRequest);
+            Assert.Equal(ReturnRequestState.WaitingForReturning, _dbContext.ReturnRequests.Find(returnRequestId).State);
         }
     }
 }
