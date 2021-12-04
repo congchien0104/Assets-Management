@@ -19,7 +19,6 @@ namespace RookieOnlineAssetManagement.Models.Assignments
         public AssignmentPagingFilterRequest()
         {
             IsAscending = true;
-            //StatesFilter = $"{(int)AssetState.Available},{(int)AssetState.NotAvailable},{(int)AssetState.Assigned}";
             PageIndex = 1;
             PageSize = 5;
         }

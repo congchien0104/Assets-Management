@@ -218,7 +218,6 @@ const ListAssignments = () => {
                 setDateFilter(date);
                 console.log(formatDate(date));
               }}
-              minDate={new Date()}
               customInput={
                 <div
                   style={{
@@ -502,7 +501,7 @@ const ListAssignments = () => {
                         marginLeft: "5px",
                         fontSize: "20px",
                         cursor: `${
-                          StateToString(assignment.state) === "Accepted"
+                          StateToString(assignment.state) !== "Accepted"
                             ? "default"
                             : "pointer"
                         }`,

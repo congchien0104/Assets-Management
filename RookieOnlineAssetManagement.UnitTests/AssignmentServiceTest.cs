@@ -3,11 +3,10 @@ using Moq;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
 using RookieOnlineAssetManagement.Data.Enums;
+using RookieOnlineAssetManagement.Models.Assignments;
 using RookieOnlineAssetManagement.Services;
+using RookieOnlineAssetManagement.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -100,14 +99,22 @@ namespace RookieOnlineAssetManagement.UnitTests
                         Id = 1,
                         AssignedBy = 1,
                         AssignedTo = 2,
-                        AssignedDate = new DateTime(2015, 9, 28),
+                        AssignedDate = new DateTime(2021, 9, 28),
                         AssetId = 1,
                         State = AssignmentState.Accepted,
+                    }, new Assignment
+                    {
+                        Id = 2,
+                        AssignedBy = 1,
+                        AssignedTo = 2,
+                        AssignedDate = new DateTime(2021, 9, 28),
+                        AssetId = 1,
+                        State = AssignmentState.Returned,
                     });
                 context.ReturnRequests.Add(new ReturnRequest
                 {
                     Id = 1,
-                    AssignmentId = 1,
+                    AssignmentId = 2,
                     AcceptedBy = 2,
                     RequestedBy = 1,
                     ReturnedDate = new DateTime(2016, 9, 28),
@@ -117,7 +124,48 @@ namespace RookieOnlineAssetManagement.UnitTests
 
             }
             var mockContext = new ApplicationDbContext(options);
+            _mockUserManager = new Mock<FakeUserManager>();
             _assignmentService = new AssignmentService(mockContext, _mockUserManager.Object);
+        }
+        /*
+         * Get paging full property filter by state filter by date
+         * Get detailed with state diff Accepted and Wating for Acceptance state
+         */
+        [Fact]
+        public async Task GetDetailedAssignmentWhichHasStateAccepted_ReturnAssignmentVM()
+        {
+            // Arrange
+            int assignmentId = 1;
+            // Act
+            var assignment = await _assignmentService.GetDetailedAssignment(assignmentId);
+            // Assert
+            Assert.IsType<AssignmentVM>(assignment);
+        }
+        [Fact]
+        public async Task GetDetailedAssignmentWhichHasStateReturned_ReturnExeption()
+        {
+            // Arrange
+            int assignmentId = 2;
+            // Act
+            Func<Task> act = async () => await _assignmentService.GetDetailedAssignment(assignmentId);
+            // Assert
+            var exception = await Assert.ThrowsAsync<Exception>(act);
+            Assert.Contains("Get detaled assignment will be enable with Accepted and Wating for Acceptance state", exception.Message);
+        }
+        [Fact]
+        public async Task GetAssignmentPagingWithStatesAndAssignedDateFilter_ReturnPagedResultIncludeOneItem()
+        {
+            // Arrange
+            var request = new AssignmentPagingFilterRequest
+            {
+                StatesFilter = $"{(int)AssignmentState.Accepted},{(int)AssignmentState.WaitingForAcceptance}",
+                AssignedDateFilter = new DateTime(2021, 9, 28).Date.ToString()
+            };
+            // Act
+            var assignments = await _assignmentService.GetAssignmentPagingFilter(request);
+            // Assert
+            Assert.IsType<PagedResultBase<AssignmentVM>>(assignments);
+            Assert.Equal(1, assignments.TotalRecords);
         }
     }
 }

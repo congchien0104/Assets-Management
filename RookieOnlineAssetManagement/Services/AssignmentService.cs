@@ -11,6 +11,7 @@ using RookieOnlineAssetManagement.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Services
@@ -51,7 +52,7 @@ namespace RookieOnlineAssetManagement.Services
             if (assignment == null)
                 throw new Exception($"Cannot find assignment with id {assignmentId}");
             if (assignment.State != AssignmentState.WaitingForAcceptance)
-                throw new Exception("Delete icon is enabled for only \"Waiting for acceptance\" assignment");
+                throw new Exception("Delete is enabled for only \"Waiting for acceptance\" assignment");
             _dbcontext.Assignments.Remove(assignment);
             return await _dbcontext.SaveChangesAsync() > 0;
         }
@@ -117,12 +118,12 @@ namespace RookieOnlineAssetManagement.Services
             List<StateVM> stateList = new List<StateVM>();
             stateList.Add(new StateVM
             {
-                Name = AssignmentState.Accepted.ToString(),
+                Name = AddSpacesToSentence(AssignmentState.Accepted.ToString()),
                 Value = (int)AssignmentState.Accepted
             });
             stateList.Add(new StateVM
             {
-                Name = AssignmentState.WaitingForAcceptance.ToString(),
+                Name = AddSpacesToSentence(AssignmentState.WaitingForAcceptance.ToString()),
                 Value = (int)AssignmentState.WaitingForAcceptance
             });
             return stateList;
@@ -134,7 +135,10 @@ namespace RookieOnlineAssetManagement.Services
                                                           .Include(a => a.Asset).FirstOrDefaultAsync(a => a.Id == assignmentId);
             if (assignment == null)
                 throw new Exception($"Cannot find assignment with id {assignmentId}");
-
+            if(assignment.State != AssignmentState.Accepted && assignment.State != AssignmentState.WaitingForAcceptance)
+            {
+                throw new Exception($"Get detaled assignment will be enable with Accepted and Wating for Acceptance state");
+            }
             var detailedAssignment = new AssignmentVM
             {
                 Id = assignment.Id,
@@ -180,7 +184,7 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<List<AssignmentVM>> GetOwnAssignments(AssignmentPagingFilterRequest request, string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
-            if(user == null)
+            if (user == null)
                 throw new Exception($"Cannot find user with id {user.Id}");
 
             // Filter
@@ -208,6 +212,10 @@ namespace RookieOnlineAssetManagement.Services
             }).ToListAsync();
 
             return assignments;
+        }
+        private string AddSpacesToSentence(string text)
+        {
+            return Regex.Replace(text, "([a-z])([A-Z])", "$1 $2");
         }
     }
 }
