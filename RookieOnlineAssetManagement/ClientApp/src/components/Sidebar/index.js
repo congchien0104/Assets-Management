@@ -42,10 +42,9 @@ function Index(props) {
   const [state, setState] = useState(1);
   useEffect(() => {
     if (location.pathname.includes("/")) setState(1);
-    if (location.pathname.includes("/users")) setState(2);
-    if (location.pathname.includes("/assets")) setState(3);
-    if (location.pathname.includes("/assignments")) setState(4);
-    if (location.pathname.includes("/assignment/new")) setState(4);
+    if (location.pathname.includes("/user")) setState(2);
+    if (location.pathname.includes("/asset")) setState(3);
+    if (location.pathname.includes("/assignment")) setState(4);
     if (location.pathname.includes("/request-for-returning")) setState(5);
     if (location.pathname.includes("/report")) setState(6);
   }, [location]);
@@ -63,16 +62,7 @@ function Index(props) {
       </h6>
       <div className="list-group" id="list-tab" role="tablist">
         {menus.map((menu, index) => (
-          <Link
-            to={menu.to}
-            className={
-              menu.id === state
-                ? "list-group-item list-group-item-action active"
-                : "list-group-item list-group-item-action"
-            }
-            key={index}
-            onClick={() => setState(menu.id)}
-          >
+          <Link to={menu.to} className={menu.id === state ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action"} key={index} onClick={() => setState(menu.id)}>
             {menu.name}
           </Link>
         ))}
