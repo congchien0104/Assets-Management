@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
@@ -154,9 +155,22 @@ namespace RookieOnlineAssetManagement.UnitTests
             }
             _dbContext = new ApplicationDbContext(options);
             _mockUserManager = new Mock<FakeUserManager>();
-            _returnRequestService = new ReturnRequestService(_dbContext);
+            _returnRequestService = new ReturnRequestService(_dbContext, _mockUserManager.Object);
         }
 
+        [Fact]
+        public async Task Create_WithAssignmentOfUser_ReturnOk()
+        {
+            // Arrange
+            var request = new ReturnRequestCreate
+            {
+                AssignmentId = 1
+            };
+            // Act
+            var result = await _returnRequestService.Create(request);
+            // Assert
+            Assert.True(result > 0);
+        }
         [Fact]
         public async Task GetReturnRequestPagingFilterWithStatesAndReturnedDateFilter_ReturnPagedResultIncludeOneItem()
         {

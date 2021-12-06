@@ -2,6 +2,9 @@ import axios from "axios";
 
 const API_URL = "/api/returnRequests/";
 
+export async function Create(data) {
+    return await axios.post(API_URL, data);
+};
 export async function GetDetail(id) {
     return await axios.get(API_URL + `${id}`).then((response) => response.data);
 }

@@ -146,7 +146,9 @@ namespace RookieOnlineAssetManagement.Services
                                                           .Include(a => a.Asset).FirstOrDefaultAsync(a => a.Id == assignmentId);
             if (assignment == null)
                 throw new Exception($"Cannot find assignment with id {assignmentId}");
-            if(assignment.State != AssignmentState.Accepted && assignment.State != AssignmentState.WaitingForAcceptance)
+            if(assignment.State != AssignmentState.Accepted 
+                && assignment.State != AssignmentState.WaitingForAcceptance 
+                && assignment.State != AssignmentState.WaitingForReturning)
             {
                 throw new Exception($"Get detaled assignment will be enable with Accepted and Wating for Acceptance state");
             }

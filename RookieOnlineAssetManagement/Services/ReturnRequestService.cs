@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
 using RookieOnlineAssetManagement.Data.Enums;
@@ -17,10 +18,35 @@ namespace RookieOnlineAssetManagement.Services
     public class ReturnRequestService : IReturnRequestService
     {
         private readonly ApplicationDbContext _dbcontext;
+        private readonly UserManager<User> _userManager;
 
-        public ReturnRequestService(ApplicationDbContext dbcontext)
+        public ReturnRequestService(ApplicationDbContext dbcontext, UserManager<User> userManager)
         {
             _dbcontext = dbcontext;
+            _userManager = userManager;
+        }
+
+        public async Task<int> Create(ReturnRequestCreate request)
+        {
+            var assignment = await _dbcontext.Assignments.FindAsync(request.AssignmentId);
+            if (assignment == null)
+                throw new Exception($"Cannot find assignment with ID {request.AssignmentId}");
+            if(assignment.State != AssignmentState.Accepted)
+                throw new Exception($"Assignment have to be Accepted before");
+
+            var returnRequest = new ReturnRequest
+            {
+                ReturnedDate = DateTime.Now,
+                State = ReturnRequestState.WaitingForReturning,
+                RequestedBy = request.RequestBy,
+                AssignmentId = request.AssignmentId
+            };
+            _dbcontext.Add(returnRequest);
+
+            assignment.State = AssignmentState.WaitingForReturning;
+            _dbcontext.SaveChanges();
+
+            return returnRequest.Id;
         }
 
         public async Task<PagedResultBase<ReturnRequestVM>> GetReturnRequestPagingFilter(ReturnRequestPagingFilterRequest request)
@@ -94,7 +120,7 @@ namespace RookieOnlineAssetManagement.Services
                 AssetCode = returnRequest.Assignment.Asset.Code,
                 AssetName = returnRequest.Assignment.Asset.Name,
                 RequestByName = returnRequest.RequestedUser.UserName,
-                AcceptedByName = returnRequest.AcceptedUser.UserName,
+                AcceptedByName = returnRequest.AcceptedUser?.UserName,
             };
             return detailedReturnRequest;
         }

@@ -21,6 +21,24 @@ namespace RookieOnlineAssetManagement.Controllers
             _returnRequestService = returnRequestService;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] ReturnRequestCreate request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            int userId = int.Parse(User.FindFirst("userId")?.Value);
+            if (userId < 0)
+                return BadRequest();
+            request.RequestBy = userId;
+
+            int returnRequestId = await _returnRequestService.Create(request);
+            if (returnRequestId < 0)
+                return BadRequest();
+
+            return Ok();
+        }
+
         [HttpGet("paging")]
         public async Task<IActionResult> GetReturnRequestPagingFilter([FromQuery] ReturnRequestPagingFilterRequest request)
         {

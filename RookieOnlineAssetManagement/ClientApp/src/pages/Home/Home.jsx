@@ -10,6 +10,7 @@ import {
   GetDetail,
   RespondAssignment,
 } from "../../services/assignmentService";
+import { Create } from "../../services/returnRequestService";
 
 const Home = () => {
   const [ownAssignments, setOwnAssignments] = useState([]);
@@ -17,6 +18,7 @@ const Home = () => {
   const [isFetch, setIsFetch] = useState(false);
   const [isAccept, setIsAccept] = useState(false);
   const [isDecline, setIsDecline] = useState(false);
+  const [isReturn, setIsReturn] = useState(false);
   const [detailId, setDetailId] = useState();
   const [isShowDetail, setIsShowDetail] = useState(false);
   const [isAscending, setIsAscending] = useState(false);
@@ -45,6 +47,12 @@ const Home = () => {
         break;
       case 2:
         return "Declined";
+        break;
+      case 3:
+        return "Waiting For Returning";
+        break;
+      case 4:
+        return "Returned";
         break;
       default:
         return "Unknown";
@@ -84,6 +92,22 @@ const Home = () => {
         setIsFetch(true);
         setIdRespondAssignment(0);
       });
+  };
+
+  const handleCreateReturningRequest = () => {
+    if (idRespondAssignment !== 0) {
+      const returnRequest = new FormData();
+      returnRequest.append("assignmentId", idRespondAssignment);
+      Create(returnRequest)
+        .then((response) => {
+          setIsReturn(false);
+          setIsFetch(true);
+          setIdRespondAssignment(0);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   useEffect(() => {
@@ -204,7 +228,7 @@ const Home = () => {
                   <td>
                     <BsCheckLg
                       onClick={() => {
-                        if (StateToString(assignment.state) !== "Accepted") {
+                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
                           setIdRespondAssignment(assignment.id);
                           setIsAccept(true);
                         }
@@ -212,20 +236,20 @@ const Home = () => {
                       style={{
                         fontSize: "18px",
                         color: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "#808080"
-                            : "#dc3545"
+                          StateToString(assignment.state) === "Waiting For Acceptance"
+                            ? "#dc3545"
+                            : "#808080"
                         }`,
                         cursor: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "default"
-                            : "pointer"
+                          StateToString(assignment.state) === "Waiting For Acceptance"
+                            ? "pointer"
+                            : "default"
                         }`,
                       }}
                     />
                     <IoClose
                       onClick={() => {
-                        if (StateToString(assignment.state) !== "Accepted") {
+                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
                           setIdRespondAssignment(assignment.id);
                           setIsDecline(true);
                         }
@@ -234,19 +258,25 @@ const Home = () => {
                         fontSize: "25px",
                         marginLeft: "5px",
                         color: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "#f2a7ac"
-                            : "#000"
+                          StateToString(assignment.state) === "Waiting For Acceptance"
+                            ? "#000"
+                            : "#f2a7ac"
                         }`,
                         fontSize: "25px",
                         cursor: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "default"
-                            : "pointer"
+                          StateToString(assignment.state) === "Waiting For Acceptance"
+                            ? "pointer"
+                            : "default"
                         }`,
                       }}
                     />
                     <IoReloadOutline
+                      onClick={() => {
+                        if (StateToString(assignment.state) === "Accepted") {
+                          setIdRespondAssignment(assignment.id);
+                          setIsReturn(true);
+                        }
+                      }}
                       style={{
                         fontWeight: "bold",
                         color: `${
@@ -482,6 +512,59 @@ const Home = () => {
             }}
           >
             Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={isReturn} centered>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
+          <Modal.Title
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#dc3545",
+              marginLeft: "20px",
+            }}
+          >
+            Are you sure?
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <p>Do you want to create a returning request for this asset?</p>
+        </Modal.Body>
+
+        <Modal.Footer
+          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
+        >
+          <Button
+            style={{
+              backgroundColor: "#dc3545",
+              border: "1px solid #dc3545",
+              borderRadius: "4px",
+            }}
+            onClick={handleCreateReturningRequest}
+          >
+            Yes
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#FFF",
+              border: "1px solid rgb(89 86 86)",
+              borderRadius: "4px",
+              color: "black",
+              marginLeft: "10px",
+            }}
+            onClick={() => {
+              setIsReturn(false);
+              setIdRespondAssignment(0);
+            }}
+          >
+            No
           </Button>
         </Modal.Footer>
       </Modal>

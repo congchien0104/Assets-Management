@@ -84,6 +84,15 @@ const ListAssignments = () => {
       case 1:
         return "Accepted";
         break;
+      case 2:
+        return "Declined";
+        break;
+      case 3:
+        return "Waiting For Returning";
+        break;
+      case 4:
+        return "Returned";
+        break;
       default:
         return "Unknown";
         break;
