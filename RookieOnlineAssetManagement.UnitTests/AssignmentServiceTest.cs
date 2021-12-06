@@ -227,7 +227,7 @@ namespace RookieOnlineAssetManagement.UnitTests
             {
                 AssignedBy = 1,
                 AssignedTo = 2,
-                AssetId = 10,
+                AssetId = 2,
                 AssignedDate = DateTime.Now,
                 Note = "chien neymar jr"
             };
