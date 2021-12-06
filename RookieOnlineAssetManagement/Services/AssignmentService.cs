@@ -29,7 +29,7 @@ namespace RookieOnlineAssetManagement.Services
 
         public async Task<int> Create(AssignmentCreateRequest request)
         {
-            if (DateTime.Now <= request.AssignedDate)
+            if (request.AssignedDate < DateTime.Now.Date)
                 throw new Exception("Admin can select only current or future date for Assigned Date");
             var assignment = new Assignment
             {

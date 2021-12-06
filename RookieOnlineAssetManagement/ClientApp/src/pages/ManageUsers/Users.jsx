@@ -359,7 +359,7 @@ const Users = () => {
           <p>Do you want to disable this user?</p>
         </Modal.Body>
 
-        <Modal.Footer>
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -530,7 +530,7 @@ const formatDate = (date) => {
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
 
-  return [day, month, year].join("/");
+  return [month, day, year].join("/");
 };
 
 export default Users;

@@ -218,5 +218,54 @@ namespace RookieOnlineAssetManagement.UnitTests
             Assert.True(assignments);
             Assert.Equal(AssignmentState.Declined, _dbContext.Assignments.Find(assignmentId).State);
         }
+
+        [Fact]
+        public async Task CreateAssignment_ReturnNewDetailedAssignment()
+        {
+            //Arrange
+            var assignment = new AssignmentCreateRequest()
+            {
+                AssignedBy = 1,
+                AssignedTo = 2,
+                AssetId = 10,
+                AssignedDate = DateTime.Now,
+                Note = "chien neymar jr"
+            };
+            // Act 
+            var assignmentId = await _assignmentService.Create(assignment);
+            //var newAssignment = await _assignmentService.GetDetailedAssignment(assignmentId);
+
+            // Assert
+            Assert.IsType<int>(assignmentId);
+            //Assert.IsType<AssignmentVM>(newAssignment);
+        }
+
+        [Fact]
+        public async Task EditAssignment_Test()
+        {
+            //Arrange
+            var assignment = new AssignmentUpdateRequest()
+            {
+                Id = 2,
+                AssignedDate = DateTime.Now,
+                Note = "Ok cong chien"
+            };
+            // Act 
+            var temp = await _assignmentService.Update(assignment);
+
+            // Assert
+            Assert.IsType<bool>(temp);
+        }
+        [Fact]
+        public async Task DeleteAssignment_Test()
+        {
+            //Arrange
+            int assignmentId = 3;
+            // Act 
+            var temp = await _assignmentService.Delete(assignmentId);
+
+            // Assert
+            Assert.IsType<bool>(temp);
+        }
     }
 }
