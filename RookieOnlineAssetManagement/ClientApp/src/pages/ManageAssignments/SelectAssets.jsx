@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./SelectUser.css";
 import { Table, Modal, Button, FormControl, InputGroup } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import { GetAssetsPagingFilter } from "../../services/assetService";
+import Pagination from "react-responsive-pagination";
+import "./style.css"
 
 const SelectAssets = (props) => {
   const [assets, setAssets] = useState([]);
@@ -13,10 +14,17 @@ const SelectAssets = (props) => {
   const [isAscending, setIsAscending] = useState(true);
   const [sortBy, setSortBy] = useState("code");
   const [keyword, setKeyword] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
   const [searchFilterModel, setSearchFilterModel] = useState({});
 
   const handleSearch = () => {
     setIsSearch(true);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const handleSave = () => {
@@ -31,9 +39,10 @@ const SelectAssets = (props) => {
       keyword: keyword,
       sortBy: sortBy,
       isAscending: isAscending,
+      pageIndex: currentPage,
     });
     setIsFilter(true);
-  }, [isSearch, sortBy, isAscending]);
+  }, [currentPage, isSearch, sortBy, isAscending]);
 
   useEffect(() => {
     GetAssetsPagingFilter(searchFilterModel)
@@ -41,6 +50,7 @@ const SelectAssets = (props) => {
         setAssets([...response.items]);
         setIsFilter(false);
         setIsSearch(false);
+        setTotalPages(response.pageCount);
       })
       .catch((error) => {
         console.log(error);
@@ -49,6 +59,7 @@ const SelectAssets = (props) => {
 
   return (
     <Modal
+      dialogClassName="custom-modal"
       show={props.isOpenSelectUsers}
       style={{ top: "100px", left: "-50px" }}
     >
@@ -88,7 +99,7 @@ const SelectAssets = (props) => {
               </Button>
             </InputGroup>
           </div>
-          <Table>
+          <Table style={{ height: '500px' }}>
             <thead>
               <tr>
                 <th style={{ width: "50px" }}></th>
@@ -143,6 +154,23 @@ const SelectAssets = (props) => {
                 ))}
             </tbody>
           </Table>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              width: "100%",
+              marginTop: "10px",
+              marginBottom: '20px'
+            }}
+          >
+            <Pagination
+              total={totalPages}
+              current={currentPage}
+              previousLabel="Previous"
+              nextLabel="Next"
+              onPageChange={(page) => handlePageChange(page)}
+            />
+          </div>
           <div style={{ display: "flex", justifyContent: "end" }}>
             <Button
               style={{

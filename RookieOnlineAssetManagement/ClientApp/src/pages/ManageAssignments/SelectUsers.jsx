@@ -3,6 +3,8 @@ import { Table, Modal, Button, FormControl, InputGroup } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import userService from "../../services/user.service";
+import Pagination from "react-responsive-pagination";
+import "./style.css";
 
 const SelectUsers = (props) => {
   const [users, setUsers] = useState([]);
@@ -12,10 +14,17 @@ const SelectUsers = (props) => {
   const [isAscending, setIsAscending] = useState(true);
   const [sortBy, setSortBy] = useState("code");
   const [keyword, setKeyword] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
   const [searchFilterModel, setSearchFilterModel] = useState({});
 
   const handleSearch = () => {
     setIsSearch(true);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const handleSave = () => {
@@ -33,9 +42,10 @@ const SelectUsers = (props) => {
       keyword: keyword,
       sortBy: sortBy,
       isAscending: isAscending,
+      pageIndex: currentPage,
     });
     setIsFilter(true);
-  }, [isSearch, sortBy, isAscending]);
+  }, [currentPage, isSearch, sortBy, isAscending]);
 
   useEffect(() => {
     userService
@@ -44,6 +54,7 @@ const SelectUsers = (props) => {
         setUsers(response.data.items);
         setIsFilter(false);
         setIsSearch(false);
+        setTotalPages(response.data.pageCount);
       })
       .catch((error) => {
         console.log(error);
@@ -52,6 +63,7 @@ const SelectUsers = (props) => {
 
   return (
     <Modal
+      dialogClassName="custom-modal"
       show={props.isOpenSelectUsers}
       style={{ top: "100px", left: "-50px" }}
     >
@@ -91,7 +103,7 @@ const SelectUsers = (props) => {
               </Button>
             </InputGroup>
           </div>
-          <Table style={{ height: '500px' }}>
+          <Table style={{ height: "460px" }}>
             <thead>
               <tr>
                 <th style={{ width: "50px" }}></th>
@@ -146,6 +158,23 @@ const SelectUsers = (props) => {
                 ))}
             </tbody>
           </Table>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              width: "100%",
+              marginTop: "10px",
+              marginBottom: '20px'
+            }}
+          >
+            <Pagination
+              total={totalPages}
+              current={currentPage}
+              previousLabel="Previous"
+              nextLabel="Next"
+              onPageChange={(page) => handlePageChange(page)}
+            />
+          </div>
           <div style={{ display: "flex", justifyContent: "end" }}>
             <Button
               style={{
