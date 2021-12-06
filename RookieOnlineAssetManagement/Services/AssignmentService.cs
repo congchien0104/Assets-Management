@@ -42,7 +42,12 @@ namespace RookieOnlineAssetManagement.Services
                 State = AssignmentState.WaitingForAcceptance
             };
             _dbcontext.Assignments.Add(assignment);
+
+            var asset = await _dbcontext.Assets.FindAsync(assignment.AssetId);
+            asset.State = AssetState.Assigned;
+            _dbcontext.Assets.Update(asset);
             await _dbcontext.SaveChangesAsync();
+
             return assignment.Id;
         }
 
@@ -54,6 +59,11 @@ namespace RookieOnlineAssetManagement.Services
             if (assignment.State != AssignmentState.WaitingForAcceptance)
                 throw new Exception("Delete is enabled for only \"Waiting for acceptance\" assignment");
             _dbcontext.Assignments.Remove(assignment);
+
+            var asset = await _dbcontext.Assets.FindAsync(assignment.AssetId);
+            asset.State = AssetState.Available;
+            _dbcontext.Assets.Update(asset);
+
             return await _dbcontext.SaveChangesAsync() > 0;
         }
 
@@ -163,6 +173,14 @@ namespace RookieOnlineAssetManagement.Services
                 throw new Exception("RespondAssignment is enabled for only assignments have state is Waiting for acceptance");
             assignment.State = isAccepted ? AssignmentState.Accepted : AssignmentState.Declined;
             _dbcontext.Assignments.Update(assignment);
+
+            if(!isAccepted)
+            {
+                var asset = await _dbcontext.Assets.FindAsync(assignment.AssetId);
+                asset.State = AssetState.Available;
+                _dbcontext.Assets.Update(asset);
+            }
+          
             return await _dbcontext.SaveChangesAsync() > 0;
 
         }
