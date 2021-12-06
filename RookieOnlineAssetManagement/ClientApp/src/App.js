@@ -13,7 +13,7 @@ import Users from "./pages/ManageUsers/Users";
 import ListAssignments from "./pages/ManageAssignments/ListAssignments";
 import EditAssignment from "./pages/ManageAssignments/EditAssignment";
 import ListRequests from "./pages/RequestForReturning/ListRequests";
-import Reports from "./pages/Reports";
+import ListReports from "./pages/Reports/ListReports";
 import AddUser from "./pages/ManageUsers/AddUser";
 import User from "./pages/ManageUsers/User";
 import { Modal, Button } from "react-bootstrap";
@@ -28,8 +28,7 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (401 === error.response.status) {
-      window.location.href =
-        "/Identity/Account/Login?returnUrl=" + window.location.pathname;
+      window.location.href = "/Identity/Account/Login?returnUrl=" + window.location.pathname;
     } else {
       return Promise.reject(error);
     }
@@ -65,8 +64,7 @@ function App() {
   const handleLogout = () => {
     axios.get("/api/users/Logout").then((response) => {
       if (response.data.isLogout) {
-        window.location.href =
-          "/Identity/Account/Login?returnUrl=" + window.location.pathname;
+        window.location.href = "/Identity/Account/Login?returnUrl=" + window.location.pathname;
       }
     });
   };
@@ -107,7 +105,7 @@ function App() {
           passwordNew: passwordChange.newPassword,
         })
         .then((response) => {
-          history.push("/")
+          history.push("/");
           setOpenModalChangePasswordFirstTime(false);
           setOpenModalChangePasswordSuccess(true);
         });
@@ -123,106 +121,30 @@ function App() {
   }, [passwordChange]);
 
   useEffect(() => {
-    axios
-      .get("/api/users/GetUserLogin")
-      .then((response) => setUserData(response.data));
+    axios.get("/api/users/GetUserLogin").then((response) => setUserData(response.data));
   }, []);
 
   return (
     <div className="container-fluid" style={{ padding: 0 }}>
-      <Header
-        fullName={userData.fullName}
-        toggleModalLogout={toggleModalLogout}
-        toggleModalChangePassword={toggleModalChangePassword}
-      />
+      <Header fullName={userData.fullName} toggleModalLogout={toggleModalLogout} toggleModalChangePassword={toggleModalChangePassword} />
       <div className="row">
         <div className="col-sm-2" style={{ padding: "0 30px" }}>
           <SideBar type={userData.type} />
         </div>
         <div className="col-sm-10">
           <Switch>
-            <Route
-              exact
-              path="/assets"
-              component={() =>
-                userData.type == 2 ? <ListAssets /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/asset/edit/:id"
-              component={() =>
-                userData.type == 2 ? <EditAsset /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/asset/new"
-              component={() =>
-                userData.type == 2 ? <NewAsset /> : <div>404 Not Found!</div>
-              }
-            />
+            <Route exact path="/assets" component={() => (userData.type == 2 ? <ListAssets /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/asset/edit/:id" component={() => (userData.type == 2 ? <EditAsset /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/asset/new" component={() => (userData.type == 2 ? <NewAsset /> : <div>404 Not Found!</div>)} />
             <Route exact path="/" component={() => <Home />} />
-            <Route
-              exact
-              path="/users"
-              component={() =>
-                userData.type == 2 ? <Users /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/assignments"
-              component={() =>
-                userData.type == 2 ? <ListAssignments /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/assignment/new"
-              component={() =>
-                userData.type == 2 ? <CreateAssignment /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/assignments/:id"
-              component={() =>
-                userData.type == 2 ? <EditAssignment /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/request-for-returning"
-              component={() =>
-                userData.type == 2 ? (
-                  <ListRequests />
-                ) : (
-                  <div>404 Not Found!</div>
-                )
-              }
-            />
-            <Route
-              exact
-              path="/report"
-              component={() =>
-                userData.type == 2 ? <ListReports /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/users/add"
-              component={() =>
-                userData.type == 2 ? <AddUser /> : <div>404 Not Found!</div>
-              }
-            />
-            <Route
-              exact
-              path="/users/:id"
-              component={() =>
-                userData.type == 2 ? <User /> : <div>404 Not Found!</div>
-              }
-            />
+            <Route exact path="/users" component={() => (userData.type == 2 ? <Users /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/assignments" component={() => (userData.type == 2 ? <ListAssignments /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/assignment/new" component={() => (userData.type == 2 ? <CreateAssignment /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/assignments/:id" component={() => (userData.type == 2 ? <EditAssignment /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/request-for-returning" component={() => (userData.type == 2 ? <ListRequests /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/report" component={() => (userData.type == 2 ? <ListReports /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/users/add" component={() => (userData.type == 2 ? <AddUser /> : <div>404 Not Found!</div>)} />
+            <Route exact path="/users/:id" component={() => (userData.type == 2 ? <User /> : <div>404 Not Found!</div>)} />
             <Route path="*" component={() => <div>404 Not Found!</div>} />
           </Switch>
         </div>
@@ -230,14 +152,8 @@ function App() {
       {userData.state == 0 ? (
         /* Modal for Change Password First Time */
         <Modal show={openModalChangePasswordFirstTime}>
-          <Modal.Header
-            style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}
-          >
-            <Modal.Title
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}
-            >
-              Change password
-            </Modal.Title>
+          <Modal.Header style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}>
+            <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Change password</Modal.Title>
           </Modal.Header>
 
           <Modal.Body style={{ padding: "20px", paddingLeft: "40px" }}>
@@ -280,11 +196,7 @@ function App() {
       {/* Modal for logout */}
       <Modal show={openModalLogout}>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
-          <Modal.Title
-            style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}
-          >
-            Are you sure?
-          </Modal.Title>
+          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Are you sure?</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -318,26 +230,12 @@ function App() {
 
       {/* Modal for change password */}
       <Modal show={openModalChangePassword}>
-        <Modal.Header
-          style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}
-        >
-          <Modal.Title
-            style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}
-          >
-            Change password
-          </Modal.Title>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}>
+          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Change password</Modal.Title>
         </Modal.Header>
 
         <Modal.Body style={{ padding: "20px", paddingLeft: "40px" }}>
-          {isBothSamePassword ? (
-            <div
-              style={{ color: "red", fontSize: "15px", paddingBottom: "10px" }}
-            >
-              Your new password cannot be the same as your old password
-            </div>
-          ) : (
-            ""
-          )}
+          {isBothSamePassword ? <div style={{ color: "red", fontSize: "15px", paddingBottom: "10px" }}>Your new password cannot be the same as your old password</div> : ""}
           <div style={{ display: "flex", padding: "10px 0" }}>
             <div style={{ paddingRight: "15px" }}>Old password</div>
             <div>
@@ -351,19 +249,9 @@ function App() {
                     oldPassword: e.target.value,
                   })
                 }
-                style={
-                  isBothSamePassword || isIncorrectPassword
-                    ? { border: "1px solid red", borderRadius: "2px" }
-                    : {}
-                }
+                style={isBothSamePassword || isIncorrectPassword ? { border: "1px solid red", borderRadius: "2px" } : {}}
               />
-              {isIncorrectPassword ? (
-                <div style={{ color: "red", fontSize: "14px" }}>
-                  Password is incorrect
-                </div>
-              ) : (
-                ""
-              )}
+              {isIncorrectPassword ? <div style={{ color: "red", fontSize: "14px" }}>Password is incorrect</div> : ""}
             </div>
           </div>
           <div style={{ display: "flex", padding: "10px 0" }}>
@@ -378,11 +266,7 @@ function App() {
                   newPassword: e.target.value,
                 })
               }
-              style={
-                isBothSamePassword
-                  ? { border: "1px solid red", borderRadius: "2px" }
-                  : {}
-              }
+              style={isBothSamePassword ? { border: "1px solid red", borderRadius: "2px" } : {}}
             />
           </div>
         </Modal.Body>
@@ -415,14 +299,8 @@ function App() {
 
       {/* Modal to message change password successfully */}
       <Modal show={openModalChangePasswordSuccess}>
-        <Modal.Header
-          style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}
-        >
-          <Modal.Title
-            style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}
-          >
-            Change password
-          </Modal.Title>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}>
+          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Change password</Modal.Title>
         </Modal.Header>
 
         <Modal.Body style={{ padding: "20px", paddingLeft: "40px" }}>

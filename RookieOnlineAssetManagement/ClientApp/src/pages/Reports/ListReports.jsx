@@ -6,19 +6,16 @@ import { GoTriangleDown } from "react-icons/go";
 import { Link } from "react-router-dom";
 const ListReports = () => {
   const [reports, setReports] = useState([]);
-  const [isAscending, setIsAscending] = useState();
+  const [isAscending, setIsAscending] = useState(true);
   const [sortBy, setSortBy] = useState("category");
 
   useEffect(() => {
-    GetReport(sortBy, setIsAscending)
+    GetReport(sortBy, isAscending)
       .then((response) => {
         setReports([...response]);
       })
       .catch((error) => console.log(error));
-  }, [isAscending, sortBy]);
-  useEffect(() => {
-    console.log(reports);
-  }, [reports]);
+  }, [sortBy, isAscending]);
   const StateToString = (state) => {
     switch (state) {
       case 0:
@@ -63,7 +60,7 @@ const ListReports = () => {
             paddingBottom: "20px",
           }}
         >
-          <Link to="/assignment/new">
+          <Link to="">
             <Button variant="danger">Export</Button>
           </Link>
         </div>
@@ -127,7 +124,7 @@ const ListReports = () => {
                   }}
                 ></GoTriangleDown>
               </th>
-              <th style={{ display: "inline", whiteSpace: "nowrap" }}>
+              <th>
                 Waiting For Recycling
                 <GoTriangleDown
                   style={{ cursor: "pointer" }}
