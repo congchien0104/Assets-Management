@@ -11,7 +11,7 @@ namespace RookieOnlineAssetManagement.Models.ReturnRequests
         public int Id { get; set; }
         public int Ordinal { get; set; }
         public DateTime AssignedDate { get; set; }
-        public DateTime ReturnedDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
         public ReturnRequestState State { get; set; }
         public string AssetCode { get; set; }
         public string AssetName { get; set; }

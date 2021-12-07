@@ -9,7 +9,7 @@ namespace RookieOnlineAssetManagement.Data.Entities
     public class ReturnRequest
     {
         public int Id { get; set; }
-        public DateTime ReturnedDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
         public ReturnRequestState State { get; set; }
         public int RequestedBy { get; set; }
         public int? AcceptedBy { get; set; }

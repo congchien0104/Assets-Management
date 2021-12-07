@@ -148,7 +148,8 @@ namespace RookieOnlineAssetManagement.Services
                 throw new Exception($"Cannot find assignment with id {assignmentId}");
             if(assignment.State != AssignmentState.Accepted 
                 && assignment.State != AssignmentState.WaitingForAcceptance 
-                && assignment.State != AssignmentState.WaitingForReturning)
+                && assignment.State != AssignmentState.WaitingForReturning
+                && assignment.State != AssignmentState.Returned)
             {
                 throw new Exception($"Get detaled assignment will be enable with Accepted and Wating for Acceptance state");
             }

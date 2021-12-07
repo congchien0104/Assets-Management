@@ -10,6 +10,6 @@ namespace RookieOnlineAssetManagement.Models.Assets
         public DateTime AssignedDate { get; set; }
         public string AssignedTo { get; set; }
         public string AssignedBy { get; set; }
-        public DateTime ReturnedDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
     }
 }

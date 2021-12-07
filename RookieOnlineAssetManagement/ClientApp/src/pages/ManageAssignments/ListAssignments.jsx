@@ -29,7 +29,7 @@ import ReactPaginate from "react-paginate";
 import queryString from "query-string";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CreateRR } from "../../services/returnRequestService";
+import { Create } from "../../services/returnRequestService";
 const ListAssignments = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
@@ -182,7 +182,7 @@ const ListAssignments = () => {
   const handleCreated = () => {
     const data = new FormData();
     data.append('assignmentId', idDeletingAssignment)
-    CreateRR(data)
+    Create(data)
       .then((response) => {
         console.log("Created RR");
         setIsCreated(false);

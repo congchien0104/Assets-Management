@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, InputGroup, FormControl, Modal, Row, Form } from "react-bootstrap";
+import {
+  Table,
+  Button,
+  InputGroup,
+  FormControl,
+  Modal,
+  Row,
+  Form,
+} from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import { GoTriangleDown } from "react-icons/go";
 import { BsCheckLg } from "react-icons/bs";
@@ -14,8 +22,8 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 import {
   GetReturnRequestPagingFilter,
   GetRequestState,
-    GetDetail,
-  CancelRequest
+  GetDetail,
+  CancelRequest,
 } from "../../services/returnRequestService";
 import { Complete } from "../../services/returnRequestService";
 
@@ -155,7 +163,7 @@ const ListRequests = () => {
       .catch((e) => {
         console.log(e);
       });
-  }
+  };
 
   const handleCancelRequest = () => {
     CancelRequest(idCancelRequest)
@@ -256,9 +264,17 @@ const ListRequests = () => {
         </div>
 
         <InputGroup style={{ width: "250px" }}>
-          <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+          <FormControl
+            type="search"
+            placeholder="Search"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
           <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
-            <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={handleSearch} />
+            <BsSearch
+              style={{ color: "#000", marginBottom: "3px" }}
+              onClick={handleSearch}
+            />
           </Button>
         </InputGroup>
       </div>
@@ -481,9 +497,11 @@ const ListRequests = () => {
                       />
                       <IoClose
                         onClick={() => {
+                          if (StateToString(request.state) !== "Completed") {
                             setIdCancelRequest(request.id);
                             setIsCancelRequest(true);
-                            }}
+                          }
+                        }}
                         style={{
                           fontSize: "25px",
                           marginLeft: "5px",
@@ -659,7 +677,9 @@ const ListRequests = () => {
           <p>Do you want to cancel this asset</p>
         </Modal.Body>
 
-        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
+        <Modal.Footer
+          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
+        >
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -717,7 +737,7 @@ const ListRequests = () => {
               border: "1px solid #dc3545",
               borderRadius: "4px",
             }}
-            onClick={ handleCompleted }
+            onClick={handleCompleted}
           >
             Yes
           </Button>

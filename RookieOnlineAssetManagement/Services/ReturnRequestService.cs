@@ -36,7 +36,6 @@ namespace RookieOnlineAssetManagement.Services
 
             var returnRequest = new ReturnRequest
             {
-                ReturnedDate = DateTime.Now,
                 State = ReturnRequestState.WaitingForReturning,
                 RequestedBy = request.RequestBy,
                 AssignmentId = request.AssignmentId

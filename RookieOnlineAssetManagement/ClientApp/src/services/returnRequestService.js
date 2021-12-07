@@ -27,9 +27,9 @@ export async function GetReturnRequestPagingFilter(filter) {
         .then((response) => response.data);
 }
 
-export async function CreateRR(data) {
-    return await axios.post(API_URL, data).then((response) => response.data);
-}
+// export async function CreateRR(data) {
+//     return await axios.post(API_URL, data).then((response) => response.data);
+// }
 
 export async function Complete(id, data) {
     return await axios.put(API_URL + `${id}`, data);
