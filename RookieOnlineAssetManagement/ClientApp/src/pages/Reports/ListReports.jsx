@@ -1,13 +1,21 @@
 import React from "react";
 import { Table, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { GetReport } from "../../services/reportService";
+import { GetReport, ExportReports } from "../../services/reportService";
 import { GoTriangleDown } from "react-icons/go";
 import { Link } from "react-router-dom";
 const ListReports = () => {
   const [reports, setReports] = useState([]);
   const [isAscending, setIsAscending] = useState(true);
   const [sortBy, setSortBy] = useState("category");
+
+  const handleExport = () => {
+    ExportReports(sortBy, isAscending)
+      .then((response) => {
+        window.open(response.request.responseURL);
+      })
+      .catch((error) => console.log(error));
+  };
 
   useEffect(() => {
     GetReport(sortBy, isAscending)
@@ -60,9 +68,9 @@ const ListReports = () => {
             paddingBottom: "20px",
           }}
         >
-          <Link to="">
-            <Button variant="danger">Export</Button>
-          </Link>
+          <Button variant="danger" onClick={handleExport}>
+            Export
+          </Button>
         </div>
 
         <Table

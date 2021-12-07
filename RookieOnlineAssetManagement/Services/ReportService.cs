@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Enums;
 using RookieOnlineAssetManagement.ExtensionMethods;
@@ -6,6 +7,7 @@ using RookieOnlineAssetManagement.Interfaces;
 using RookieOnlineAssetManagement.Models.Reports;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +20,39 @@ namespace RookieOnlineAssetManagement.Services
         public ReportService(ApplicationDbContext dbcontext)
         {
             _dbcontext = dbcontext;
+        }
+
+        public XLWorkbook ExportReports(List<ReportVM> reports)
+        {
+            XLWorkbook workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Reports");
+            int currentRow = 1;
+
+            #region Header
+            worksheet.Cell(currentRow, 1).Value = "Category";
+            worksheet.Cell(currentRow, 2).Value = "Total";
+            worksheet.Cell(currentRow, 3).Value = "Assigned";
+            worksheet.Cell(currentRow, 4).Value = "Available";
+            worksheet.Cell(currentRow, 5).Value = "Not Available";
+            worksheet.Cell(currentRow, 6).Value = "Waiting For Recycling";
+            worksheet.Cell(currentRow, 7).Value = "Recycled";
+            #endregion
+
+            #region Body
+            foreach(var report in reports)
+            {
+                currentRow++;
+                worksheet.Cell(currentRow, 1).Value = report.Category;
+                worksheet.Cell(currentRow, 2).Value = report.Total;
+                worksheet.Cell(currentRow, 3).Value = report.Assigned;
+                worksheet.Cell(currentRow, 4).Value = report.Available;
+                worksheet.Cell(currentRow, 5).Value = report.NotAvailable;
+                worksheet.Cell(currentRow, 6).Value = report.WaitingForRecycling;
+                worksheet.Cell(currentRow, 7).Value = report.Recycled;
+            }
+            #endregion
+
+            return workbook;
         }
 
         public async Task<List<ReportVM>> GetReports(string sortBy, bool isAscending)
