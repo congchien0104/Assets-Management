@@ -21,23 +21,23 @@ namespace RookieOnlineAssetManagement.Controllers
             _returnRequestService = returnRequestService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromForm] ReturnRequestCreate request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //[HttpPost]
+        //public async Task<IActionResult> Create([FromForm] ReturnRequestCreate request)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            int userId = int.Parse(User.FindFirst("userId")?.Value);
-            if (userId < 0)
-                return BadRequest();
-            request.RequestBy = userId;
+        //    int userId = int.Parse(User.FindFirst("userId")?.Value);
+        //    if (userId < 0)
+        //        return BadRequest();
+        //    request.RequestBy = userId;
 
-            int returnRequestId = await _returnRequestService.Create(request);
-            if (returnRequestId < 0)
-                return BadRequest();
+        //    int returnRequestId = await _returnRequestService.Create(request);
+        //    if (returnRequestId < 0)
+        //        return BadRequest();
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         [HttpGet("paging")]
         public async Task<IActionResult> GetReturnRequestPagingFilter([FromQuery] ReturnRequestPagingFilterRequest request)
@@ -65,6 +65,46 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = _returnRequestService.GetRequestStates();
             if (result == null)
+                return BadRequest();
+            return Ok(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> IsCreating([FromForm] ReturnRequestCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            int userId = int.Parse(User.FindFirst("userId")?.Value);
+            if (userId < 0)
+            {
+                return BadRequest();
+            }
+            request.RequestedBy = userId;
+            var returnRequestId = await _returnRequestService.IsCreating(request);
+
+            if (returnRequestId < 0)
+                return BadRequest();
+            return Ok("Success");
+        }
+
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> Complete([FromRoute] int Id, [FromForm] ReturnRequestCreateRequest request)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            int userId = int.Parse(User.FindFirst("userId")?.Value);
+            if (userId < 0)
+            {
+                return BadRequest();
+            }
+            request.AcceptedBy = userId;
+            request.Id = Id;
+            var result = await _returnRequestService.Complete(request);
+            if (!result)
                 return BadRequest();
             return Ok(result);
         }

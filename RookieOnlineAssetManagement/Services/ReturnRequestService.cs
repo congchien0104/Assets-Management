@@ -140,5 +140,48 @@ namespace RookieOnlineAssetManagement.Services
             });
             return stateList;
         }
+
+        public async Task<int> IsCreating(ReturnRequestCreateRequest request)
+        {
+            var assignment = await _dbcontext.Assignments.FindAsync(request.AssignmentId);
+            if (assignment == null)
+                throw new Exception($"Cannot find assignment with ID {request.AssignmentId}");
+            if (assignment.State != AssignmentState.Accepted)
+                throw new Exception($"Assignment have to be Accepted before");
+
+            var returnRequest = new ReturnRequest
+            {
+                AssignmentId = request.AssignmentId,
+                //ReturnedDate = DateTime.Now,
+                State = ReturnRequestState.WaitingForReturning,
+                RequestedBy = request.RequestedBy,
+                //AcceptedBy = request.AcceptedBy
+            };
+            _dbcontext.ReturnRequests.Add(returnRequest);
+            assignment.State = AssignmentState.WaitingForReturning;
+            await _dbcontext.SaveChangesAsync();
+            return returnRequest.Id;
+        }
+
+        public async Task<bool> Complete(ReturnRequestCreateRequest request)
+        {
+
+            var returnRequest = await _dbcontext.ReturnRequests.FindAsync(request.Id);
+            if (returnRequest.State != ReturnRequestState.WaitingForReturning)
+            {
+                throw new Exception("Completed is enabled for only requests having state is “Waiting for returning”");
+            }
+            returnRequest.ReturnedDate = DateTime.Now;
+            returnRequest.State = ReturnRequestState.Completed;
+            returnRequest.AcceptedBy = request.AcceptedBy;
+
+            _dbcontext.ReturnRequests.Update(returnRequest);
+            var assignment = await _dbcontext.Assignments.Include(x => x.Asset).FirstOrDefaultAsync(x => x.Id == returnRequest.AssignmentId);
+            assignment.State = AssignmentState.Returned;
+            assignment.Asset.State = AssetState.Available;
+
+
+            return await _dbcontext.SaveChangesAsync() > 0;
+        }
     }
 }

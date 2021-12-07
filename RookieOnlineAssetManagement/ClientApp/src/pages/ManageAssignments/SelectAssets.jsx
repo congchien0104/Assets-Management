@@ -86,7 +86,7 @@ const SelectAssets = (props) => {
               </Button>
             </InputGroup>
           </div>
-          <Table style={{ height: "500px" }}>
+          <Table style={{ height: "460px" }}>
             <thead>
               <tr>
                 <th style={{ width: "50px" }}></th>

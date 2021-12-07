@@ -29,6 +29,7 @@ import ReactPaginate from "react-paginate";
 import queryString from "query-string";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { CreateRR } from "../../services/returnRequestService";
 const ListAssignments = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
@@ -50,6 +51,7 @@ const ListAssignments = () => {
   const [searchFilterModel, setSearchFilterModel] = useState({});
   const [detailId, setDetailId] = useState();
   const [isShowDetail, setIsShowDetail] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
   const [detailedAssignment, setDetailedAssignment] = useState({
     id: detailId,
     code: "",
@@ -176,6 +178,20 @@ const ListAssignments = () => {
     });
   }, [detailId]);
   console.log("create", afterCreated, "update", afterUpdated);
+
+  const handleCreated = () => {
+    const data = new FormData();
+    data.append('assignmentId', idDeletingAssignment)
+    CreateRR(data)
+      .then((response) => {
+        console.log("Created RR");
+        setIsCreated(false);
+        setIsAscending(!isAscending);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
   return (
     <React.Fragment>
       <div style={{ padding: "100px 50px" }}>
@@ -500,6 +516,12 @@ const ListAssignments = () => {
                       }}
                     />
                     <IoReloadOutline
+                      onClick={() => {
+                        if (StateToString(assignment.state) === "Accepted") {
+                          setIdDeletingAssignment(assignment.id);
+                          setIsCreated(true);
+                        }
+                      }}
                       style={{
                         fontWeight: "bold",
                         color: `${
@@ -708,6 +730,57 @@ const ListAssignments = () => {
             }}
           >
             Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={isCreated} centered>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
+          <Modal.Title
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#dc3545",
+              marginLeft: "20px",
+            }}
+          >
+            Are you sure?
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <p>Do you want to create a returning request for this asset?</p>
+        </Modal.Body>
+
+        <Modal.Footer
+          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
+        >
+          <Button
+            style={{
+              backgroundColor: "#dc3545",
+              border: "1px solid #dc3545",
+              borderRadius: "4px",
+            }}
+            onClick={handleCreated}
+          >
+            Yes
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#FFF",
+              border: "1px solid rgb(89 86 86)",
+              borderRadius: "4px",
+              color: "black",
+              marginLeft: "20px",
+            }}
+            onClick={() => {
+              setIsCreated(false);
+            }}
+          >
+            No
           </Button>
         </Modal.Footer>
       </Modal>

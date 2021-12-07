@@ -24,6 +24,7 @@ import {
   GetRequestState,
   GetDetail,
 } from "../../services/returnRequestService";
+import { Complete } from "../../services/returnRequestService";
 
 const ListRequests = () => {
   const [returnRequests, setReturnRequests] = useState([]);
@@ -40,6 +41,8 @@ const ListRequests = () => {
   const [searchFilterModel, setSearchFilterModel] = useState({});
   const [isShowDetail, setIsShowDetail] = useState(false);
   const [detailId, setDetailId] = useState();
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [rrequestId, setRrequestId] = useState(undefined);
   const [detailedReturnRequest, setDetailedReturnRequest] = useState({
     id: detailId,
     code: "",
@@ -144,6 +147,20 @@ const ListRequests = () => {
       });
     });
   }, [detailId]);
+
+  const handleCompleted = () => {
+    var data = new FormData();
+    console.log(rrequestId);
+    Complete(rrequestId, data)
+      .then((response) => {
+        console.log("State RR");
+        setIsCompleted(false);
+        setIsAscending(!isAscending);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 
   return (
     <div style={{ padding: "100px 50px", width: "1300px" }}>
@@ -445,7 +462,12 @@ const ListRequests = () => {
                     </td>
                     <td style={{ textAlign: "center" }}>
                       <BsCheckLg
-                        onClick={() => {}}
+                        onClick={() => {
+                          if (StateToString(request.state) !== "Completed") {
+                            setRrequestId(request.id);
+                            setIsCompleted(true);
+                          }
+                        }}
                         style={{
                           fontSize: "18px",
                           color: `${
@@ -614,6 +636,57 @@ const ListRequests = () => {
           </Row>
           <br />
         </Modal.Body>
+      </Modal>
+      <Modal show={isCompleted} centered>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
+          <Modal.Title
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#dc3545",
+              marginLeft: "20px",
+            }}
+          >
+            Are you sure?
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <p>Do you want to as "Completed"?</p>
+        </Modal.Body>
+
+        <Modal.Footer
+          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
+        >
+          <Button
+            style={{
+              backgroundColor: "#dc3545",
+              border: "1px solid #dc3545",
+              borderRadius: "4px",
+            }}
+            onClick={ handleCompleted }
+          >
+            Yes
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#FFF",
+              border: "1px solid rgb(89 86 86)",
+              borderRadius: "4px",
+              color: "black",
+              marginLeft: "20px",
+            }}
+            onClick={() => {
+              setIsCompleted(false);
+            }}
+          >
+            No
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

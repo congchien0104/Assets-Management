@@ -164,7 +164,7 @@ function AddUser(props) {
                 name="gender"
                 type="radio"
                 {...register("gender")}
-                id="gender"
+                id="gender2"
                 value={true}
                 className={`form-check-input ${
                   errors.gender ? "is-invalid" : ""
@@ -179,7 +179,7 @@ function AddUser(props) {
                 name="gender"
                 type="radio"
                 {...register("gender")}
-                id="gender"
+                id="gender2"
                 value={false}
                 className={`form-check-input ${
                   errors.gender ? "is-invalid" : ""
