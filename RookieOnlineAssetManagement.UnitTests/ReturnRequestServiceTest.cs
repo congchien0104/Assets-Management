@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 using RookieOnlineAssetManagement.Data;
 using RookieOnlineAssetManagement.Data.Entities;
@@ -8,9 +7,6 @@ using RookieOnlineAssetManagement.Models.ReturnRequests;
 using RookieOnlineAssetManagement.Services;
 using RookieOnlineAssetManagement.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -123,6 +119,14 @@ namespace RookieOnlineAssetManagement.UnitTests
                         AssignedDate = new DateTime(2021, 9, 28),
                         AssetId = 1,
                         State = AssignmentState.WaitingForAcceptance,
+                    }, new Assignment
+                    {
+                        Id = 4,
+                        AssignedBy = 1,
+                        AssignedTo = 2,
+                        AssignedDate = new DateTime(2021, 9, 28),
+                        AssetId = 1,
+                        State = AssignmentState.WaitingForReturning,
                     });
                 context.ReturnRequests.AddRange(
                     new ReturnRequest
@@ -149,7 +153,16 @@ namespace RookieOnlineAssetManagement.UnitTests
                         RequestedBy = 1,
                         ReturnedDate = new DateTime(2016, 9, 28),
                         State = ReturnRequestState.WaitingForReturning
-                    });
+                    },
+                     new ReturnRequest
+                     {
+                         Id = 4,
+                         AssignmentId = 4,
+                         AcceptedBy = 2,
+                         RequestedBy = 1,
+                         ReturnedDate = new DateTime(2016, 9, 28),
+                         State = ReturnRequestState.WaitingForReturning
+                     });
                 context.SaveChanges();
 
             }
@@ -167,9 +180,11 @@ namespace RookieOnlineAssetManagement.UnitTests
                 AssignmentId = 1
             };
             // Act
-            var result = await _returnRequestService.Create(request);
+            var requestId = await _returnRequestService.Create(request);
+            var assignment = await _dbContext.Assignments.FindAsync(request.AssignmentId);
             // Assert
-            Assert.True(result > 0);
+            Assert.True(requestId > 0);
+            Asset.Equals(assignment.State, ReturnRequestState.WaitingForReturning);
         }
         [Fact]
         public async Task GetReturnRequestPagingFilterWithStatesAndReturnedDateFilter_ReturnPagedResultIncludeOneItem()
@@ -196,6 +211,30 @@ namespace RookieOnlineAssetManagement.UnitTests
             // Assert
             Assert.IsType<ReturnRequestVM>(returnRequest);
             Assert.Equal(ReturnRequestState.WaitingForReturning, _dbContext.ReturnRequests.Find(returnRequestId).State);
+        }
+        [Fact]
+        public async Task CancelReturnRequestWithStateWaitingForReturning_ReturnTrue_ThenCheckReturnRequestIsDeclinedAndAssignmentStateIsAccepted()
+        {
+            // Arrange
+            int returnRequestId = 4;
+            // Act
+            var returnRequest = await _dbContext.ReturnRequests.Include(r => r.Assignment).FirstOrDefaultAsync(x => x.Id == returnRequestId);
+            var result = await _returnRequestService.CancelReturnRequest(returnRequestId);
+            // Assert
+            Assert.True(result);
+            Assert.True(returnRequest.State == ReturnRequestState.Declined);
+            Assert.True(returnRequest.Assignment.State == AssignmentState.Accepted);
+        }
+        [Fact]
+        public async Task CancelReturnRequestWithStateIsNotCompleted_ReturnExeption()
+        {
+            // Arrange
+            int returnRequestId = 1;
+            // Act
+            Func<Task> act = async () => await _returnRequestService.CancelReturnRequest(returnRequestId);
+            // Assert
+            var exception = await Assert.ThrowsAsync<Exception>(act);
+            Assert.Contains("Cancel is only enabled for requests having state is “Waiting for returning”", exception.Message);
         }
     }
 }

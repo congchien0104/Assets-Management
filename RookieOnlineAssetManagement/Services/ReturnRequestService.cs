@@ -31,7 +31,7 @@ namespace RookieOnlineAssetManagement.Services
             var assignment = await _dbcontext.Assignments.FindAsync(request.AssignmentId);
             if (assignment == null)
                 throw new Exception($"Cannot find assignment with ID {request.AssignmentId}");
-            if(assignment.State != AssignmentState.Accepted)
+            if (assignment.State != AssignmentState.Accepted)
                 throw new Exception($"Assignment have to be Accepted before");
 
             var returnRequest = new ReturnRequest
@@ -41,10 +41,10 @@ namespace RookieOnlineAssetManagement.Services
                 RequestedBy = request.RequestBy,
                 AssignmentId = request.AssignmentId
             };
-            _dbcontext.Add(returnRequest);
+            _dbcontext.ReturnRequests.Add(returnRequest);
 
             assignment.State = AssignmentState.WaitingForReturning;
-            _dbcontext.SaveChanges();
+            await _dbcontext.SaveChangesAsync();
 
             return returnRequest.Id;
         }
@@ -54,7 +54,7 @@ namespace RookieOnlineAssetManagement.Services
             // Standardize
             var returnedDate = Convert.ToDateTime(request.ReturnedDateFilter);
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
-            
+
             // Filter
             IQueryable<ReturnRequest> query = _dbcontext.ReturnRequests.AsQueryable();
             query = query.WhereIf(request.KeyWord != null, x => x.Assignment.Asset.Code.Contains(request.KeyWord)
@@ -181,6 +181,23 @@ namespace RookieOnlineAssetManagement.Services
             assignment.Asset.State = AssetState.Available;
 
 
+            return await _dbcontext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> CancelReturnRequest(int returnRequestId)
+        {
+            var returnRequest = await _dbcontext.ReturnRequests.FindAsync(returnRequestId);
+            if (returnRequest == null)
+                throw new Exception($"Cannot find return request with ID {returnRequestId}");
+            if (returnRequest.State != ReturnRequestState.WaitingForReturning)
+                throw new Exception($"Cancel is only enabled for requests having state is “Waiting for returning”");
+
+            returnRequest.State = ReturnRequestState.Declined;
+            _dbcontext.ReturnRequests.Update(returnRequest);
+
+            var assignment = await _dbcontext.Assignments.FindAsync(returnRequest.AssignmentId);
+            assignment.State = AssignmentState.Accepted;
+            // _dbcontext.Assignments.Update(assignment);
             return await _dbcontext.SaveChangesAsync() > 0;
         }
     }

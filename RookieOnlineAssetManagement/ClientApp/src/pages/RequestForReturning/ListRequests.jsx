@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Button,
-  InputGroup,
-  FormControl,
-  Modal,
-  Row,
-  Form,
-} from "react-bootstrap";
+import { Table, Button, InputGroup, FormControl, Modal, Row, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import { GoTriangleDown } from "react-icons/go";
 import { BsCheckLg } from "react-icons/bs";
@@ -22,7 +14,8 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 import {
   GetReturnRequestPagingFilter,
   GetRequestState,
-  GetDetail,
+    GetDetail,
+  CancelRequest
 } from "../../services/returnRequestService";
 import { Complete } from "../../services/returnRequestService";
 
@@ -43,6 +36,8 @@ const ListRequests = () => {
   const [detailId, setDetailId] = useState();
   const [isCompleted, setIsCompleted] = useState(false);
   const [rrequestId, setRrequestId] = useState(undefined);
+  const [isCancelRequest, setIsCancelRequest] = useState(false);
+  const [idCancelRequest, setIdCancelRequest] = useState();
   const [detailedReturnRequest, setDetailedReturnRequest] = useState({
     id: detailId,
     code: "",
@@ -162,6 +157,16 @@ const ListRequests = () => {
       });
   }
 
+  const handleCancelRequest = () => {
+    CancelRequest(idCancelRequest)
+      .then((res) => {
+        setIsFilter(true);
+      })
+      .catch((error) => {
+        setIsCancelRequest(false);
+      });
+    setIsCancelRequest(false);
+  };
   return (
     <div style={{ padding: "100px 50px", width: "1300px" }}>
       <div
@@ -251,17 +256,9 @@ const ListRequests = () => {
         </div>
 
         <InputGroup style={{ width: "250px" }}>
-          <FormControl
-            type="search"
-            placeholder="Search"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
+          <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
           <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
-            <BsSearch
-              style={{ color: "#000", marginBottom: "3px" }}
-              onClick={handleSearch}
-            />
+            <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={handleSearch} />
           </Button>
         </InputGroup>
       </div>
@@ -483,7 +480,10 @@ const ListRequests = () => {
                         }}
                       />
                       <IoClose
-                        onClick={() => {}}
+                        onClick={() => {
+                            setIdCancelRequest(request.id);
+                            setIsCancelRequest(true);
+                            }}
                         style={{
                           fontSize: "25px",
                           marginLeft: "5px",
@@ -636,6 +636,55 @@ const ListRequests = () => {
           </Row>
           <br />
         </Modal.Body>
+      </Modal>
+      <Modal show={isCancelRequest} centered>
+        <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
+          <Modal.Title
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#dc3545",
+              marginLeft: "20px",
+            }}
+          >
+            Are you sure?
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <p>Do you want to cancel this asset</p>
+        </Modal.Body>
+
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
+          <Button
+            style={{
+              backgroundColor: "#dc3545",
+              border: "1px solid #dc3545",
+              borderRadius: "4px",
+            }}
+            onClick={() => handleCancelRequest()}
+          >
+            Yes
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#FFF",
+              border: "1px solid rgb(89 86 86)",
+              borderRadius: "4px",
+              color: "black",
+              marginLeft: "20px",
+            }}
+            onClick={() => {
+              setIsCancelRequest(false);
+            }}
+          >
+            No
+          </Button>
+        </Modal.Footer>
       </Modal>
       <Modal show={isCompleted} centered>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>

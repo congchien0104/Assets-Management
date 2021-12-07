@@ -3,13 +3,13 @@ import axios from "axios";
 const API_URL = "/api/returnRequests/";
 
 export async function Create(data) {
-    return await axios.post(API_URL, data);
-};
+  return await axios.post(API_URL, data);
+}
 export async function GetDetail(id) {
-    return await axios.get(API_URL + `${id}`).then((response) => response.data);
+  return await axios.get(API_URL + `${id}`).then((response) => response.data);
 }
 export async function GetRequestState() {
-    return await axios.get(API_URL + "states").then((response) => response.data);
+  return await axios.get(API_URL + "states").then((response) => response.data);
 }
 export async function GetReturnRequestPagingFilter(filter) {
     var query = filter.pageIndex ? `${"&pageIndex=" + filter.pageIndex}` : "";
@@ -34,3 +34,6 @@ export async function CreateRR(data) {
 export async function Complete(id, data) {
     return await axios.put(API_URL + `${id}`, data);
 };
+export async function CancelRequest(id) {
+    return await axios.delete(API_URL + `${id}`);
+}

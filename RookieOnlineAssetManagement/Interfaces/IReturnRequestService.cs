@@ -14,6 +14,7 @@ namespace RookieOnlineAssetManagement.Interfaces
         public Task<int> Create(ReturnRequestCreate request);
         public Task<ReturnRequestVM> GetDetailedReturnRequest(int returnRequestId);
         public Task<PagedResultBase<ReturnRequestVM>> GetReturnRequestPagingFilter(ReturnRequestPagingFilterRequest request);
+        public Task<bool> CancelReturnRequest(int returnRequestId);
         public List<StateVM> GetRequestStates();
         public Task<int> IsCreating(ReturnRequestCreateRequest request);
         public Task<bool> Complete(ReturnRequestCreateRequest request);

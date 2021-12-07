@@ -59,6 +59,15 @@ namespace RookieOnlineAssetManagement.Controllers
                 return BadRequest();
             return Ok(result);
         }
+        [HttpDelete("{returnRequestId}")]
+        public async Task<IActionResult> Delete(int returnRequestId)
+        {
+            var result = await _returnRequestService.CancelReturnRequest(returnRequestId);
+            if (!result)
+                return BadRequest();
+            return Ok(result);
+
+        }
 
         [HttpGet("states")]
         public IActionResult GetRequestState()
