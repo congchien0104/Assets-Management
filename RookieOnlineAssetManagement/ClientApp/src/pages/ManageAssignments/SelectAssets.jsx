@@ -4,8 +4,8 @@ import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import { GetAssetsPagingFilter } from "../../services/assetService";
 import Pagination from "react-responsive-pagination";
-import "./style.css"
-
+import "./style.css";
+import "../ManageAssets/listAssets/ListAssets.css";
 const SelectAssets = (props) => {
   const [assets, setAssets] = useState([]);
   const [selectedAssetId, setSelectedAssetId] = useState(0);
@@ -58,11 +58,7 @@ const SelectAssets = (props) => {
   }, [isFilter]);
 
   return (
-    <Modal
-      dialogClassName="custom-modal"
-      show={props.isOpenSelectUsers}
-      style={{ top: "100px", left: "-50px" }}
-    >
+    <Modal dialogClassName="custom-modal" show={props.isOpenSelectUsers}>
       <Modal.Body style={{ padding: "20px" }}>
         <div>
           <div
@@ -83,23 +79,13 @@ const SelectAssets = (props) => {
               Select Asset
             </div>
             <InputGroup style={{ width: "300px" }}>
-              <FormControl
-                type="search"
-                placeholder="Search"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-              />
-              <Button
-                style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}
-              >
-                <BsSearch
-                  style={{ color: "#000", marginBottom: "3px" }}
-                  onClick={handleSearch}
-                />
+              <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+              <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
+                <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={handleSearch} />
               </Button>
             </InputGroup>
           </div>
-          <Table style={{ height: '500px' }}>
+          <Table>
             <thead>
               <tr>
                 <th style={{ width: "50px" }}></th>
@@ -140,12 +126,7 @@ const SelectAssets = (props) => {
                 assets.map((asset, index) => (
                   <tr key={index}>
                     <td style={{ width: "50px" }}>
-                      <input
-                        type="radio"
-                        value={asset.id}
-                        name="userId"
-                        onChange={(e) => setSelectedAssetId(e.target.value)}
-                      />
+                      <input type="radio" value={asset.id} name="userId" onChange={(e) => setSelectedAssetId(e.target.value)} />
                     </td>
                     <td>{asset.code}</td>
                     <td>{asset.name}</td>
@@ -160,16 +141,10 @@ const SelectAssets = (props) => {
               justifyContent: "flex-end",
               width: "100%",
               marginTop: "10px",
-              marginBottom: '20px'
+              marginBottom: "20px",
             }}
           >
-            <Pagination
-              total={totalPages}
-              current={currentPage}
-              previousLabel="Previous"
-              nextLabel="Next"
-              onPageChange={(page) => handlePageChange(page)}
-            />
+            <Pagination total={totalPages} current={currentPage} previousLabel="Previous" nextLabel="Next" onPageChange={(page) => handlePageChange(page)} />
           </div>
           <div style={{ display: "flex", justifyContent: "end" }}>
             <Button

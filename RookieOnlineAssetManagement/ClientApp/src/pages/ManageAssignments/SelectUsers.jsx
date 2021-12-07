@@ -28,10 +28,7 @@ const SelectUsers = (props) => {
   };
 
   const handleSave = () => {
-    const fullName =
-      users.filter((x) => x.id == selectedUserId)[0].firstName +
-      " " +
-      users.filter((x) => x.id == selectedUserId)[0].lastName;
+    const fullName = users.filter((x) => x.id == selectedUserId)[0].firstName + " " + users.filter((x) => x.id == selectedUserId)[0].lastName;
     props.setValue(selectedUserId);
     props.setLabel(fullName);
     props.setIsOpenSelectUsers(false);
@@ -62,11 +59,7 @@ const SelectUsers = (props) => {
   }, [isFilter]);
 
   return (
-    <Modal
-      dialogClassName="custom-modal"
-      show={props.isOpenSelectUsers}
-      style={{ top: "100px", left: "-50px" }}
-    >
+    <Modal dialogClassName="custom-modal" show={props.isOpenSelectUsers}>
       <Modal.Body style={{ padding: "20px" }}>
         <div>
           <div
@@ -87,19 +80,9 @@ const SelectUsers = (props) => {
               Select User
             </div>
             <InputGroup style={{ width: "300px" }}>
-              <FormControl
-                type="search"
-                placeholder="Search"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-              />
-              <Button
-                style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}
-              >
-                <BsSearch
-                  style={{ color: "#000", marginBottom: "3px" }}
-                  onClick={handleSearch}
-                />
+              <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+              <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
+                <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={handleSearch} />
               </Button>
             </InputGroup>
           </div>
@@ -144,12 +127,7 @@ const SelectUsers = (props) => {
                 users.map((user, index) => (
                   <tr key={index}>
                     <td style={{ width: "50px" }}>
-                      <input
-                        type="radio"
-                        value={user.id}
-                        name="userId"
-                        onChange={(e) => setSelectedUserId(e.target.value)}
-                      />
+                      <input type="radio" value={user.id} name="userId" onChange={(e) => setSelectedUserId(e.target.value)} />
                     </td>
                     <td>{user.code}</td>
                     <td>{user.firstName + " " + user.lastName}</td>
@@ -164,16 +142,10 @@ const SelectUsers = (props) => {
               justifyContent: "flex-end",
               width: "100%",
               marginTop: "10px",
-              marginBottom: '20px'
+              marginBottom: "20px",
             }}
           >
-            <Pagination
-              total={totalPages}
-              current={currentPage}
-              previousLabel="Previous"
-              nextLabel="Next"
-              onPageChange={(page) => handlePageChange(page)}
-            />
+            <Pagination total={totalPages} current={currentPage} previousLabel="Previous" nextLabel="Next" onPageChange={(page) => handlePageChange(page)} />
           </div>
           <div style={{ display: "flex", justifyContent: "end" }}>
             <Button
