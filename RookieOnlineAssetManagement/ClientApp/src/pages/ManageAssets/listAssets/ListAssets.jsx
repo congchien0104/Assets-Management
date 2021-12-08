@@ -121,14 +121,16 @@ const ListAssets = () => {
       pageIndex: currentPage,
     });
     setIsFilter(true);
-  }, [
-    selectedState,
-    selectedCategory,
-    isSearch,
-    currentPage,
-    sortBy,
-    isAscending,
-  ]);
+  }, [selectedState, selectedCategory, isSearch, sortBy, isAscending]);
+
+  //Pagination only
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      pageIndex: currentPage,
+    });
+    setIsFilter(true);
+  }, [currentPage]);
 
   useEffect(() => {
     GetAssetsPagingFilter(searchFilterModel)

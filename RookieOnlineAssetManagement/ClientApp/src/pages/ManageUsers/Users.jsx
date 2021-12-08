@@ -73,7 +73,16 @@ const Users = () => {
       isAscending: isAscending,
     });
     setIsFilter(true);
-  }, [selected, isSearch, currentPage, sortBy, isAscending]);
+  }, [selected, isSearch, sortBy, isAscending]);
+
+  //Pagination only
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      pageIndex: currentPage,
+    });
+    setIsFilter(true);
+  }, [currentPage]);
 
   useEffect(() => {
     userService
@@ -339,6 +348,7 @@ const Users = () => {
         >
           <ReactPaginate
             pageCount={totalPage}
+            forcePage={currentPage - 1}
             breakLabel="..."
             previousLabel="Previous"
             nextLabel="Next"

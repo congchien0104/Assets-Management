@@ -132,7 +132,17 @@ const ListAssignments = () => {
       assignedDateFilter: formatDate(dateFilter),
     });
     setIsFilter(true);
-  }, [selectedState, isSearch, currentPage, sortBy, isAscending, dateFilter]);
+  }, [selectedState, isSearch, sortBy, isAscending, dateFilter]);
+
+  //Pagination only
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      pageIndex: currentPage,
+    });
+    setIsFilter(true);
+  }, [currentPage]);
+
   useEffect(() => {
     GetAssignmentsPagingFilter(searchFilterModel)
       .then((response) => {

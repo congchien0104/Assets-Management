@@ -8,7 +8,8 @@ import "./style.css";
 
 const SelectUsers = (props) => {
   const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [name, setName] = useState(props.label);
+  const [selectedUserId, setSelectedUserId] = useState(props.value);
   const [isFilter, setIsFilter] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState(true);
@@ -28,11 +29,21 @@ const SelectUsers = (props) => {
   };
 
   const handleSave = () => {
-    const fullName = users.filter((x) => x.id == selectedUserId)[0].firstName + " " + users.filter((x) => x.id == selectedUserId)[0].lastName;
     props.setValue(selectedUserId);
-    props.setLabel(fullName);
+    props.setLabel(name);
     props.setIsOpenSelectUsers(false);
   };
+
+  useEffect(() => {
+    if (selectedUserId !== 0 && users.length > 0) {
+      setName(
+        users.filter((x) => x.id == selectedUserId)[0].firstName +
+          " " +
+          users.filter((x) => x.id == selectedUserId)[0].lastName
+      );
+    }
+  }, [selectedUserId]);
+
   useEffect(() => {
     setSearchFilterModel({
       ...searchFilterModel,
@@ -42,7 +53,16 @@ const SelectUsers = (props) => {
       pageIndex: currentPage,
     });
     setIsFilter(true);
-  }, [currentPage, isSearch, sortBy, isAscending]);
+  }, [isSearch, sortBy, isAscending]);
+
+  //Pagination only
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      pageIndex: currentPage,
+    });
+    setIsFilter(true);
+  }, [currentPage]);
 
   useEffect(() => {
     userService
@@ -124,10 +144,19 @@ const SelectUsers = (props) => {
             </thead>
             <tbody>
               {users &&
-                users.map((user, index) => (
-                  <tr key={index}>
+                users.map((user) => (
+                  <tr key={user.id}>
                     <td style={{ width: "50px" }}>
-                      <input type="radio" value={user.id} name="userId" onChange={(e) => setSelectedUserId(e.target.value)} />
+                      <label className="wrap-radio">
+                        <input
+                          type="radio"
+                          value={user.id}
+                          name="userId"
+                          onChange={(e) => setSelectedUserId(e.target.value)}
+                          checked={user.id == selectedUserId ? true : false}
+                        />
+                        <span className="checkmark-radio"></span>
+                      </label>
                     </td>
                     <td>{user.code}</td>
                     <td>{user.firstName + " " + user.lastName}</td>

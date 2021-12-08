@@ -9,7 +9,8 @@ import "../ManageAssets/listAssets/ListAssets.css";
 
 const SelectAssets = (props) => {
   const [assets, setAssets] = useState([]);
-  const [selectedAssetId, setSelectedAssetId] = useState(0);
+  const [name, setName] = useState(props.label);
+  const [selectedAssetId, setSelectedAssetId] = useState(props.value);
   const [isFilter, setIsFilter] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState(true);
@@ -29,11 +30,16 @@ const SelectAssets = (props) => {
   };
 
   const handleSave = () => {
-    const name = assets.filter((x) => x.id == selectedAssetId)[0].name;
     props.setValue(selectedAssetId);
     props.setLabel(name);
     props.setIsOpenSelectAssets(false);
   };
+
+  useEffect(() => {
+    if (selectedAssetId !== 0 && assets.length > 0)
+      setName(assets.filter((x) => x.id == selectedAssetId)[0].name);
+  }, [selectedAssetId]);
+
   useEffect(() => {
     setSearchFilterModel({
       ...searchFilterModel,
@@ -43,7 +49,16 @@ const SelectAssets = (props) => {
       pageIndex: currentPage,
     });
     setIsFilter(true);
-  }, [currentPage, isSearch, sortBy, isAscending]);
+  }, [isSearch, sortBy, isAscending]);
+
+  //Pagination only
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      pageIndex: currentPage,
+    });
+    setIsFilter(true);
+  }, [currentPage]);
 
   useEffect(() => {
     GetAssetsPagingFilter(searchFilterModel)
@@ -124,10 +139,19 @@ const SelectAssets = (props) => {
             </thead>
             <tbody>
               {assets &&
-                assets.map((asset, index) => (
-                  <tr key={index}>
+                assets.map((asset) => (
+                  <tr key={asset.id}>
                     <td style={{ width: "50px" }}>
-                      <input type="radio" value={asset.id} name="userId" onChange={(e) => setSelectedAssetId(e.target.value)} />
+                      <label className="wrap-radio">
+                        <input
+                          type="radio"
+                          value={asset.id}
+                          name="userId"
+                          onChange={(e) => setSelectedAssetId(e.target.value)}
+                          checked={asset.id == selectedAssetId ? true : false}
+                        />
+                        <span className="checkmark-radio"></span>
+                      </label>
                     </td>
                     <td>{asset.code}</td>
                     <td>{asset.name}</td>

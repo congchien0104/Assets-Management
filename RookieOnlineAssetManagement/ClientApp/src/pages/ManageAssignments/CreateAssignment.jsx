@@ -194,7 +194,9 @@ function CreateAssignment(props) {
         <SelectUsers
           isOpenSelectUsers={isOpenSelectUsers}
           setIsOpenSelectUsers={setIsOpenSelectUsers}
+          value={userValue}
           setValue={setUserValue}
+          label={userLabel}
           setLabel={setUserLabel}
         />
       ) : (
@@ -204,7 +206,9 @@ function CreateAssignment(props) {
         <SelectAssets
           isOpenSelectUsers={isOpenSelectAssets}
           setIsOpenSelectAssets={setIsOpenSelectAssets}
+          value={assetValue}
           setValue={setAssetValue}
+          label={assetLabel}
           setLabel={setAssetLabel}
         />
       ) : (

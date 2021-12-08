@@ -155,7 +155,7 @@ const Home = () => {
       >
         My Assignment
       </div>
-      <Table style={{ width: "1000px" }}>
+      <Table style={{ width: "1000px", height: '500px' }}>
         <thead>
           <tr>
             <th>

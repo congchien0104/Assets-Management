@@ -123,7 +123,16 @@ const ListRequests = () => {
       returnedDateFilter: formatDate(dateFilter),
     });
     setIsFilter(true);
-  }, [selectedState, isSearch, currentPage, sortBy, isAscending, dateFilter]);
+  }, [selectedState, isSearch, sortBy, isAscending, dateFilter]);
+
+  //Pagination only
+  useEffect(() => {
+    setSearchFilterModel({
+      ...searchFilterModel,
+      pageIndex: currentPage,
+    });
+    setIsFilter(true);
+  }, [currentPage]);
 
   useEffect(() => {
     GetReturnRequestPagingFilter(searchFilterModel)
@@ -535,6 +544,7 @@ const ListRequests = () => {
       >
         <ReactPaginate
           pageCount={totalPages}
+          forcePage={currentPage - 1}
           breakLabel="..."
           previousLabel="Previous"
           nextLabel="Next"
