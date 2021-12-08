@@ -128,20 +128,23 @@ const Home = () => {
   }, [isFilter]);
 
   useEffect(() => {
-    GetDetail(detailId).then((res) => {
-      setDetailedAssignment({
-        ...detailedAssignment,
-        code: res.assetCode,
-        name: res.assetName,
-        specification: res.specification,
-        AssignedTo: res.assignedToName,
-        AssignedBy: res.assignedByName,
-        AssignedDate: formatDate(res.assignedDate),
-        state: StateToString(res.state),
-        note: res.note,
+    if (isShowDetail == true) {
+      GetDetail(detailId).then((res) => {
+        setDetailedAssignment({
+          ...detailedAssignment,
+          code: res.assetCode,
+          name: res.assetName,
+          specification: res.specification,
+          AssignedTo: res.assignedToName,
+          AssignedBy: res.assignedByName,
+          AssignedDate: formatDate(res.assignedDate),
+          state: StateToString(res.state),
+          note: res.note,
+        });
+        setDetailId(0);
       });
-    });
-  }, [detailId]);
+    }
+  }, [isShowDetail]);
 
   return (
     <div style={{ padding: "120px" }}>
@@ -155,7 +158,7 @@ const Home = () => {
       >
         My Assignment
       </div>
-      <Table style={{ width: "1000px", height: '500px' }}>
+      <Table style={{ width: "1000px", height: "500px" }}>
         <thead>
           <tr>
             <th>
@@ -228,7 +231,10 @@ const Home = () => {
                   <td>
                     <BsCheckLg
                       onClick={() => {
-                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
+                        if (
+                          StateToString(assignment.state) ===
+                          "Waiting For Acceptance"
+                        ) {
                           setIdRespondAssignment(assignment.id);
                           setIsAccept(true);
                         }
@@ -236,12 +242,14 @@ const Home = () => {
                       style={{
                         fontSize: "18px",
                         color: `${
-                          StateToString(assignment.state) === "Waiting For Acceptance"
+                          StateToString(assignment.state) ===
+                          "Waiting For Acceptance"
                             ? "#dc3545"
                             : "#808080"
                         }`,
                         cursor: `${
-                          StateToString(assignment.state) === "Waiting For Acceptance"
+                          StateToString(assignment.state) ===
+                          "Waiting For Acceptance"
                             ? "pointer"
                             : "default"
                         }`,
@@ -249,7 +257,10 @@ const Home = () => {
                     />
                     <IoClose
                       onClick={() => {
-                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
+                        if (
+                          StateToString(assignment.state) ===
+                          "Waiting For Acceptance"
+                        ) {
                           setIdRespondAssignment(assignment.id);
                           setIsDecline(true);
                         }
@@ -258,13 +269,15 @@ const Home = () => {
                         fontSize: "25px",
                         marginLeft: "5px",
                         color: `${
-                          StateToString(assignment.state) === "Waiting For Acceptance"
+                          StateToString(assignment.state) ===
+                          "Waiting For Acceptance"
                             ? "#000"
                             : "#f2a7ac"
                         }`,
                         fontSize: "25px",
                         cursor: `${
-                          StateToString(assignment.state) === "Waiting For Acceptance"
+                          StateToString(assignment.state) ===
+                          "Waiting For Acceptance"
                             ? "pointer"
                             : "default"
                         }`,

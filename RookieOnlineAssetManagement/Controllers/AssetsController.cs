@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
@@ -40,9 +40,9 @@ namespace RookieOnlineAssetManagement.Controllers
             }
             request.Location = User.FindFirst("location")?.Value;
             var assetId = await _assetService.Create(request);
-            
+
             if (assetId < 0)
-                return BadRequest();
+                return BadRequest("Creating Asset was unsuccessfully!");
             var asset = await _assetService.GetDetailedAsset(assetId);
             return CreatedAtAction(nameof(GetDetailedAsset), new { id = assetId }, asset);
         }
@@ -56,7 +56,7 @@ namespace RookieOnlineAssetManagement.Controllers
             var assetId = await _assetService.CreateCategory(categoryName);
             
             if (assetId < 0)
-                return BadRequest();
+                return BadRequest("Creating Category was unsuccessfully!");
             return Ok(assetId);
         }
         [HttpGet("{assetId}")]
@@ -64,7 +64,7 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = await _assetService.GetDetailedAsset(assetId);
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
 
         }
@@ -79,7 +79,7 @@ namespace RookieOnlineAssetManagement.Controllers
             request.Id = assetId;
             var result = await _assetService.Update(request);
             if (!result)
-                return BadRequest();
+                return BadRequest("Update Asset was unsuccessfully!");
             return Ok(result);
 
         }
@@ -88,7 +88,7 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = await _assetService.Delete(assetId);
             if (!result)
-                return BadRequest();
+                return BadRequest("Delete Asset was unsuccessfully!");
             return Ok(result);
 
         }
@@ -97,7 +97,7 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = _assetService.GetAllAssetStates();
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
 
         }
@@ -106,7 +106,7 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = _assetService.GetAllCategories();
             if (result.Count == 0)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
         }
     }

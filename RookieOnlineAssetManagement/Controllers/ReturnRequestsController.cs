@@ -29,16 +29,17 @@ namespace RookieOnlineAssetManagement.Controllers
 
             int userId = int.Parse(User.FindFirst("userId")?.Value);
             if (userId < 0)
-                return BadRequest();
+                return NotFound("Not found user!");
             request.RequestBy = userId;
 
             int returnRequestId = await _returnRequestService.Create(request);
             if (returnRequestId < 0)
-                return BadRequest();
+                return BadRequest("Create Returning Request was unsuccessfully!");
 
             return Ok();
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("paging")]
         public async Task<IActionResult> GetReturnRequestPagingFilter([FromQuery] ReturnRequestPagingFilterRequest request)
         {
@@ -51,30 +52,34 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(assignments);
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("{returnRequestId}")]
         public async Task<IActionResult> GetDetailedReturnRequest(int returnRequestId)
         {
             var result = await _returnRequestService.GetDetailedReturnRequest(returnRequestId);
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
         }
+
+        [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{returnRequestId}")]
-        public async Task<IActionResult> Delete(int returnRequestId)
+        public async Task<IActionResult> Cancel(int returnRequestId)
         {
             var result = await _returnRequestService.CancelReturnRequest(returnRequestId);
             if (!result)
-                return BadRequest();
+                return BadRequest("Cancel Returning Request was unsuccessfully!");
             return Ok(result);
 
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("states")]
         public IActionResult GetRequestState()
         {
             var result = _returnRequestService.GetRequestStates();
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
         }
 
@@ -98,6 +103,7 @@ namespace RookieOnlineAssetManagement.Controllers
         //    return Ok("Success");
         //}
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpPut("{Id}")]
         public async Task<IActionResult> Complete([FromRoute] int Id, [FromForm] ReturnRequestCreateRequest request)
         {
@@ -109,13 +115,13 @@ namespace RookieOnlineAssetManagement.Controllers
             int userId = int.Parse(User.FindFirst("userId")?.Value);
             if (userId < 0)
             {
-                return BadRequest();
+                return NotFound("Not found user!");
             }
             request.AcceptedBy = userId;
             request.Id = Id;
             var result = await _returnRequestService.Complete(request);
             if (!result)
-                return BadRequest();
+                return BadRequest("Complete Returning Request was unsuccessfully!");
             return Ok(result);
         }
     }

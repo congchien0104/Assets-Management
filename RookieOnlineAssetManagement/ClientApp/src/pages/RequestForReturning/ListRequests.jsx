@@ -146,19 +146,22 @@ const ListRequests = () => {
   }, [isFilter]);
 
   useEffect(() => {
-    GetDetail(detailId).then((res) => {
-      setDetailedReturnRequest({
-        ...detailedReturnRequest,
-        code: res.assetCode,
-        name: res.assetName,
-        RequestByName: res.requestByName,
-        AcceptedByName: res.acceptedByName,
-        AssignedDate: formatDate(res.assignedDate),
-        ReturnedDate: formatDate(res.returnedDate),
-        state: StateToString(res.state),
+    if (isShowDetail == true) {
+      GetDetail(detailId).then((res) => {
+        setDetailedReturnRequest({
+          ...detailedReturnRequest,
+          code: res.assetCode,
+          name: res.assetName,
+          RequestByName: res.requestByName,
+          AcceptedByName: res.acceptedByName,
+          AssignedDate: formatDate(res.assignedDate),
+          ReturnedDate: formatDate(res.returnedDate),
+          state: StateToString(res.state),
+        });
+        setDetailId(0);
       });
-    });
-  }, [detailId]);
+    }
+  }, [isShowDetail]);
 
   const handleCompleted = () => {
     var data = new FormData();

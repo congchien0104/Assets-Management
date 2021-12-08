@@ -56,10 +56,10 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = await _userService.ChangePassword(vm);
             if (result == 1)
-                return Ok(new { message = "Password has been changed successfully!" });
+                return Ok("Password has been changed successfully!");
             else if (result == 2)
-                return BadRequest(new { message = "Incorrect current password!" });
-            return BadRequest(new { message = "Both password can not be empty!" });
+                return BadRequest("Incorrect current password!");
+            return BadRequest("Both password can not be empty!");
         }
 
         [HttpPut("ChangePasswordFirstTime")]
@@ -68,10 +68,10 @@ namespace RookieOnlineAssetManagement.Controllers
             var result = await _userService.ChangePasswordFirstTime(vm);
             if (!result)
                 return BadRequest();
-            return Ok(new { message = "Password has been changed successfully!" });
+            return Ok("Password has been changed successfully!");
         }
 
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("paging")]
         public async Task<IActionResult> GetUsersPagingFilter([FromQuery] UserPagingFilter request)
         {
@@ -84,7 +84,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(users);
         }
 
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserModel model)
         {
@@ -95,23 +95,23 @@ namespace RookieOnlineAssetManagement.Controllers
             model.Location = User.FindFirst("location")?.Value;
             var userId = await _userService.Create(model);
             if (userId < 0)
-                return BadRequest();
+                return NotFound("Not found user!");
             var user = await _userService.GetUser(userId);
             return CreatedAtAction(nameof(GetUser), new { id = userId }, user);
         }
 
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUser(int userId)
         {
             var result = await _userService.GetUser(userId);
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
 
         }
 
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUser([FromRoute] int userId, [FromForm] UserUpdate model)
         {
@@ -123,18 +123,18 @@ namespace RookieOnlineAssetManagement.Controllers
             model.Id = userId;
             var result = await _userService.Update(model);
             if (!result)
-                return BadRequest();
+                return BadRequest("Update User was unsuccessfully!");
             return Ok(result);
 
         }
 
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpPatch("{userId}")]
         public async Task<IActionResult> DisabledUser(int userId)
         {
             var result = await _userService.Disabled(userId);
             if (!result)
-                return BadRequest();
+                return BadRequest("Disabled User was unsuccessfully!");
             return Ok(result);
 
         }

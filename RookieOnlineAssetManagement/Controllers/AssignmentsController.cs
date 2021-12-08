@@ -22,6 +22,7 @@ namespace RookieOnlineAssetManagement.Controllers
             _assignmentService = assignmentService;
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("paging")]
         public async Task<IActionResult> GetAssignmentPagingFilter([FromQuery] AssignmentPagingFilterRequest request)
         {
@@ -34,6 +35,7 @@ namespace RookieOnlineAssetManagement.Controllers
             return Ok(assignments);
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] AssignmentCreateRequest request)
         {
@@ -44,13 +46,13 @@ namespace RookieOnlineAssetManagement.Controllers
             int userId = int.Parse(User.FindFirst("userId")?.Value);
             if (userId < 0)
             {
-                return BadRequest();
+                return NotFound("Not found user!");
             }
             request.AssignedBy = userId;
             var assignmentId = await _assignmentService.Create(request);
 
             if (assignmentId < 0)
-                return BadRequest();
+                return BadRequest("Create Assignment was unsuccessfully!");
             var assignment = await _assignmentService.GetDetailedAssignment(assignmentId);
             return CreatedAtAction(nameof(GetDetailedAssignment), new { id = assignmentId }, assignment);
         }
@@ -60,11 +62,12 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = await _assignmentService.GetDetailedAssignment(assignmentId);
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
 
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpPut("{assignmentId}")]
         public async Task<IActionResult> Update([FromRoute] int assignmentId, [FromForm] AssignmentUpdateRequest request)
         {
@@ -76,27 +79,29 @@ namespace RookieOnlineAssetManagement.Controllers
             request.Id = assignmentId;
             var result = await _assignmentService.Update(request);
             if (!result)
-                return BadRequest();
+                return BadRequest("Update Assignment was unsuccessfully!");
             return Ok(result);
 
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{assignmentId}")]
         public async Task<IActionResult> Delete(int assignmentId)
         {
             var result = await _assignmentService.Delete(assignmentId);
             if (!result)
-                return BadRequest();
+                return BadRequest("Delete Assignment was unsuccessfully!");
             return Ok(result);
 
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("states")]
         public IActionResult GetAssignmentState()
         {
             var result = _assignmentService.GetAssignmentStates();
             if (result == null)
-                return BadRequest();
+                return NotFound("Not found!");
             return Ok(result);
 
         }
@@ -117,7 +122,7 @@ namespace RookieOnlineAssetManagement.Controllers
         {
             var result = await _assignmentService.RespondAssignment(assignmentId, isAccepted);
             if (!result)
-                return BadRequest();
+                return BadRequest("Respond Assignment was unsuccessfully!");
             return Ok(result);
         }
     }
