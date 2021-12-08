@@ -151,7 +151,7 @@ namespace RookieOnlineAssetManagement.Services
                 && assignment.State != AssignmentState.WaitingForReturning
                 && assignment.State != AssignmentState.Returned)
             {
-                throw new Exception($"Get detaled assignment will be enable with Accepted and Wating for Acceptance state");
+                throw new Exception($"Get detaled assignment will be disable with Declined state");
             }
             var detailedAssignment = new AssignmentVM
             {

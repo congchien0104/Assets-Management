@@ -111,7 +111,7 @@ namespace RookieOnlineAssetManagement.UnitTests
                         AssignedTo = 2,
                         AssignedDate = new DateTime(2021, 9, 28),
                         AssetId = 1,
-                        State = AssignmentState.Returned,
+                        State = AssignmentState.Declined,
                     }, new Assignment
                     {
                         Id = 3,
@@ -152,7 +152,7 @@ namespace RookieOnlineAssetManagement.UnitTests
             Assert.IsType<AssignmentVM>(assignment);
         }
         [Fact]
-        public async Task GetDetailedAssignmentWhichHasStateReturned_ReturnExeption()
+        public async Task GetDetailedAssignmentWhichHasStateDeclined_ReturnExeption()
         {
             // Arrange
             int assignmentId = 2;
@@ -160,7 +160,7 @@ namespace RookieOnlineAssetManagement.UnitTests
             Func<Task> act = async () => await _assignmentService.GetDetailedAssignment(assignmentId);
             // Assert
             var exception = await Assert.ThrowsAsync<Exception>(act);
-            Assert.Contains("Get detaled assignment will be enable with Accepted and Wating for Acceptance state", exception.Message);
+            Assert.Contains("Get detaled assignment will be disable with Declined state", exception.Message);
         }
         [Fact]
         public async Task GetAssignmentPagingWithStatesAndAssignedDateFilter_ReturnPagedResultIncludeTwoItem()
