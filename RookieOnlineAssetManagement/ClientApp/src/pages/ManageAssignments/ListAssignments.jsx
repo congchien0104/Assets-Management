@@ -1,26 +1,12 @@
 import React from "react";
-import {
-  Modal,
-  Table,
-  Button,
-  FormControl,
-  InputGroup,
-  Row,
-  Form,
-} from "react-bootstrap";
+import { Modal, Table, Button, FormControl, InputGroup, Row, Form } from "react-bootstrap";
 import { BsFillCalendarDateFill } from "react-icons/bs";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { IoReloadOutline } from "react-icons/io5";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  GetAssignmentState,
-  GetDetail,
-  Delete,
-  GetAssignmentsPagingDefault,
-  GetAssignmentsPagingFilter,
-} from "../../services/assignmentService";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import { GetAssignmentState, GetDetail, Delete, GetAssignmentsPagingDefault, GetAssignmentsPagingFilter } from "../../services/assignmentService";
 import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
@@ -33,6 +19,7 @@ import { Create } from "../../services/returnRequestService";
 const ListAssignments = () => {
   const { search } = useLocation();
   const params = queryString.parse(search);
+  const history = useHistory();
   const [afterUpdated, setAfterUpdated] = useState(params.IsSortByUpdatedDate);
   const [afterCreated, setAfterCreated] = useState(params.IsSortByCreatedDate);
   const [states, setStates] = useState([]);
@@ -116,6 +103,7 @@ const ListAssignments = () => {
       .then((response) => {
         setAssignments([...response.items]);
         setTotalPages(response.pageCount);
+        history.replace("/assignments");
       })
       .catch((error) => console.log(error));
   }, []);
@@ -191,7 +179,7 @@ const ListAssignments = () => {
 
   const handleCreated = () => {
     const data = new FormData();
-    data.append('assignmentId', idDeletingAssignment)
+    data.append("assignmentId", idDeletingAssignment);
     Create(data)
       .then((response) => {
         console.log("Created RR");
@@ -201,7 +189,7 @@ const ListAssignments = () => {
       .catch((e) => {
         console.log(e);
       });
-  }
+  };
   return (
     <React.Fragment>
       <div style={{ padding: "100px 50px" }}>
@@ -289,17 +277,9 @@ const ListAssignments = () => {
             />
           </div>
           <InputGroup style={{ width: "250px" }}>
-            <FormControl
-              type="search"
-              placeholder="Search"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
+            <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
             <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
-              <BsSearch
-                style={{ color: "#000", marginBottom: "3px" }}
-                onClick={onSearchClick}
-              />
+              <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={onSearchClick} />
             </Button>
           </InputGroup>
 
@@ -480,26 +460,14 @@ const ListAssignments = () => {
                   <td>
                     <Link
                       to={{
-                        pathname: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "/assignments"
-                            : "/assignments/" + assignment.id
-                        }`,
+                        pathname: `${StateToString(assignment.state) === "Accepted" ? "/assignments" : "/assignments/" + assignment.id}`,
                       }}
                     >
                       <MdEdit
                         style={{
-                          color: `${
-                            StateToString(assignment.state) === "Accepted"
-                              ? "#808080"
-                              : "#000"
-                          }`,
+                          color: `${StateToString(assignment.state) === "Accepted" ? "#808080" : "#000"}`,
                           fontSize: "20px",
-                          cursor: `${
-                            StateToString(assignment.state) === "Accepted"
-                              ? "default"
-                              : "pointer"
-                          }`,
+                          cursor: `${StateToString(assignment.state) === "Accepted" ? "default" : "pointer"}`,
                         }}
                       />
                     </Link>
@@ -512,17 +480,9 @@ const ListAssignments = () => {
                       }}
                       style={{
                         marginLeft: "5px",
-                        color: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "#f2a7ac"
-                            : "#dc3545"
-                        }`,
+                        color: `${StateToString(assignment.state) === "Accepted" ? "#f2a7ac" : "#dc3545"}`,
                         fontSize: "20px",
-                        cursor: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "default"
-                            : "pointer"
-                        }`,
+                        cursor: `${StateToString(assignment.state) === "Accepted" ? "default" : "pointer"}`,
                       }}
                     />
                     <IoReloadOutline
@@ -534,18 +494,10 @@ const ListAssignments = () => {
                       }}
                       style={{
                         fontWeight: "bold",
-                        color: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "#095ee6"
-                            : "#999999"
-                        }`,
+                        color: `${StateToString(assignment.state) === "Accepted" ? "#095ee6" : "#999999"}`,
                         marginLeft: "5px",
                         fontSize: "20px",
-                        cursor: `${
-                          StateToString(assignment.state) !== "Accepted"
-                            ? "default"
-                            : "pointer"
-                        }`,
+                        cursor: `${StateToString(assignment.state) !== "Accepted" ? "default" : "pointer"}`,
                       }}
                     />
                   </td>
@@ -714,9 +666,7 @@ const ListAssignments = () => {
           <p>Do you want to delete this assignment</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -765,9 +715,7 @@ const ListAssignments = () => {
           <p>Do you want to create a returning request for this asset?</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",

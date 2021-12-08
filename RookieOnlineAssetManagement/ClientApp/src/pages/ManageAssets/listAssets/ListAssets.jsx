@@ -1,26 +1,11 @@
 import React from "react";
 import "./ListAssets.css";
-import {
-  Modal,
-  Table,
-  Button,
-  FormControl,
-  InputGroup,
-  Row,
-  Form,
-} from "react-bootstrap";
+import { Modal, Table, Button, FormControl, InputGroup, Row, Form } from "react-bootstrap";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useHistory } from "react-router-dom";
-import {
-  GetAssetsPagingDefault,
-  GetAssetState,
-  GetAllCategories,
-  Delete,
-  GetAssetsPagingFilter,
-  GetDetail,
-} from "../../../services/assetService";
+import { GetAssetsPagingDefault, GetAssetState, GetAllCategories, Delete, GetAssetsPagingFilter, GetDetail } from "../../../services/assetService";
 import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
@@ -81,11 +66,7 @@ const ListAssets = () => {
           label: x.name,
         }));
         setStates(arrState);
-        setSelectedState(
-          arrState.filter(
-            (a) => a.value === 0 || a.value === 1 || a.value === 2
-          )
-        );
+        setSelectedState(arrState.filter((a) => a.value === 0 || a.value === 1 || a.value === 2));
       })
       .catch((error) => console.log(error));
 
@@ -107,6 +88,7 @@ const ListAssets = () => {
         setTotalPages(response.pageCount);
       })
       .catch((error) => console.log(error));
+    history.replace("/assets");
   }, []);
   useEffect(() => {
     setSearchFilterModel({
@@ -278,17 +260,9 @@ const ListAssets = () => {
           </div>
 
           <InputGroup style={{ width: "250px" }}>
-            <FormControl
-              type="search"
-              placeholder="Search"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
+            <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
             <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
-              <BsSearch
-                style={{ color: "#000", marginBottom: "3px" }}
-                onClick={onSearchClick}
-              />
+              <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={onSearchClick} />
             </Button>
           </InputGroup>
 
@@ -401,27 +375,15 @@ const ListAssets = () => {
                   <td>
                     <Link
                       to={{
-                        pathname: `${
-                          StateToString(asset.state) === "Assigned"
-                            ? "/assets"
-                            : "/asset/edit/" + asset.id
-                        }`,
+                        pathname: `${StateToString(asset.state) === "Assigned" ? "/assets" : "/asset/edit/" + asset.id}`,
                       }}
                     >
                       <MdEdit
                         style={{
-                          color: `${
-                            StateToString(asset.state) === "Assigned"
-                              ? "#808080"
-                              : "#000"
-                          }`,
+                          color: `${StateToString(asset.state) === "Assigned" ? "#808080" : "#000"}`,
                           fontSize: "20px",
                           marginRight: "20px",
-                          cursor: `${
-                            StateToString(asset.state) === "Assigned"
-                              ? "default"
-                              : "pointer"
-                          }`,
+                          cursor: `${StateToString(asset.state) === "Assigned" ? "default" : "pointer"}`,
                         }}
                       />
                     </Link>
@@ -433,17 +395,9 @@ const ListAssets = () => {
                         }
                       }}
                       style={{
-                        color: `${
-                          StateToString(asset.state) === "Assigned"
-                            ? "#f2a7ac"
-                            : "#dc3545"
-                        }`,
+                        color: `${StateToString(asset.state) === "Assigned" ? "#f2a7ac" : "#dc3545"}`,
                         fontSize: "20px",
-                        cursor: `${
-                          StateToString(asset.state) === "Assigned"
-                            ? "default"
-                            : "pointer"
-                        }`,
+                        cursor: `${StateToString(asset.state) === "Assigned" ? "default" : "pointer"}`,
                       }}
                     />
                   </td>
@@ -643,9 +597,7 @@ const ListAssets = () => {
           <p>Do you want to delete this asset</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -707,11 +659,9 @@ const ListAssets = () => {
               display: "inline",
             }}
           >
-            Cannot delete the asset because it belongs to one or more historical
-            assignments.
+            Cannot delete the asset because it belongs to one or more historical assignments.
             <br />
-            If the asset is not able to be used anymore, please update its state
-            in&nbsp;
+            If the asset is not able to be used anymore, please update its state in&nbsp;
             <Link
               style={{
                 display: "inline",

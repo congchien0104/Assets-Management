@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Modal,
-  FormControl,
-  InputGroup,
-  Row,
-  Form,
-} from "react-bootstrap";
+import { Table, Button, Modal, FormControl, InputGroup, Row, Form } from "react-bootstrap";
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
 import { MultiSelect } from "react-multi-select-component";
@@ -25,7 +17,7 @@ const Users = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeletingError, setIsDeletingError] = useState(false);
   const [idDeletingUser, setIdDeletingUser] = useState();
-
+  const history = useHistory();
   const { search } = useLocation();
   const params = queryString.parse(search);
   const [afterCreated, setAfterCreated] = useState(params.IsSortByCreatedDate);
@@ -62,6 +54,7 @@ const Users = () => {
       .catch((e) => {
         console.log(e);
       });
+    history.replace("/users");
   }, []);
 
   useEffect(() => {
@@ -183,17 +176,9 @@ const Users = () => {
             />
           </div>
           <InputGroup style={{ width: "250px" }}>
-            <FormControl
-              type="search"
-              placeholder="Search"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
+            <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
             <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
-              <BsSearch
-                style={{ color: "#000", marginBottom: "3px" }}
-                onClick={handleSearch}
-              />
+              <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={handleSearch} />
             </Button>
           </InputGroup>
           <Link to="/users/add">
@@ -377,20 +362,14 @@ const Users = () => {
       </div>
       <Modal show={isDeleting} centered>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
-          <Modal.Title
-            style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}
-          >
-            Are you sure?
-          </Modal.Title>
+          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Are you sure?</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <p>Do you want to disable this user?</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -417,29 +396,17 @@ const Users = () => {
         </Modal.Footer>
       </Modal>
       <Modal show={isDeletingError} centered>
-        <Modal.Header
-          style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}
-        >
-          <Modal.Title
-            style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}
-          >
-            Can not disable user
-          </Modal.Title>
-          <CgCloseO
-            onClick={() => setIsDeletingError(false)}
-            style={{ color: "#dc3545", fontSize: "20px", cursor: "pointer" }}
-          />
+        <Modal.Header style={{ backgroundColor: "#DDE1E5", paddingLeft: "40px" }}>
+          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Can not disable user</Modal.Title>
+          <CgCloseO onClick={() => setIsDeletingError(false)} style={{ color: "#dc3545", fontSize: "20px", cursor: "pointer" }} />
         </Modal.Header>
 
         <Modal.Body style={{ padding: "20px", paddingLeft: "40px" }}>
-          <p>
-            There are valid assignments belonging to this user. Please close all
-            assignments before disabling user.
-          </p>
+          <p>There are valid assignments belonging to this user. Please close all assignments before disabling user.</p>
         </Modal.Body>
       </Modal>
 
-      <Modal dialogClassName="modal-90w" show={detailId !== 0}>
+      <Modal centered dialogClassName="modal-90w" show={detailId !== 0}>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
           <Modal.Title
             style={{
