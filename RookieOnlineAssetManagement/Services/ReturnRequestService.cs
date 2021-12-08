@@ -88,7 +88,8 @@ namespace RookieOnlineAssetManagement.Services
             }).ToListAsync();
             for (int i = 0; i < data.Count; i++)
             {
-                data[i].Ordinal = (request.PageIndex - 1) * request.PageSize + i + 1;
+                data[i].Ordinal = request.IsAscending ? (request.PageIndex - 1) * request.PageSize + i + 1
+                    : (request.PageIndex - 1) * request.PageSize + data.Count - i;
             }
             var pagedResult = new PagedResultBase<ReturnRequestVM>()
             {
