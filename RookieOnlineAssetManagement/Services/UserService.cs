@@ -194,7 +194,8 @@ namespace RookieOnlineAssetManagement.Services
                 Type = a.Type,
                 State = a.State,
                 CreatedDate = a.CreatedDate,
-                UpdatedDate = a.UpdatedDate
+                UpdatedDate = a.UpdatedDate,
+                isHistory = (a.AssignmentsBys.Count > 0 || a.AssignmentsTos.Count > 0) ? true : false,
             }).ToListAsync();
             var pagedResult = new PagedResultBase<UserVM>()
             {

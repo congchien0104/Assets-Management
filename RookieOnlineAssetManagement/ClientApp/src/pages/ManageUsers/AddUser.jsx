@@ -42,7 +42,7 @@ function AddUser(props) {
   let history = useHistory();
   // form validation rules
   const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required("First Name is required"),
+    firstName: Yup.string().required("First Name is required").matches(/^(\S+$)/, '* This field cannot contain only blankspaces'),
     lastName: Yup.string().required("Last name is required"),
     doB: Yup.date()
       .required("DoB is required")

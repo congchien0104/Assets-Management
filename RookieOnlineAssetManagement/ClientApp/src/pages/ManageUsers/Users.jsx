@@ -40,6 +40,9 @@ const Users = () => {
   const [detailedUser, setDetailedUser] = useState({});
 
   const [selected, setSelected] = useState([]);
+
+  console.log(afterCreated);
+  console.log(afterUpdated);
   // Pagination
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -79,6 +82,8 @@ const Users = () => {
   useEffect(() => {
     setSearchFilterModel({
       ...searchFilterModel,
+      IsSortByCreatedDate: afterCreated,
+      IsSortByUpdatedDate: afterUpdated,
       pageIndex: currentPage,
     });
     setIsFilter(true);
@@ -97,6 +102,7 @@ const Users = () => {
   }, [isFilter]);
 
   const handleDisabled = () => {
+    console.log(users);
     var user = users.find((a) => a.id === idDeletingUser);
     if (!user.isHistory) {
       userService

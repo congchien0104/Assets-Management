@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SelectUsers from "./SelectUsers";
-import { InputGroup, FormControl, Button } from "react-bootstrap";
+import { InputGroup, FormControl, Button, Form } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { FaCalendarAlt } from "react-icons/fa";
 import SelectAssets from "./SelectAssets";
@@ -21,14 +21,18 @@ function CreateAssignment(props) {
   const [userValue, setUserValue] = useState(0);
   const [assignedDate, setAssignedDate] = useState(formatDate(new Date()));
   const [note, setNote] = useState("");
-  const [btnDisabled, setBtnDisabled] = useState(true)
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  const [message, setMessage] = useState("");
+
+  
 
 
   useEffect(() => {
-    if(userValue.length > 0 && assetValue.length > 0){
+    if(userValue.length > 0 && assetValue.length > 0 && (assignedDate >= formatDate(new Date()))){
       setBtnDisabled(false);
     }
-  }, [userValue, assetValue]);
+  }, [userValue, assetValue, assignedDate]);
+
   const submitForm = () => {
     const assignment = new FormData();
     
@@ -45,6 +49,19 @@ function CreateAssignment(props) {
         console.log(e);
       });
 
+  }
+
+  const handleAssignedDate = (e) => {
+    const now = formatDate(new Date())
+    console.log(e.target.value);
+    console.log(now);
+    if(e.target.value < now){
+      setBtnDisabled(true);
+      setMessage("Admin can select only current or future date for Assigned Date");
+    } else{
+      setMessage("");
+    }
+    setAssignedDate(e.target.value);
   }
 
 
@@ -112,7 +129,7 @@ function CreateAssignment(props) {
       <div
         style={{
           display: "flex",
-          alignItems: "center",
+          //alignItems: "center",
           justifyContent: "space-between",
           width: "450px",
           marginTop: "20px",
@@ -122,20 +139,24 @@ function CreateAssignment(props) {
         <InputGroup
           style={{
             width: "300px",
-            borderRight: "1px solid #ced4da",
-            borderRadius: ".25rem",
+            
           }}
         >
           <FormControl
+            
             type="date"
             min={formatDate(new Date())}
             defaultValue={formatDate(new Date())}
             placeholder=""
-            onChange={(e) => {setAssignedDate(e.target.value)}}
-            style={{ borderRight: "0px", backgroundColor: "#FFF" }}
+            //onChange={(e) => {setAssignedDate(e.target.value)}}
+            onChange={(e) => {handleAssignedDate(e)}}
+            style={{ borderRight: "0px", backgroundColor: "#FFF", borderRight: "1px solid #ced4da",
+            borderRadius: ".25rem" }}
           />
+          <div style={{ color: "red", marginTop: "5px"}}>{message}</div>
         </InputGroup>
       </div>
+      
 
       <div
         style={{

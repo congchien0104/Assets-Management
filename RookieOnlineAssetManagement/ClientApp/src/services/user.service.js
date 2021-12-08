@@ -30,7 +30,7 @@ const getUsersPagingDefault = (afterCreated, affterUpdated) => {
 };
 
 const getUsersPagingFilter = (filter) => {
-  console.log("filter start");
+  console.log(filter.IsSortByUpdatedDate);
   var query = filter.keyword ? `${"&keyword=" + filter.keyword}` : "";
   query += filter.typeFilter ? `${"&typeFilter=" + filter.typeFilter}` : "";
   query += filter.sortBy ? `${"&sortBy=" + filter.sortBy}` : "";
