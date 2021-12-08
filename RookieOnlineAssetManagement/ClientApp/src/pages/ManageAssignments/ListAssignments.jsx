@@ -25,7 +25,7 @@ import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
-import Pagination from "react-responsive-pagination";
+import ReactPaginate from "react-paginate";
 import queryString from "query-string";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -157,9 +157,9 @@ const ListAssignments = () => {
     setIsSearch(true);
     setCurrentPage(1);
   };
-  function handlePageChange(page) {
-    setCurrentPage(page);
-  }
+  const handlePageChange = (event) => {
+    setCurrentPage(event.selected + 1);
+  };
   useEffect(() => {
     GetDetail(detailId).then((res) => {
       setDetailedAssignment({
@@ -529,12 +529,25 @@ const ListAssignments = () => {
             marginTop: "30px",
           }}
         >
-          <Pagination
-            total={totalPages}
-            current={currentPage}
+          <ReactPaginate
+            pageCount={totalPages}
+            breakLabel="..."
             previousLabel="Previous"
             nextLabel="Next"
-            onPageChange={(page) => handlePageChange(page)}
+            pageRangeDisplayed={2}
+            marginPagesDisplayed={2}
+            pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousClassName="page-item"
+            previousLinkClassName="page-link"
+            nextClassName="page-item"
+            nextLinkClassName="page-link"
+            breakClassName="page-item"
+            breakLinkClassName="page-link"
+            containerClassName="pagination"
+            activeClassName="active"
+            renderOnZeroPageCount={null}
+            onPageChange={(event) => handlePageChange(event)}
           />
         </div>
       </div>

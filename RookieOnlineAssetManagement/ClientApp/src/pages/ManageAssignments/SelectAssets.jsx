@@ -3,9 +3,10 @@ import { Table, Modal, Button, FormControl, InputGroup } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import { GetAssetsPagingFilter } from "../../services/assetService";
-import Pagination from "react-responsive-pagination";
+import ReactPaginate from "react-paginate";
 import "./style.css";
 import "../ManageAssets/listAssets/ListAssets.css";
+
 const SelectAssets = (props) => {
   const [assets, setAssets] = useState([]);
   const [selectedAssetId, setSelectedAssetId] = useState(0);
@@ -23,8 +24,8 @@ const SelectAssets = (props) => {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handlePageChange = (event) => {
+    setCurrentPage(event.selected + 1);
   };
 
   const handleSave = () => {
@@ -85,7 +86,7 @@ const SelectAssets = (props) => {
               </Button>
             </InputGroup>
           </div>
-          <Table>
+          <Table style={{ height: "500px" }}>
             <thead>
               <tr>
                 <th style={{ width: "50px" }}></th>
@@ -144,7 +145,26 @@ const SelectAssets = (props) => {
               marginBottom: "20px",
             }}
           >
-            <Pagination total={totalPages} current={currentPage} previousLabel="Previous" nextLabel="Next" onPageChange={(page) => handlePageChange(page)} />
+            <ReactPaginate
+              pageCount={totalPages}
+              breakLabel="..."
+              previousLabel="Previous"
+              nextLabel="Next"
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={2}
+              pageClassName="page-item"
+              pageLinkClassName="page-link"
+              previousClassName="page-item"
+              previousLinkClassName="page-link"
+              nextClassName="page-item"
+              nextLinkClassName="page-link"
+              breakClassName="page-item"
+              breakLinkClassName="page-link"
+              containerClassName="pagination"
+              activeClassName="active"
+              renderOnZeroPageCount={null}
+              onPageChange={(event) => handlePageChange(event)}
+            />
           </div>
           <div style={{ display: "flex", justifyContent: "end" }}>
             <Button

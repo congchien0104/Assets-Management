@@ -13,7 +13,7 @@ import { GoTriangleDown } from "react-icons/go";
 import { BsCheckLg } from "react-icons/bs";
 import { IoClose } from "react-icons/io5";
 import ReactDatePicker from "react-datepicker";
-import Pagination from "react-responsive-pagination";
+import ReactPaginate from "react-paginate";
 import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
@@ -56,8 +56,8 @@ const ListRequests = () => {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handlePageChange = (event) => {
+    setCurrentPage(event.selected + 1);
   };
 
   const StateToString = (state) => {
@@ -146,7 +146,7 @@ const ListRequests = () => {
   }, [detailId]);
 
   return (
-    <div style={{ padding: "120px" }}>
+    <div style={{ padding: "100px 50px", width: "1300px" }}>
       <div
         style={{
           color: "#dc3545",
@@ -248,236 +248,243 @@ const ListRequests = () => {
           </Button>
         </InputGroup>
       </div>
-      <Table style={{ width: "100%", height: "400px" }}>
-        <thead>
-          <tr>
-            <th style={{ width: "70px" }}>
-              No.
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("no.");
-                }}
-              />
-            </th>
-            <th>
-              Asset Code
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("assetCode");
-                }}
-              />
-            </th>
-            <th>
-              Asset Name
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("assetName");
-                }}
-              />
-            </th>
-            <th>
-              Requested By
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("requestedBy");
-                }}
-              />
-            </th>
-            <th>
-              Assigned Date
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("assignedDate");
-                }}
-              />
-            </th>
-            <th>
-              Accepted By
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("acceptedBy");
-                }}
-              />
-            </th>
-            <th>
-              Returned Date
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("returnedDate");
-                }}
-              />
-            </th>
-            <th>
-              State
-              <GoTriangleDown
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setIsAscending(!isAscending);
-                  setSortBy("state");
-                }}
-              />
-            </th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {returnRequests &&
-            returnRequests.map((request) =>
-              StateToString(request.state) === "Declined" ? (
-                ""
-              ) : (
-                <tr>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer", width: "70px" }}
-                  >
-                    {request.ordinal}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {request.assetCode}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {request.assetName}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {request.requestByName}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {formatDate(request.assignedDate)}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {request.acceptedByName}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {formatDate(request.returnedDate)}
-                  </td>
-                  <td
-                    onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(request.id);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {StateToString(request.state)}
-                  </td>
-                  <td>
-                    <BsCheckLg
-                      onClick={() => {}}
-                      style={{
-                        fontSize: "18px",
-                        color: `${
-                          StateToString(request.state) === "Completed"
-                            ? "#808080"
-                            : "#dc3545"
-                        }`,
-                        cursor: `${
-                          StateToString(request.state) === "Completed"
-                            ? "default"
-                            : "pointer"
-                        }`,
+      <div style={{ overflow: "auto" }}>
+        <Table
+          style={{
+            width: "1300px",
+            height: "400px",
+          }}
+        >
+          <thead>
+            <tr>
+              <th style={{ width: "70px" }}>
+                No.
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("no.");
+                  }}
+                />
+              </th>
+              <th>
+                Asset Code
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("assetCode");
+                  }}
+                />
+              </th>
+              <th>
+                Asset Name
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("assetName");
+                  }}
+                />
+              </th>
+              <th>
+                Requested By
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("requestedBy");
+                  }}
+                />
+              </th>
+              <th>
+                Assigned Date
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("assignedDate");
+                  }}
+                />
+              </th>
+              <th>
+                Accepted By
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("acceptedBy");
+                  }}
+                />
+              </th>
+              <th>
+                Returned Date
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("returnedDate");
+                  }}
+                />
+              </th>
+              <th>
+                State
+                <GoTriangleDown
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortBy("state");
+                  }}
+                />
+              </th>
+              <th style={{ textAlign: "center" }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {returnRequests &&
+              returnRequests.map((request) =>
+                StateToString(request.state) === "Declined" ? (
+                  ""
+                ) : (
+                  <tr>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
                       }}
-                    />
-                    <IoClose
-                      onClick={() => {}}
-                      style={{
-                        fontSize: "25px",
-                        marginLeft: "5px",
-                        color: `${
-                          StateToString(request.state) === "Completed"
-                            ? "#f2a7ac"
-                            : "#000"
-                        }`,
-                        fontSize: "25px",
-                        cursor: `${
-                          StateToString(request.state) === "Completed"
-                            ? "default"
-                            : "pointer"
-                        }`,
+                      style={{ cursor: "pointer", width: "70px" }}
+                    >
+                      {request.ordinal}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
                       }}
-                    />
-                  </td>
-                </tr>
-              )
-            )}
-        </tbody>
-      </Table>
+                      style={{ cursor: "pointer" }}
+                    >
+                      {request.assetCode}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {request.assetName}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {request.requestByName}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {formatDate(request.assignedDate)}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {request.acceptedByName}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {formatDate(request.returnedDate)}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(request.id);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {StateToString(request.state)}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <BsCheckLg
+                        onClick={() => {}}
+                        style={{
+                          fontSize: "18px",
+                          color: `${
+                            StateToString(request.state) === "Completed"
+                              ? "#808080"
+                              : "#dc3545"
+                          }`,
+                          cursor: `${
+                            StateToString(request.state) === "Completed"
+                              ? "default"
+                              : "pointer"
+                          }`,
+                        }}
+                      />
+                      <IoClose
+                        onClick={() => {}}
+                        style={{
+                          fontSize: "25px",
+                          marginLeft: "5px",
+                          color: `${
+                            StateToString(request.state) === "Completed"
+                              ? "#f2a7ac"
+                              : "#000"
+                          }`,
+                          fontSize: "25px",
+                          cursor: `${
+                            StateToString(request.state) === "Completed"
+                              ? "default"
+                              : "pointer"
+                          }`,
+                        }}
+                      />
+                    </td>
+                  </tr>
+                )
+              )}
+          </tbody>
+        </Table>
+      </div>
       <div
         style={{
           display: "flex",
@@ -486,12 +493,25 @@ const ListRequests = () => {
           marginTop: "30px",
         }}
       >
-        <Pagination
-          total={totalPages}
-          current={currentPage}
+        <ReactPaginate
+          pageCount={totalPages}
+          breakLabel="..."
           previousLabel="Previous"
           nextLabel="Next"
-          onPageChange={(page) => handlePageChange(page)}
+          pageRangeDisplayed={2}
+          marginPagesDisplayed={2}
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+          renderOnZeroPageCount={null}
+          onPageChange={(event) => handlePageChange(event)}
         />
       </div>
 

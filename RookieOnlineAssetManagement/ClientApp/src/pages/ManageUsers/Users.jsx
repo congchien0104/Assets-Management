@@ -11,7 +11,7 @@ import {
 import { MdEdit, MdOutlineCancelPresentation } from "react-icons/md";
 import { CgCloseO } from "react-icons/cg";
 import { Link, useLocation } from "react-router-dom";
-import Pagination from "react-responsive-pagination";
+import ReactPaginate from "react-paginate";
 
 import { MultiSelect } from "react-multi-select-component";
 import { HiFilter } from "react-icons/hi";
@@ -45,9 +45,9 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
 
-  function handlePageChange(page) {
-    setCurrentPage(page);
-  }
+  const handlePageChange = (event) => {
+    setCurrentPage(event.selected + 1);
+  };
 
   useEffect(() => {
     userService
@@ -337,12 +337,25 @@ const Users = () => {
             marginTop: "30px",
           }}
         >
-          <Pagination
-            total={totalPage}
-            current={currentPage}
+          <ReactPaginate
+            pageCount={totalPage}
+            breakLabel="..."
             previousLabel="Previous"
             nextLabel="Next"
-            onPageChange={(page) => handlePageChange(page)}
+            pageRangeDisplayed={2}
+            marginPagesDisplayed={2}
+            pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousClassName="page-item"
+            previousLinkClassName="page-link"
+            nextClassName="page-item"
+            nextLinkClassName="page-link"
+            breakClassName="page-item"
+            breakLinkClassName="page-link"
+            containerClassName="pagination"
+            activeClassName="active"
+            renderOnZeroPageCount={null}
+            onPageChange={(event) => handlePageChange(event)}
           />
         </div>
       </div>
@@ -359,7 +372,9 @@ const Users = () => {
           <p>Do you want to disable this user?</p>
         </Modal.Body>
 
-        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
+        <Modal.Footer
+          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
+        >
           <Button
             style={{
               backgroundColor: "#dc3545",

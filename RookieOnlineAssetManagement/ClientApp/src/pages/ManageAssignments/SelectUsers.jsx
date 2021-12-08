@@ -3,7 +3,7 @@ import { Table, Modal, Button, FormControl, InputGroup } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
 import userService from "../../services/user.service";
-import Pagination from "react-responsive-pagination";
+import ReactPaginate from "react-paginate";
 import "./style.css";
 
 const SelectUsers = (props) => {
@@ -23,8 +23,8 @@ const SelectUsers = (props) => {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handlePageChange = (event) => {
+    setCurrentPage(event.selected + 1);
   };
 
   const handleSave = () => {
@@ -145,7 +145,26 @@ const SelectUsers = (props) => {
               marginBottom: "20px",
             }}
           >
-            <Pagination total={totalPages} current={currentPage} previousLabel="Previous" nextLabel="Next" onPageChange={(page) => handlePageChange(page)} />
+            <ReactPaginate
+              pageCount={totalPages}
+              breakLabel="..."
+              previousLabel="Previous"
+              nextLabel="Next"
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={2}
+              pageClassName="page-item"
+              pageLinkClassName="page-link"
+              previousClassName="page-item"
+              previousLinkClassName="page-link"
+              nextClassName="page-item"
+              nextLinkClassName="page-link"
+              breakClassName="page-item"
+              breakLinkClassName="page-link"
+              containerClassName="pagination"
+              activeClassName="active"
+              renderOnZeroPageCount={null}
+              onPageChange={(event) => handlePageChange(event)}
+            />
           </div>
           <div style={{ display: "flex", justifyContent: "end" }}>
             <Button
