@@ -130,14 +130,14 @@ namespace RookieOnlineAssetManagement.Services
             // Sort
             if(request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
             {
-                query = query.OrderByIf(request.IsSortByCreatedDate == true, x => x.CreatedDate, false);
-                query = query.OrderByIf(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, false);
+                query = query.SetPriority(request.IsSortByCreatedDate == true, x => x.CreatedDate, x => x.Id);
+                query = query.SetPriority(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, x => x.Id);
             }
             else
             {
                 query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
-                query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "state", x => x.State.ToString(), request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
             }
             

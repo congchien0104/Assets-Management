@@ -147,7 +147,7 @@ const Home = () => {
   }, [isShowDetail]);
 
   return (
-    <div style={{ padding: "120px" }}>
+    <div style={{ padding: "100px 50px" }}>
       <div
         style={{
           color: "#dc3545",
@@ -231,36 +231,20 @@ const Home = () => {
                   <td>
                     <BsCheckLg
                       onClick={() => {
-                        if (
-                          StateToString(assignment.state) ===
-                          "Waiting For Acceptance"
-                        ) {
+                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
                           setIdRespondAssignment(assignment.id);
                           setIsAccept(true);
                         }
                       }}
                       style={{
                         fontSize: "18px",
-                        color: `${
-                          StateToString(assignment.state) ===
-                          "Waiting For Acceptance"
-                            ? "#dc3545"
-                            : "#808080"
-                        }`,
-                        cursor: `${
-                          StateToString(assignment.state) ===
-                          "Waiting For Acceptance"
-                            ? "pointer"
-                            : "default"
-                        }`,
+                        color: `${StateToString(assignment.state) === "Waiting For Acceptance" ? "#dc3545" : "#808080"}`,
+                        cursor: `${StateToString(assignment.state) === "Waiting For Acceptance" ? "pointer" : "default"}`,
                       }}
                     />
                     <IoClose
                       onClick={() => {
-                        if (
-                          StateToString(assignment.state) ===
-                          "Waiting For Acceptance"
-                        ) {
+                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
                           setIdRespondAssignment(assignment.id);
                           setIsDecline(true);
                         }
@@ -268,19 +252,9 @@ const Home = () => {
                       style={{
                         fontSize: "25px",
                         marginLeft: "5px",
-                        color: `${
-                          StateToString(assignment.state) ===
-                          "Waiting For Acceptance"
-                            ? "#000"
-                            : "#f2a7ac"
-                        }`,
+                        color: `${StateToString(assignment.state) === "Waiting For Acceptance" ? "#000" : "#f2a7ac"}`,
                         fontSize: "25px",
-                        cursor: `${
-                          StateToString(assignment.state) ===
-                          "Waiting For Acceptance"
-                            ? "pointer"
-                            : "default"
-                        }`,
+                        cursor: `${StateToString(assignment.state) === "Waiting For Acceptance" ? "pointer" : "default"}`,
                       }}
                     />
                     <IoReloadOutline
@@ -292,18 +266,10 @@ const Home = () => {
                       }}
                       style={{
                         fontWeight: "bold",
-                        color: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "#095ee6"
-                            : "#999999"
-                        }`,
+                        color: `${StateToString(assignment.state) === "Accepted" ? "#095ee6" : "#999999"}`,
                         marginLeft: "5px",
                         fontSize: "20px",
-                        cursor: `${
-                          StateToString(assignment.state) === "Accepted"
-                            ? "pointer"
-                            : "default"
-                        }`,
+                        cursor: `${StateToString(assignment.state) === "Accepted" ? "pointer" : "default"}`,
                       }}
                     />
                   </td>
@@ -445,9 +411,7 @@ const Home = () => {
           <p>Do you want to accept this assignment?</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -498,9 +462,7 @@ const Home = () => {
           <p>Do you want to decline this assignment?</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -551,9 +513,7 @@ const Home = () => {
           <p>Do you want to create a returning request for this asset?</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",

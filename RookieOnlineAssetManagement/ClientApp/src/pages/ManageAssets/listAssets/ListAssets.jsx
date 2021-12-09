@@ -26,7 +26,7 @@ const ListAssets = () => {
   const [isDeletingError, setIsDeletingError] = useState(false);
   const [idDeletingAsset, setIdDeletingAsset] = useState();
   const [isFilter, setIsFilter] = useState(false);
-  const [searchFilterModel, setSearchFilterModel] = useState({});
+  const [searchFilterModel, setSearchFilterModel] = useState({ sortBy: "code" });
   const [keyword, setKeyword] = useState();
   const [isSearch, setIsSearch] = useState(false);
   const [isAscending, setIsAscending] = useState();
@@ -193,7 +193,7 @@ const ListAssets = () => {
   }, [detailedAsset]);
   return (
     <React.Fragment>
-      <div style={{ padding: "120px" }}>
+      <div style={{ padding: "100px 50px" }}>
         <div
           style={{
             color: "#dc3545",

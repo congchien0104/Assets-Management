@@ -8,7 +8,7 @@ function Index(props) {
   const [headerName, setHeaderName] = useState("Home");
   const [headerLink, setHeaderLink] = useState("");
   useEffect(() => {
-    if (location.pathname.includes("/home")) setHeaderName("Home");
+    if (location.pathname == "/") setHeaderName("Home");
     else if (location.pathname.includes("/users/add")) setHeaderName("Manage User > Create New User");
     else if (location.pathname.includes("/users/")) setHeaderName("Manage User > Edit User");
     else if (location.pathname.includes("/users")) setHeaderName("Manage User");

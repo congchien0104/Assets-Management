@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RookieOnlineAssetManagement.Interfaces;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportsController : ControllerBase

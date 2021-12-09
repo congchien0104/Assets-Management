@@ -66,6 +66,7 @@ const ListReports = () => {
             justifyContent: "flex-end",
             alignItems: "center",
             paddingBottom: "20px",
+            width: "95%",
           }}
         >
           <Button variant="danger" onClick={handleExport}>

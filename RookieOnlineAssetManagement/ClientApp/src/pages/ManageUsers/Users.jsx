@@ -134,7 +134,7 @@ const Users = () => {
   };
   return (
     <React.Fragment>
-      <div style={{ padding: "120px" }}>
+      <div style={{ padding: "100px 50px" }}>
         <div
           style={{
             color: "#dc3545",
