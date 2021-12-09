@@ -78,11 +78,12 @@ const ListReports = () => {
             height: "400px",
             overflowX: "auto",
             overflowY: "hidden",
+            width: "95%",
           }}
         >
           <thead>
             <tr>
-              <th>
+              <th style={{ width: "15%" }}>
                 Category
                 <GoTriangleDown
                   style={{ cursor: "pointer" }}
@@ -122,7 +123,7 @@ const ListReports = () => {
                   }}
                 ></GoTriangleDown>
               </th>
-              <th>
+              <th style={{ width: "13.2%" }}>
                 Not Available
                 <GoTriangleDown
                   style={{ cursor: "pointer" }}
@@ -132,7 +133,7 @@ const ListReports = () => {
                   }}
                 ></GoTriangleDown>
               </th>
-              <th>
+              <th style={{ width: "20%" }}>
                 Waiting For Recycling
                 <GoTriangleDown
                   style={{ cursor: "pointer" }}
@@ -152,19 +153,21 @@ const ListReports = () => {
                   }}
                 ></GoTriangleDown>
               </th>
+              <th style={{ width: "2%" }}></th>
             </tr>
           </thead>
           <tbody>
             {reports &&
               reports.map((report) => (
                 <tr>
-                  <td>{report.category}</td>
-                  <td>{report.total}</td>
-                  <td>{report.assigned}</td>
-                  <td>{report.available}</td>
-                  <td>{report.notAvailable}</td>
-                  <td>{report.waitingForRecycling}</td>
+                  <td style={{ width: "15.2%" }}>{report.category}</td>
+                  <td style={{ width: "12.75%" }}>{report.total}</td>
+                  <td style={{ width: "12.75%" }}>{report.assigned}</td>
+                  <td style={{ width: "12.75%" }}>{report.available}</td>
+                  <td style={{ width: "13.2%" }}>{report.notAvailable}</td>
+                  <td style={{ width: "20.3%" }}>{report.waitingForRecycling}</td>
                   <td>{report.recycled}</td>
+                  <td style={{ width: "2%" }}></td>
                 </tr>
               ))}
           </tbody>

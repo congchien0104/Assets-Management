@@ -266,7 +266,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "17%" }}
                   >
                     {user.code}
                   </td>
@@ -274,7 +274,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "17%" }}
                   >
                     {user.firstName} {user.lastName}
                   </td>
@@ -282,7 +282,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "17%" }}
                   >
                     {user.userName}
                   </td>
@@ -290,7 +290,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "17%" }}
                   >
                     {formatDate(user.joinedDate)}
                   </td>
@@ -298,7 +298,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", width: "17%" }}
                   >
                     {user.type === 1 ? "Staff" : "Admin"}
                   </td>

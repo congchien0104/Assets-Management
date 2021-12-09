@@ -270,141 +270,142 @@ const ListAssets = () => {
             <Button variant="danger">Create new asset</Button>
           </Link>
         </div>
-        <Table
-          style={{
-            width: "1000px",
-            height: "400px",
-            overflowX: "auto",
-            overflowY: "hidden",
-          }}
-        >
-          <thead>
-            <tr>
-              <th>
-                Asset Code
-                <GoTriangleDown
-                  style={{ marginLeft: "5px", cursor: "pointer" }}
-                  onClick={() => {
-                    setIsAscending(!isAscending);
-                    setSortBy("code");
-                    setAfterCreated("false");
-                    setAfterUpdated("false");
-                  }}
-                ></GoTriangleDown>
-              </th>
-              <th>
-                Asset Name
-                <GoTriangleDown
-                  style={{ marginLeft: "5px", cursor: "pointer" }}
-                  onClick={() => {
-                    setIsAscending(!isAscending);
-                    setSortBy("name");
-                    setAfterCreated("false");
-                    setAfterUpdated("false");
-                  }}
-                ></GoTriangleDown>
-              </th>
-              <th>
-                Category
-                <GoTriangleDown
-                  style={{ marginLeft: "5px", cursor: "pointer" }}
-                  onClick={() => {
-                    setIsAscending(!isAscending);
-                    setSortBy("category");
-                    setAfterCreated("false");
-                    setAfterUpdated("false");
-                  }}
-                ></GoTriangleDown>
-              </th>
-              <th>
-                State
-                <GoTriangleDown
-                  style={{ marginLeft: "5px", cursor: "pointer" }}
-                  onClick={() => {
-                    setIsAscending(!isAscending);
-                    setSortBy("state");
-                    setAfterCreated("false");
-                    setAfterUpdated("false");
-                  }}
-                ></GoTriangleDown>
-              </th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assets &&
-              assets.map((asset) => (
-                <tr>
-                  <td
+        <div>
+          <Table
+            style={{
+              width: "1000px",
+              height: "400px",
+              overflow: "auto",
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={{ width: "15%" }}>
+                  Asset Code
+                  <GoTriangleDown
+                    style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setIsAscending(!isAscending);
+                      setSortBy("code");
+                      setAfterCreated("false");
+                      setAfterUpdated("false");
                     }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {asset.code}
-                  </td>
-                  <td
+                  ></GoTriangleDown>
+                </th>
+                <th>
+                  Asset Name
+                  <GoTriangleDown
+                    style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setIsAscending(!isAscending);
+                      setSortBy("name");
+                      setAfterCreated("false");
+                      setAfterUpdated("false");
                     }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {asset.name}
-                  </td>
-                  <td
+                  ></GoTriangleDown>
+                </th>
+                <th>
+                  Category
+                  <GoTriangleDown
+                    style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setIsAscending(!isAscending);
+                      setSortBy("category");
+                      setAfterCreated("false");
+                      setAfterUpdated("false");
                     }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {" "}
-                    {asset.category.name}
-                  </td>
-                  <td
+                  ></GoTriangleDown>
+                </th>
+                <th>
+                  State
+                  <GoTriangleDown
+                    style={{ marginLeft: "5px", cursor: "pointer" }}
                     onClick={() => {
-                      setIsShowDetail(true);
-                      setDetailId(asset.id);
+                      setIsAscending(!isAscending);
+                      setSortBy("state");
+                      setAfterCreated("false");
+                      setAfterUpdated("false");
                     }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {StateToString(asset.state)}
-                  </td>
-                  <td>
-                    <Link
-                      to={{
-                        pathname: `${StateToString(asset.state) === "Assigned" ? "/assets" : "/asset/edit/" + asset.id}`,
+                  ></GoTriangleDown>
+                </th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {assets &&
+                assets.map((asset) => (
+                  <tr>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(asset.id);
                       }}
+                      style={{ cursor: "pointer", width: "15.2%" }}
                     >
-                      <MdEdit
+                      {asset.code}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(asset.id);
+                      }}
+                      style={{ cursor: "pointer", width: "21.7%" }}
+                    >
+                      {asset.name}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(asset.id);
+                      }}
+                      style={{ cursor: "pointer", width: "21.5%" }}
+                    >
+                      {" "}
+                      {asset.category.name}
+                    </td>
+                    <td
+                      onClick={() => {
+                        setIsShowDetail(true);
+                        setDetailId(asset.id);
+                      }}
+                      style={{ cursor: "pointer", width: "21.5%" }}
+                    >
+                      {StateToString(asset.state)}
+                    </td>
+                    <td>
+                      <Link
+                        to={{
+                          pathname: `${StateToString(asset.state) === "Assigned" ? "/assets" : "/asset/edit/" + asset.id}`,
+                        }}
+                      >
+                        <MdEdit
+                          style={{
+                            color: `${StateToString(asset.state) === "Assigned" ? "#808080" : "#000"}`,
+                            fontSize: "20px",
+                            marginRight: "20px",
+                            cursor: `${StateToString(asset.state) === "Assigned" ? "default" : "pointer"}`,
+                          }}
+                        />
+                      </Link>
+                      <CgCloseO
+                        onClick={() => {
+                          if (StateToString(asset.state) !== "Assigned") {
+                            setIdDeletingAsset(asset.id);
+                            setIsDeleting(true);
+                          }
+                        }}
                         style={{
-                          color: `${StateToString(asset.state) === "Assigned" ? "#808080" : "#000"}`,
+                          color: `${StateToString(asset.state) === "Assigned" ? "#f2a7ac" : "#dc3545"}`,
                           fontSize: "20px",
-                          marginRight: "20px",
                           cursor: `${StateToString(asset.state) === "Assigned" ? "default" : "pointer"}`,
                         }}
                       />
-                    </Link>
-                    <CgCloseO
-                      onClick={() => {
-                        if (StateToString(asset.state) !== "Assigned") {
-                          setIdDeletingAsset(asset.id);
-                          setIsDeleting(true);
-                        }
-                      }}
-                      style={{
-                        color: `${StateToString(asset.state) === "Assigned" ? "#f2a7ac" : "#dc3545"}`,
-                        fontSize: "20px",
-                        cursor: `${StateToString(asset.state) === "Assigned" ? "default" : "pointer"}`,
-                      }}
-                    />
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </div>
         <div
           style={{
             display: "flex",
