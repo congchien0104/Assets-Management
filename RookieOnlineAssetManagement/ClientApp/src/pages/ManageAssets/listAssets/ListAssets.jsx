@@ -415,6 +415,7 @@ const ListAssets = () => {
         >
           <ReactPaginate
             pageCount={totalPages}
+            forcePage={currentPage - 1}
             breakLabel="..."
             previousLabel="Previous"
             nextLabel="Next"
