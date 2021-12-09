@@ -18,7 +18,7 @@ const SelectAssets = (props) => {
   const [keyword, setKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
-  const [searchFilterModel, setSearchFilterModel] = useState({});
+  const [searchFilterModel, setSearchFilterModel] = useState({ statesFilter: "0" });
 
   const handleSearch = () => {
     setIsSearch(true);
@@ -36,8 +36,7 @@ const SelectAssets = (props) => {
   };
 
   useEffect(() => {
-    if (selectedAssetId !== 0 && assets.length > 0)
-      setName(assets.filter((x) => x.id == selectedAssetId)[0].name);
+    if (selectedAssetId !== 0 && assets.length > 0) setName(assets.filter((x) => x.id == selectedAssetId)[0].name);
   }, [selectedAssetId]);
 
   useEffect(() => {
@@ -143,13 +142,7 @@ const SelectAssets = (props) => {
                   <tr key={asset.id}>
                     <td style={{ width: "50px" }}>
                       <label className="wrap-radio">
-                        <input
-                          type="radio"
-                          value={asset.id}
-                          name="userId"
-                          onChange={(e) => setSelectedAssetId(e.target.value)}
-                          checked={asset.id == selectedAssetId ? true : false}
-                        />
+                        <input type="radio" value={asset.id} name="userId" onChange={(e) => setSelectedAssetId(e.target.value)} checked={asset.id == selectedAssetId ? true : false} />
                         <span className="checkmark-radio"></span>
                       </label>
                     </td>
