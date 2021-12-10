@@ -35,7 +35,7 @@ const ListAssignments = () => {
   const [sortBy, setSortBy] = useState("assetCode");
   const [totalPages, setTotalPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchFilterModel, setSearchFilterModel] = useState({});
+  const [searchFilterModel, setSearchFilterModel] = useState({ sortBy: "assetCode" });
   const [detailId, setDetailId] = useState();
   const [isShowDetail, setIsShowDetail] = useState(false);
   const [isCreated, setIsCreated] = useState(false);

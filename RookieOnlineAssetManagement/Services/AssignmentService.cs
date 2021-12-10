@@ -82,8 +82,8 @@ namespace RookieOnlineAssetManagement.Services
             // Sort
             if (request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
             {
-                query = query.SetPriority(request.IsSortByCreatedDate == true, x => x.CreatedDate, x => x.Id);
-                query = query.SetPriority(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, x => x.Id);
+                var latestElement = query.FirstIf(request.IsSortByCreatedDate == true, request.IsSortByUpdatedDate == true, x => x.CreatedDate, x => x.UpdatedDate);
+                query = query.OrderBy(x => x.Id == latestElement.Id ? 0 : 1).ThenBy(x => x.Asset.Code);
             }
             else
             {

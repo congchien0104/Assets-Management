@@ -28,15 +28,17 @@ namespace RookieOnlineAssetManagement.ExtensionMethods
             }
             return query;
         }
-        public static IQueryable<TSource> SetPriority<TSource, TKey1, TKey2>(this IQueryable<TSource> query, bool condition, 
-            Expression<Func<TSource, TKey1>> firstKeySelector, Expression<Func<TSource, TKey2>> secondKeySelector)
+        public static TSource FirstIf<TSource, TKey1, TKey2>(this IQueryable<TSource> query, bool condition1, bool condition2,
+            Expression<Func<TSource, TKey1>> KeySelector1, Expression<Func<TSource, TKey2>> KeySelector2)
         {
-            if (condition)
+            if (condition1)
             {
-                var topElement = query.OrderByDescending(firstKeySelector).Take(1);
-                return topElement.Concat(query.OrderBy(secondKeySelector).Except(topElement));
+                return query.OrderByDescending(KeySelector1).FirstOrDefault();
             }
-            return query;
+            else 
+            {
+                return query.OrderByDescending(KeySelector2).FirstOrDefault();
+            }    
         }
     }
 }

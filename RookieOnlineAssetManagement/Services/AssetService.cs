@@ -97,7 +97,7 @@ namespace RookieOnlineAssetManagement.Services
             var category = await _context.Categories.FindAsync(asset.CategoryId);
             var detailedAsset = new AssetVM()
             {
-                Id=asset.Id,
+                Id = asset.Id,
                 Code = asset.Code,
                 Name = asset.Name,
                 Category = new CategoryVM
@@ -118,20 +118,19 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request)
         {
             // Standardize
-            if (request.IsSortByUpdatedDate == true) request.StatesFilter += ",3,4";
             List<int> categories = request.CategoriesFilter != null ? request.CategoriesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter
             IQueryable<Asset> query = _context.Assets.AsQueryable();
             query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
             query = query.WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId));
-            query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
+            query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             // Sort
-            if(request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
+            if (request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
             {
-                query = query.SetPriority(request.IsSortByCreatedDate == true, x => x.CreatedDate, x => x.Id);
-                query = query.SetPriority(request.IsSortByUpdatedDate == true, x => x.UpdatedDate, x => x.Id);
+                var latestElement = query.FirstIf(request.IsSortByCreatedDate == true, request.IsSortByUpdatedDate == true, x => x.CreatedDate, x => x.UpdatedDate);
+                query = query.OrderBy(x => x.Id == latestElement.Id ? 0 : 1).ThenBy(x => x.Code);
             }
             else
             {
@@ -140,7 +139,7 @@ namespace RookieOnlineAssetManagement.Services
                 query = query.OrderByIf(request.SortBy == "state", x => x.State.ToString(), request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
             }
-            
+
             // Paging and Projection
             var totalRecord = await query.CountAsync();
             var data = await query.Paged(request.PageIndex, request.PageSize).Select(a => new AssetVM()
