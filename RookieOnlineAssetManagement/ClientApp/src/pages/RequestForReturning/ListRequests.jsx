@@ -56,7 +56,7 @@ const ListRequests = () => {
   const StateToString = (state) => {
     switch (state) {
       case 0:
-        return "WaitingForReturning";
+        return "Waiting For Returning";
         break;
       case 1:
         return "Completed";
@@ -220,11 +220,10 @@ const ListRequests = () => {
           <div style={{ width: "220px", marginLeft: "25px" }}>
             <ReactDatePicker
               selected={dateFilter}
-              onChange={(date) => {
-                setDateFilter(date);
-                console.log(formatDate(date));
+              onChange={async (date) => {
+                await setDateFilter(date);
+                setCurrentPage(1);
               }}
-              minDate={new Date()}
               customInput={
                 <div
                   style={{
@@ -369,7 +368,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: '200px' }}>
                 State
                 <GoTriangleDown
                   style={{
@@ -382,7 +381,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th style={{ textAlign: "center" }}>Action</th>
+              <th style={{ textAlign: "left" }}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -460,11 +459,11 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '180px' }}
                     >
                       {StateToString(request.state)}
                     </td>
-                    <td style={{ textAlign: "center" }}>
+                    <td style={{ textAlign: "left", paddingLeft: '20px' }}>
                       <BsCheckLg
                         onClick={() => {
                           if (StateToString(request.state) !== "Completed") {

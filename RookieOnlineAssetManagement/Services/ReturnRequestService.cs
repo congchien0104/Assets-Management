@@ -11,6 +11,7 @@ using RookieOnlineAssetManagement.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Services
@@ -52,6 +53,7 @@ namespace RookieOnlineAssetManagement.Services
         {
             // Standardize
             var returnedDate = Convert.ToDateTime(request.ReturnedDateFilter);
+            var a = returnedDate.Date;
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
 
             // Filter
@@ -59,7 +61,7 @@ namespace RookieOnlineAssetManagement.Services
             query = query.WhereIf(request.KeyWord != null, x => x.Assignment.Asset.Code.Contains(request.KeyWord)
                                     || x.Assignment.Asset.Name.Contains(request.KeyWord) || x.RequestedUser.UserName.Contains(request.KeyWord));
             query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
-            query = query.WhereIf(returnedDate != System.DateTime.MinValue, x => x.ReturnedDate == returnedDate);
+            query = query.WhereIf(returnedDate != System.DateTime.MinValue, x => x.ReturnedDate.Value.Date == returnedDate.Date);
             query = query.WhereIf(request.Location != null, x => x.Assignment.Asset.Location == request.Location);
 
             // Sort
@@ -135,7 +137,7 @@ namespace RookieOnlineAssetManagement.Services
             });
             stateList.Add(new StateVM
             {
-                Name = ReturnRequestState.WaitingForReturning.ToString(),
+                Name = AddSpacesToSentence(ReturnRequestState.WaitingForReturning.ToString()),
                 Value = (int)ReturnRequestState.WaitingForReturning
             });
             return stateList;
@@ -199,6 +201,11 @@ namespace RookieOnlineAssetManagement.Services
             assignment.State = AssignmentState.Accepted;
             // _dbcontext.Assignments.Update(assignment);
             return await _dbcontext.SaveChangesAsync() > 0;
+        }
+
+        private string AddSpacesToSentence(string text)
+        {
+            return Regex.Replace(text, "([a-z])([A-Z])", "$1 $2");
         }
     }
 }
