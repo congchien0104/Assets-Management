@@ -136,7 +136,7 @@ namespace RookieOnlineAssetManagement.Services
                 query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
                 query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
-                query = query.OrderByIf(request.SortBy == "state", x => x.State.ToString(), request.IsAscending);
+                query = query.OrderByIf(request.SortBy == "state", x => x.State, request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "code", x => x.Code, request.IsAscending);
             }
 
