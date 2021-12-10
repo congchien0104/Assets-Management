@@ -658,7 +658,7 @@ const ListAssignments = () => {
               marginLeft: "20px",
             }}
           >
-            Are you sure?
+            Are you sure ?
           </Modal.Title>
         </Modal.Header>
 
@@ -707,7 +707,7 @@ const ListAssignments = () => {
               marginLeft: "20px",
             }}
           >
-            Are you sure?
+            Are you sure ?
           </Modal.Title>
         </Modal.Header>
 

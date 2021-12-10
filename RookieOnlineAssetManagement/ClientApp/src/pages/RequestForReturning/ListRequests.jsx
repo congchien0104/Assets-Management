@@ -641,7 +641,7 @@ const ListRequests = () => {
               marginLeft: "20px",
             }}
           >
-            Are you sure?
+            Are you sure ?
           </Modal.Title>
         </Modal.Header>
 
@@ -650,7 +650,7 @@ const ListRequests = () => {
             marginLeft: "20px",
           }}
         >
-          <p>Do you want to cancel this returning request</p>
+          <p>Do you want to cancel this returning request ?</p>
         </Modal.Body>
 
         <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
@@ -690,7 +690,7 @@ const ListRequests = () => {
               marginLeft: "20px",
             }}
           >
-            Are you sure?
+            Are you sure ?
           </Modal.Title>
         </Modal.Header>
 
@@ -699,7 +699,7 @@ const ListRequests = () => {
             marginLeft: "20px",
           }}
         >
-          <p>Do you want to mark this returning request as "Completed"?</p>
+          <p>Do you want to mark this returning request as "Completed" ?</p>
         </Modal.Body>
 
         <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>

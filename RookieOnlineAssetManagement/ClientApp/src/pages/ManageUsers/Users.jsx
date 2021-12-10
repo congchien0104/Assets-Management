@@ -266,7 +266,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer", width: "17%" }}
+                    style={{ cursor: "pointer", width: "16.7%" }}
                   >
                     {user.code}
                   </td>
@@ -274,7 +274,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer", width: "17%" }}
+                    style={{ cursor: "pointer", width: "16.7%" }}
                   >
                     {user.firstName} {user.lastName}
                   </td>
@@ -282,7 +282,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer", width: "17%" }}
+                    style={{ cursor: "pointer", width: "16.5%" }}
                   >
                     {user.userName}
                   </td>
@@ -290,7 +290,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer", width: "17%" }}
+                    style={{ cursor: "pointer", width: "16.7%" }}
                   >
                     {formatDate(user.joinedDate)}
                   </td>
@@ -298,7 +298,7 @@ const Users = () => {
                     onClick={() => {
                       setDetailId(user.id);
                     }}
-                    style={{ cursor: "pointer", width: "17%" }}
+                    style={{ cursor: "pointer", width: "16.5%" }}
                   >
                     {user.type === 1 ? "Staff" : "Admin"}
                   </td>
@@ -362,11 +362,11 @@ const Users = () => {
       </div>
       <Modal show={isDeleting} centered>
         <Modal.Header style={{ backgroundColor: "#DDE1E5" }}>
-          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Are you sure?</Modal.Title>
+          <Modal.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#dc3545" }}>Are you sure ?</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <p>Do you want to disable this user?</p>
+          <p>Do you want to disable this user ?</p>
         </Modal.Body>
 
         <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
