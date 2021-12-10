@@ -122,10 +122,7 @@ namespace RookieOnlineAssetManagement.Services
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter
             IQueryable<Asset> query = _context.Assets.AsQueryable();
-            query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
-            query = query.WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId));
             query = query.WhereIf(request.Location != null, x => x.Location == request.Location);
-            query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             // Sort
             if (request.IsSortByCreatedDate == true || request.IsSortByUpdatedDate == true)
             {
@@ -134,6 +131,9 @@ namespace RookieOnlineAssetManagement.Services
             }
             else
             {
+                query = query.WhereIf(request.KeyWord != null, x => x.Name.Contains(request.KeyWord) || x.Code.Contains(request.KeyWord));
+                query = query.WhereIf(categories != null && categories.Count > 0, x => categories.Contains(x.CategoryId));
+                query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
                 query = query.OrderByIf(request.SortBy == "name", x => x.Name, request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "category", x => x.Category.Name, request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "state", x => x.State.ToString(), request.IsAscending);
