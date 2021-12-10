@@ -187,7 +187,7 @@ const ListAssignments = () => {
       .then((response) => {
         console.log("Created RR");
         setIsCreated(false);
-        setIsAscending(!isAscending);
+        setIsFilter(true);
       })
       .catch((e) => {
         console.log(e);

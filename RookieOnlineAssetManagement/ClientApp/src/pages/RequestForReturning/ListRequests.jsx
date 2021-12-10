@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Button,
-  InputGroup,
-  FormControl,
-  Modal,
-  Row,
-  Form,
-} from "react-bootstrap";
+import { Table, Button, InputGroup, FormControl, Modal, Row, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import { GoTriangleDown } from "react-icons/go";
 import { BsCheckLg } from "react-icons/bs";
@@ -19,12 +11,7 @@ import { HiFilter } from "react-icons/hi";
 import { BsSearch } from "react-icons/bs";
 import { BsFillCalendarDateFill } from "react-icons/bs";
 import { MdOutlineCancelPresentation } from "react-icons/md";
-import {
-  GetReturnRequestPagingFilter,
-  GetRequestState,
-  GetDetail,
-  CancelRequest,
-} from "../../services/returnRequestService";
+import { GetReturnRequestPagingFilter, GetRequestState, GetDetail, CancelRequest } from "../../services/returnRequestService";
 import { Complete } from "../../services/returnRequestService";
 
 const ListRequests = () => {
@@ -276,17 +263,9 @@ const ListRequests = () => {
         </div>
 
         <InputGroup style={{ width: "250px" }}>
-          <FormControl
-            type="search"
-            placeholder="Search"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
+          <FormControl type="search" placeholder="Search" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
           <Button style={{ backgroundColor: "#FFF", borderColor: "#ced4da" }}>
-            <BsSearch
-              style={{ color: "#000", marginBottom: "3px" }}
-              onClick={handleSearch}
-            />
+            <BsSearch style={{ color: "#000", marginBottom: "3px" }} onClick={handleSearch} />
           </Button>
         </InputGroup>
       </div>
@@ -495,16 +474,8 @@ const ListRequests = () => {
                         }}
                         style={{
                           fontSize: "18px",
-                          color: `${
-                            StateToString(request.state) === "Completed"
-                              ? "#808080"
-                              : "#dc3545"
-                          }`,
-                          cursor: `${
-                            StateToString(request.state) === "Completed"
-                              ? "default"
-                              : "pointer"
-                          }`,
+                          color: `${StateToString(request.state) === "Completed" ? "#808080" : "#dc3545"}`,
+                          cursor: `${StateToString(request.state) === "Completed" ? "default" : "pointer"}`,
                         }}
                       />
                       <IoClose
@@ -517,17 +488,9 @@ const ListRequests = () => {
                         style={{
                           fontSize: "25px",
                           marginLeft: "5px",
-                          color: `${
-                            StateToString(request.state) === "Completed"
-                              ? "#f2a7ac"
-                              : "#000"
-                          }`,
+                          color: `${StateToString(request.state) === "Completed" ? "#f2a7ac" : "#000"}`,
                           fontSize: "25px",
-                          cursor: `${
-                            StateToString(request.state) === "Completed"
-                              ? "default"
-                              : "pointer"
-                          }`,
+                          cursor: `${StateToString(request.state) === "Completed" ? "default" : "pointer"}`,
                         }}
                       />
                     </td>
@@ -687,12 +650,10 @@ const ListRequests = () => {
             marginLeft: "20px",
           }}
         >
-          <p>Do you want to cancel this asset</p>
+          <p>Do you want to cancel this returning request</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",
@@ -738,12 +699,10 @@ const ListRequests = () => {
             marginLeft: "20px",
           }}
         >
-          <p>Do you want to as "Completed"?</p>
+          <p>Do you want to mark this returning request as "Completed"?</p>
         </Modal.Body>
 
-        <Modal.Footer
-          style={{ justifyContent: "flex-start", marginLeft: "20px" }}
-        >
+        <Modal.Footer style={{ justifyContent: "flex-start", marginLeft: "20px" }}>
           <Button
             style={{
               backgroundColor: "#dc3545",

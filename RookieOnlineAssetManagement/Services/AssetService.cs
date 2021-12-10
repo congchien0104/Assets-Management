@@ -118,6 +118,7 @@ namespace RookieOnlineAssetManagement.Services
         public async Task<PagedResultBase<AssetVM>> GetAssetsPagingFilter(AssetPagingFilterRequest request)
         {
             // Standardize
+            if (request.IsSortByUpdatedDate == true) request.StatesFilter += ",3,4";
             List<int> categories = request.CategoriesFilter != null ? request.CategoriesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter

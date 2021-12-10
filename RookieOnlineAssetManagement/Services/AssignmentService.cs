@@ -137,6 +137,11 @@ namespace RookieOnlineAssetManagement.Services
                 Name = AddSpacesToSentence(AssignmentState.WaitingForAcceptance.ToString()),
                 Value = (int)AssignmentState.WaitingForAcceptance
             });
+            stateList.Add(new StateVM
+            {
+                Name = AddSpacesToSentence(AssignmentState.WaitingForReturning.ToString()),
+                Value = (int)AssignmentState.WaitingForReturning
+            });
             return stateList;
         }
 
