@@ -402,7 +402,7 @@ const ListAssignments = () => {
                       setIsShowDetail(true);
                       setDetailId(assignment.ordinal);
                     }}
-                    style={{ cursor: "pointer", width: "60px" }}
+                    style={{ cursor: "pointer", width: "62px" }}
                   >
                     {assignment.ordinal}
                   </td>
@@ -463,29 +463,29 @@ const ListAssignments = () => {
                   <td>
                     <Link
                       to={{
-                        pathname: `${StateToString(assignment.state) === "Accepted" ? "/assignments" : "/assignments/" + assignment.id}`,
+                        pathname: `${StateToString(assignment.state) !== "Waiting For Acceptance" ? "/assignments" : "/assignments/" + assignment.id}`,
                       }}
                     >
                       <MdEdit
                         style={{
-                          color: `${StateToString(assignment.state) === "Accepted" ? "#808080" : "#000"}`,
+                          color: `${StateToString(assignment.state) !== "Waiting For Acceptance" ? "#808080" : "#000"}`,
                           fontSize: "20px",
-                          cursor: `${StateToString(assignment.state) === "Accepted" ? "default" : "pointer"}`,
+                          cursor: `${StateToString(assignment.state) !== "Waiting For Acceptance" ? "default" : "pointer"}`,
                         }}
                       />
                     </Link>
                     <CgCloseO
                       onClick={() => {
-                        if (StateToString(assignment.state) !== "Accepted") {
+                        if (StateToString(assignment.state) === "Waiting For Acceptance") {
                           setIdDeletingAssignment(assignment.id);
                           setIsDeleting(true);
                         }
                       }}
                       style={{
                         marginLeft: "5px",
-                        color: `${StateToString(assignment.state) === "Accepted" ? "#f2a7ac" : "#dc3545"}`,
+                        color: `${StateToString(assignment.state) !== "Waiting For Acceptance" ? "#f2a7ac" : "#dc3545"}`,
                         fontSize: "20px",
-                        cursor: `${StateToString(assignment.state) === "Accepted" ? "default" : "pointer"}`,
+                        cursor: `${StateToString(assignment.state) !== "Waiting For Acceptance" ? "default" : "pointer"}`,
                       }}
                     />
                     <IoReloadOutline
@@ -512,7 +512,7 @@ const ListAssignments = () => {
           style={{
             display: "flex",
             justifyContent: "flex-end",
-            width: "1000px",
+            width: "1100px",
             marginTop: "30px",
           }}
         >

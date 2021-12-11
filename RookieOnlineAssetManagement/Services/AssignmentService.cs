@@ -74,8 +74,7 @@ namespace RookieOnlineAssetManagement.Services
             List<int> states = request.StatesFilter != null ? request.StatesFilter.Split(',').Select(Int32.Parse).ToList() : new List<int>();
             // Filter
             IQueryable<Assignment> query = _dbcontext.Assignments.AsQueryable();
-            query = query.WhereIf(request.KeyWord != null, x => x.Asset.Code.Contains(request.KeyWord)
-                                    || x.Asset.Name.Contains(request.KeyWord) || x.AssignToUser.UserName.Contains(request.KeyWord));
+           
             query = query.WhereIf(states != null && states.Count > 0, x => states.Contains((int)x.State));
             query = query.WhereIf(assignedDate != System.DateTime.MinValue, x => x.AssignedDate == assignedDate);
             query = query.WhereIf(request.Location != null, x => x.Asset.Location == request.Location);
@@ -95,9 +94,10 @@ namespace RookieOnlineAssetManagement.Services
                 query = query.OrderByIf(request.SortBy == "assignedDate", x => x.AssignedDate, request.IsAscending);
                 query = query.OrderByIf(request.SortBy == "state", x => x.State, !request.IsAscending);
             }
-
+            query = query.WhereIf(request.KeyWord != null, x => x.Asset.Code.Contains(request.KeyWord)
+                                   || x.Asset.Name.Contains(request.KeyWord) || x.AssignToUser.UserName.Contains(request.KeyWord));
             // Paging and Projection
-            var totalRecord = await query.CountAsync();
+            var totalRecord = query.Any() ? await query.CountAsync() : 0;
             var data = await query.Paged(request.PageIndex, request.PageSize).Select((a) => new AssignmentVM()
             {
                 Id = a.Id,

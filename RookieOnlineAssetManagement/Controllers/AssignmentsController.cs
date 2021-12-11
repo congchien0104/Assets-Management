@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RookieOnlineAssetManagement.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssignmentsController : ControllerBase
@@ -22,7 +22,7 @@ namespace RookieOnlineAssetManagement.Controllers
             _assignmentService = assignmentService;
         }
 
-        [Authorize(Policy = "AdminOnly")]
+       // [Authorize(Policy = "AdminOnly")]
         [HttpGet("paging")]
         public async Task<IActionResult> GetAssignmentPagingFilter([FromQuery] AssignmentPagingFilterRequest request)
         {
