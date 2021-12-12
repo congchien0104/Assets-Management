@@ -271,7 +271,7 @@ const ListRequests = () => {
       <div style={{ overflow: "auto" }}>
         <Table
           style={{
-            width: "1300px",
+            width: "1220px",
             height: "400px",
           }}
         >
