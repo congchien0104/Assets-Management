@@ -290,7 +290,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "140px" }}>
                 Asset Code
                 <GoTriangleDown
                   style={{
@@ -303,7 +303,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "140px" }}>
                 Asset Name
                 <GoTriangleDown
                   style={{
@@ -316,7 +316,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "140px" }}>
                 Requested By
                 <GoTriangleDown
                   style={{
@@ -329,7 +329,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "155px" }}>
                 Assigned Date
                 <GoTriangleDown
                   style={{
@@ -342,7 +342,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "140px" }}>
                 Accepted By
                 <GoTriangleDown
                   style={{
@@ -355,7 +355,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "155px" }}>
                 Returned Date
                 <GoTriangleDown
                   style={{
@@ -368,7 +368,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th>
+              <th style={{ width: "140px" }}>
                 State
                 <GoTriangleDown
                   style={{
@@ -381,7 +381,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th style={{ textAlign: "left" }}>Action</th>
+              <th style={{ textAlign: "left", width: '140px' }}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -405,7 +405,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '140px' }}
                     >
                       {request.assetCode}
                     </td>
@@ -414,7 +414,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '140px' }}
                     >
                       {request.assetName}
                     </td>
@@ -423,7 +423,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '140px' }}
                     >
                       {request.requestByName}
                     </td>
@@ -432,7 +432,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '155px' }}
                     >
                       {formatDate(request.assignedDate)}
                     </td>
@@ -441,7 +441,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '140px' }}
                     >
                       {request.acceptedByName}
                     </td>
@@ -450,7 +450,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '155px' }}
                     >
                       {formatDate(request.returnedDate)}
                     </td>
@@ -459,11 +459,11 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", width: '140px' }}
                     >
                       {StateToString(request.state)}
                     </td>
-                    <td style={{ textAlign: "left", paddingLeft: '20px' }}>
+                    <td style={{ textAlign: "left", paddingLeft: '20px', width: '140px' }}>
                       <BsCheckLg
                         onClick={() => {
                           if (StateToString(request.state) !== "Completed") {
