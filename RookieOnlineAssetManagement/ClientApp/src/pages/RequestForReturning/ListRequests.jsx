@@ -368,7 +368,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th style={{ width: '200px' }}>
+              <th>
                 State
                 <GoTriangleDown
                   style={{
@@ -459,7 +459,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer", width: '180px' }}
+                      style={{ cursor: "pointer" }}
                     >
                       {StateToString(request.state)}
                     </td>
