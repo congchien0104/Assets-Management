@@ -95,24 +95,17 @@ const Users = () => {
   }, [isFilter]);
 
   const handleDisabled = () => {
-    console.log(users);
     var user = users.find((a) => a.id === idDeletingUser);
-    if (!user.isHistory) {
-      userService
-        .disabled(user.id)
-        .then((response) => {
-          setIsDeleting(false);
-          setIsFilter(true);
-        })
-        .catch((e) => {
-          setIsDeleting(false);
-          setIsDeletingError(true);
-        });
-      setIsDeleting(false);
-    } else {
-      setIsDeleting(false);
-      setIsDeletingError(true);
-    }
+    userService
+      .disabled(user.id)
+      .then((response) => {
+        setIsDeleting(false);
+        setIsFilter(true);
+      })
+      .catch((e) => {
+        setIsDeleting(false);
+        setIsDeletingError(true);
+      });
   };
 
   useEffect(() => {
@@ -316,7 +309,13 @@ const Users = () => {
                     <CgCloseO
                       onClick={(e) => {
                         setIdDeletingUser(user.id);
-                        setIsDeleting(true);
+                        if(user.isHistory=== true){
+                          console.log(user.isHistory);
+                          setIsDeletingError(true);
+                        }else{
+                          console.log(user.isHistory);
+                          setIsDeleting(true);
+                        }
                       }}
                       style={{
                         color: "#dc3545",
