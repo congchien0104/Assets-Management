@@ -16,6 +16,8 @@ namespace RookieOnlineAssetManagement.Services
     public class ReportService : IReportService
     {
         private readonly ApplicationDbContext _dbcontext;
+        private readonly XLColor HeaderColor = XLColor.FromArgb(79, 129, 189);
+        private readonly XLColor RowColor = XLColor.FromArgb(220, 230, 240);
 
         public ReportService(ApplicationDbContext dbcontext)
         {
@@ -27,7 +29,6 @@ namespace RookieOnlineAssetManagement.Services
             XLWorkbook workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Reports");
             int currentRow = 1;
-
             #region Header
             worksheet.Cell(currentRow, 1).Value = "Category";
             worksheet.Cell(currentRow, 2).Value = "Total";
@@ -36,10 +37,10 @@ namespace RookieOnlineAssetManagement.Services
             worksheet.Cell(currentRow, 5).Value = "Not Available";
             worksheet.Cell(currentRow, 6).Value = "Waiting For Recycling";
             worksheet.Cell(currentRow, 7).Value = "Recycled";
+            AddHeaderStyle(ref worksheet);
             #endregion
-
             #region Body
-            foreach(var report in reports)
+            foreach (var report in reports)
             {
                 currentRow++;
                 worksheet.Cell(currentRow, 1).Value = report.Category;
@@ -49,12 +50,13 @@ namespace RookieOnlineAssetManagement.Services
                 worksheet.Cell(currentRow, 5).Value = report.NotAvailable;
                 worksheet.Cell(currentRow, 6).Value = report.WaitingForRecycling;
                 worksheet.Cell(currentRow, 7).Value = report.Recycled;
+                AddRowStyle(ref worksheet, currentRow);
+
             }
             #endregion
-
+            AddTableStyle(ref worksheet, reports.Count + 1);
             return workbook;
         }
-
         public async Task<List<ReportVM>> GetReports(string sortBy, bool isAscending)
         {
             var query = _dbcontext.Categories.AsQueryable().Include(c => c.Assets)
@@ -77,5 +79,42 @@ namespace RookieOnlineAssetManagement.Services
             query = query.OrderByIf(sortBy == "recycled", x => x.Recycled, isAscending);
             return await query.ToListAsync();
         }
+        private void AddRowStyle(ref IXLWorksheet ws, int currentRow)
+        {
+            if (currentRow % 2 == 0)
+            {
+                ws.Range(currentRow, 1, currentRow, 7).Style.Fill.BackgroundColor = RowColor;
+                ws.Range(currentRow, 1, currentRow, 7).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                ws.Range(currentRow, 1, currentRow, 7).Style.Border.BottomBorderColor = HeaderColor;
+                ws.Range(currentRow, 1, currentRow, 7).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                ws.Range(currentRow, 1, currentRow, 7).Style.Border.TopBorderColor = HeaderColor;
+            }
+            else
+            {
+                ws.Range(currentRow, 1, currentRow, 7).Style.Fill.BackgroundColor = XLColor.White;
+            }
+
+        }
+        private void AddHeaderStyle(ref IXLWorksheet ws)
+        {
+            int header = 1;
+            ws.Row(header).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Row(header).Style.Font.FontSize = 12;
+            ws.Row(header).Style.Font.SetBold();
+            ws.Row(header).Style.Font.FontColor = XLColor.White;
+            ws.Range(header, 1, header, 7).Style.Fill.BackgroundColor = HeaderColor;
+        }
+        private void AddTableStyle(ref IXLWorksheet ws, int numRows)
+        {
+            ws.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Style.Font.FontName = "Arial";
+            ws.Columns().AdjustToContents();
+            ws.Rows().Height = 25;
+            ws.Range(1, 1, numRows, 7).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            ws.Range(1, 1, numRows, 7).Style.Border.OutsideBorderColor = HeaderColor;
+        }
+
+
     }
 }
