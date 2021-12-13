@@ -294,8 +294,6 @@ const ListAssignments = () => {
           style={{
             width: "1100px",
             height: "400px",
-            overflowX: "auto",
-            overflowY: "hidden",
           }}
         >
           <thead>
