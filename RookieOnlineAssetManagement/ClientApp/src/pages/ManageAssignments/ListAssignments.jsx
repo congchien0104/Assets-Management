@@ -549,7 +549,7 @@ const ListAssignments = () => {
               marginLeft: "20px",
             }}
           >
-            Detailed Asset Information
+            Detailed Assigment Information
           </Modal.Title>
           <MdOutlineCancelPresentation
             onClick={() => {

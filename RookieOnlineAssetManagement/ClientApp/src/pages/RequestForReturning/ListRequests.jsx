@@ -271,7 +271,7 @@ const ListRequests = () => {
       <div style={{ overflow: "auto" }}>
         <Table
           style={{
-            width: "1220px",
+            width: "1235px",
             height: "400px",
           }}
         >
@@ -316,7 +316,7 @@ const ListRequests = () => {
                   }}
                 />
               </th>
-              <th style={{ width: "140px" }}>
+              <th style={{ width: "155px" }}>
                 Requested By
                 <GoTriangleDown
                   style={{
@@ -423,7 +423,7 @@ const ListRequests = () => {
                         setIsShowDetail(true);
                         setDetailId(request.id);
                       }}
-                      style={{ cursor: "pointer", width: '140px' }}
+                      style={{ cursor: "pointer", width: '155px' }}
                     >
                       {request.requestByName}
                     </td>
